@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Orders — RIVENZ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="home.css">
+<style>
+:root{--dash-ink:#111316;--dash-muted:#7c8087;--dash-line:#e9e9e4;--dash-soft:#f7f7f4;--dash-accent:#111316}
+*{box-sizing:border-box}.dashboard-page{min-height:calc(100vh - 74px);background:#f7f7f4;color:var(--dash-ink);padding:42px 20px 80px}.dashboard{width:min(1120px,100%);margin:0 auto}.dashboard-hero{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:24px}.hero-copy .eyebrow{display:inline-block;color:#777b82;font-size:9px;font-weight:800;letter-spacing:.17em}.hero-copy h1{font-size:clamp(40px,6vw,66px);line-height:.95;letter-spacing:-.06em;margin:9px 0 13px}.hero-copy p{margin:0;max-width:590px;color:var(--dash-muted);font-size:11px;line-height:1.7}.profile-card{min-width:250px;background:#111316;color:#fff;border-radius:22px;padding:19px 20px;box-shadow:0 18px 42px rgba(17,19,22,.12)}.profile-card small{display:block;color:#8f939a;font-size:8px;letter-spacing:.12em;font-weight:800}.profile-card strong{display:block;margin-top:7px;font-size:14px}.profile-card .profile-email{display:block;margin-top:4px;color:#b0b3b8;font-size:10px;word-break:break-word}.profile-actions{display:flex;gap:7px;margin-top:14px}.profile-actions a{display:inline-flex;align-items:center;justify-content:center;padding:8px 11px;border-radius:9px;background:rgba(255,255,255,.08);color:#fff;text-decoration:none;font-size:9px;font-weight:700}.profile-actions a.primary{background:#fff;color:#111316}
+.dashboard-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}.stat-card{background:#fff;border:1px solid var(--dash-line);border-radius:19px;padding:17px 18px;box-shadow:0 10px 30px rgba(17,19,22,.045)}.stat-card span{display:block;color:#96999f;font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.1em}.stat-card strong{display:block;margin-top:7px;font-size:24px;letter-spacing:-.04em}.stat-card small{display:block;margin-top:4px;color:#a1a4aa;font-size:8px}
+.dashboard-grid{display:grid;grid-template-columns:1.35fr .65fr;gap:12px}.dash-card{background:#fff;border:1px solid var(--dash-line);border-radius:23px;padding:22px;box-shadow:0 12px 34px rgba(17,19,22,.045);min-width:0}.dash-card.wide{grid-column:1/-1}.card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:15px;margin-bottom:17px}.card-head h2{margin:0;font-size:17px;letter-spacing:-.025em}.card-head p{margin:5px 0 0;color:#96999f;font-size:9px;line-height:1.5}.card-label{color:#777b82;font-size:8px;font-weight:800;letter-spacing:.12em}
+.order{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:17px 0;border-top:1px solid #eeeeeb;text-decoration:none;color:inherit}.order:first-child{border-top:0;padding-top:0}.order:last-child{padding-bottom:0}.order-main{min-width:0;flex:1}.order-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.order-id{font-size:8px;color:#73777d;font-weight:800;letter-spacing:.08em}.order-date{font-size:8px;color:#a0a3a8}.order-name{font-size:13px;font-weight:800;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.order-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:5px;color:#96999f;font-size:8px}.order-progress{height:5px;border-radius:99px;background:#efefeb;overflow:hidden;margin-top:11px;max-width:430px}.order-progress i{display:block;height:100%;background:#111316;border-radius:99px}.order-action{display:block;margin-top:8px;color:#73777d;font-size:8px;font-weight:700}.order-side{text-align:right;flex:0 0 auto}.order-total{font-size:13px;font-weight:800}.status{display:inline-flex;margin-top:7px;font-size:8px;font-weight:800;padding:6px 8px;border-radius:999px;background:#f1f1ee;color:#50545a;white-space:nowrap}.status.green{background:#edf8f1;color:#2f7950}.status.pending{background:#fff5dd;color:#9a6500}.status.cancel{background:#fff0f0;color:#a54b4b}.track-btn{display:inline-flex;margin-top:8px;padding:7px 10px;border-radius:9px;background:#111316;color:#fff;font-size:8px;font-weight:800;text-decoration:none}.empty{padding:17px;border:1px dashed #deded9;border-radius:15px;background:#fbfbf9;color:#96999f;font-size:10px;line-height:1.6}.info-list{display:grid;gap:0}.info-row{display:flex;justify-content:space-between;gap:14px;padding:11px 0;border-top:1px solid #eeeeeb;font-size:9px;color:#8b8f95}.info-row:first-child{border-top:0;padding-top:0}.info-row strong{color:#202328;text-align:right;font-size:9px}.notification-list{display:grid;gap:8px}.notification-item{display:grid;grid-template-columns:10px minmax(0,1fr);gap:9px;padding:11px 0;border-top:1px solid #eeeeeb}.notification-item:first-child{border-top:0;padding-top:0}.notification-dot{width:7px;height:7px;border-radius:50%;background:#111316;margin-top:4px}.notification-message{font-size:10px;line-height:1.55;color:#24272b}.notification-meta{display:flex;gap:7px;margin-top:5px;color:#999ca2;font-size:8px}.notification-meta a{color:#111316;text-decoration:none;font-weight:800}.quick{display:flex;gap:8px;flex-wrap:wrap}.quick a{display:inline-flex;align-items:center;justify-content:center;padding:10px 12px;border-radius:11px;background:#f7f7f4;color:#191b1f;text-decoration:none;font-size:9px;font-weight:800;border:1px solid #ededE8}.quick a:hover{background:#111316;color:#fff}.dashboard-footer{width:min(1120px,100%);margin:20px auto 0;padding:17px 4px 0;border-top:1px solid #e8e8e3;display:flex;justify-content:space-between;gap:15px;color:#9a9da2;font-size:8px}
+.site-header{height:74px;padding:0 28px;background:#fff;border-bottom:1px solid #e9e9e4;box-shadow:0 8px 25px rgba(17,19,22,.035);backdrop-filter:blur(14px);position:sticky;top:0;z-index:50}.site-header .brand{display:flex;align-items:center}.site-header .brand img{max-height:29px;width:auto}.site-header .nav{gap:6px;align-items:center}.site-header .nav a{padding:9px 11px;border-radius:10px;color:#686c72;font-size:10px;font-weight:700;text-decoration:none}.site-header .nav a:hover{background:#f2f2ef;color:#111316}.site-header .nav .nav-profile{background:#111316;color:#fff}.site-header .nav .nav-logout{background:#111316;color:#fff;padding-inline:14px}.site-header .menu-toggle{border:0;background:#111316;color:#fff;border-radius:10px;width:38px;height:34px}
+@media(max-width:900px){.dashboard-hero{align-items:stretch}.dashboard-grid{grid-template-columns:1fr}.dashboard-stats{grid-template-columns:repeat(3,1fr)}.profile-card{min-width:220px}}@media(max-width:680px){.dashboard-page{padding:26px 14px 60px}.dashboard-hero{display:block}.profile-card{margin-top:18px}.dashboard-stats{grid-template-columns:1fr}.dash-card{padding:19px;border-radius:20px}.dashboard-footer{display:block}.dashboard-footer span{display:block;margin-top:5px}.order{align-items:flex-start}.order-side{text-align:right}.order-total{font-size:12px}.site-header{height:64px;padding:0 16px}.site-header .nav{background:#fff;border:1px solid #e7e7e2;box-shadow:0 16px 35px rgba(17,19,22,.1);border-radius:16px;padding:8px}.site-header .nav.open{top:58px}.site-header .nav a{padding:11px 12px}}
+</style>
+
+<style>
+  .wishlist-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.wishlist-item{border:1px solid #ecece8;border-radius:16px;padding:10px;background:#fff;display:flex;gap:10px;align-items:center;min-width:0}.wishlist-item img,.wishlist-placeholder{width:58px;height:68px;border-radius:12px;object-fit:cover;background:#f1f1ee;flex:0 0 58px}.wishlist-placeholder{display:grid;place-items:center;font-size:8px;color:#9a9da2}.wishlist-info{min-width:0;flex:1}.wishlist-name{font-size:10px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.wishlist-price{font-size:10px;margin-top:5px}.wishlist-actions{display:flex;gap:6px;margin-top:8px}.wishlist-actions a,.wishlist-actions button{border:0;border-radius:9px;padding:7px 8px;font-size:8px;font-weight:800;text-decoration:none;cursor:pointer}.wishlist-actions a{background:#15171b;color:#fff}.wishlist-actions button{background:#f1f1ee;color:#17191c}@media(max-width:760px){.wishlist-grid{grid-template-columns:1fr 1fr}}@media(max-width:520px){.wishlist-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body class="page-ready">
+<header class="home-header">
+  <div class="home-nav-wrap">
+    <a class="home-brand" href="index.html" aria-label="RIVENZ home"><img src="logo.png" alt="RIVENZ"></a>
+    <button class="home-menu-toggle" type="button" aria-label="Open menu" aria-expanded="false">☰</button>
+    <nav class="home-nav nav">
+      <a href="index.html">Home</a>
+      <a href="services.html">Shop</a>
+      <a href="portfolio.html">Collections</a>
+      <a href="weddings.html">Offers</a>
+      <a href="dashboard.html" class="nav-profile">My Orders</a>
+      <a href="profile.html">My Profile</a>
+      <a class="home-login" href="index.html" id="dashboardLogout">Logout</a>
+    </nav>
+  </div>
+</header>
+
+<main class="dashboard-page">
+<div class="dashboard">
+  <section class="dashboard-hero">
+    <div class="hero-copy">
+      <span class="eyebrow">RIVENZ · MY ORDERS</span>
+      <h1>Your orders.<br><span style="color:#9b9ea4">All in one place.</span></h1>
+      <p>Review your clothing orders, payment status and delivery progress. Open any order to track it from confirmation to delivery.</p>
+    </div>
+    <aside class="profile-card">
+      <small>ACCOUNT</small>
+      <strong id="profileName">Customer</strong>
+      <span class="profile-email" id="profileEmail">customer@email.com</span>
+      <div class="profile-actions"><a href="profile.html">My Profile</a><a class="primary" href="services.html">Shop Now</a></div>
+    </aside>
+  </section>
+
+  <section class="dashboard-stats">
+    <div class="stat-card"><span>Total orders</span><strong id="totalCount">—</strong><small>Orders placed with RIVENZ</small></div>
+    <div class="stat-card"><span>Active orders</span><strong id="activeCount">—</strong><small>Orders still being processed</small></div>
+    <div class="stat-card"><span>Delivered</span><strong id="deliveredCount">—</strong><small>Successfully delivered orders</small></div>
+  </section>
+
+  <div class="dashboard-grid">
+    <section class="dash-card wide">
+      <div class="card-head"><div><span class="card-label">ORDER HISTORY</span><h2>My Orders</h2><p>Your latest orders are shown first. Select an order to view its details and tracking.</p></div><a href="services.html" style="font-size:9px;font-weight:800;color:#111316;text-decoration:none">Continue Shopping →</a></div>
+      <div id="ordersList"><div class="empty">Loading your orders...</div></div>
+    </section>
+
+    <section class="dash-card">
+      <div class="card-head"><div><span class="card-label">LATEST PAYMENT</span><h2>Payment</h2><p>Your latest order payment overview.</p></div></div>
+      <div id="paymentBox"><div class="empty">Loading payment information...</div></div>
+    </section>
+
+    <section class="dash-card">
+      <div class="card-head"><div><span class="card-label">LATEST ORDER</span><h2>Delivery</h2><p>The current delivery status of your newest order.</p></div></div>
+      <div id="deliveryBox"><div class="empty">No order information yet.</div></div>
+    </section>
+
+    <section class="dash-card wide">
+      <div class="card-head"><div><span class="card-label">UPDATES</span><h2>Notifications</h2><p>Order and payment updates from RIVENZ appear here.</p></div></div>
+      <div id="notificationsBox"><div class="empty">Loading notifications...</div></div>
+    </section>
+
+    <section class="dash-card wide">
+      <div class="card-head"><div><span class="card-label">SAVED PIECES</span><h2>My Wishlist</h2><p>Keep your favourite RIVENZ pieces here and add them to your cart when you are ready.</p></div><a href="services.html" style="font-size:9px;font-weight:800;color:#111316;text-decoration:none">Browse Shop →</a></div>
+      <div id="wishlistBox"><div class="empty">Loading your wishlist...</div></div>
+    </section>
+
+    <section class="dash-card wide">
+      <div class="card-head"><div><span class="card-label">QUICK ACTIONS</span><h2>What would you like to do?</h2><p>Jump back into the RIVENZ shopping experience.</p></div></div>
+      <div class="quick"><a href="services.html">Shop Products →</a><a href="profile.html">Manage Profile →</a><a href="index.html">Back to Home →</a></div>
+    </section>
+  </div>
+</div>
+</main>
+
+<footer class="dashboard-footer"><span>RIVENZ · My Orders</span><span>© 2026 RIVENZ. All rights reserved.</span></footer>
+
+<script type="module">
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+import { app, db } from "./firebase-config.js";
+import "./order-flow.js";
+
+const auth=getAuth(app);
+const nav=document.querySelector(".home-nav");
+const toggle=document.querySelector(".home-menu-toggle");
+toggle?.addEventListener("click",()=>{const open=nav?.classList.toggle("open");toggle.setAttribute("aria-expanded",String(!!open));});
+const esc=value=>String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const money=value=>`Rs. ${Number(value||0).toLocaleString()}`;
+function statusClass(status){const s=String(status||"");if(/cancel/i.test(s))return "cancel";if(/deliver/i.test(s))return "green";if(/await|pending/i.test(s))return "pending";return "";}
+function progressRank(status,paymentStatus){const s=String(status||"").toLowerCase();if(/deliver/.test(s))return 6;if(/ship/.test(s))return 5;if(/pack/.test(s))return 4;if(/process/.test(s))return 3;if(/order confirmed/.test(s))return 2;if(/payment confirmed/.test(s)||paymentStatus==="Paid"||paymentStatus==="Paid on Delivery")return 1;return 0;}
+async function getOrders(user){try{const all=await graphicsOrderFlow.orders();return all.filter(order=>String(order.uid||"")===String(user.uid)||( !order.uid && String(order.email||"").toLowerCase()===String(user.email||"").toLowerCase()));}catch(error){console.error("Could not load orders:",error);return [];}}
+async function render(user){
+  let profile={};try{const snap=await getDoc(doc(db,"clients",user.uid));if(snap.exists())profile=snap.data()||{};}catch(error){console.warn("Profile loading failed:",error);}
+  const savedName=localStorage.getItem("graphicsClientName")||"";
+  const name=profile.name||user.displayName||savedName||"Customer";
+  const email=profile.email||user.email||localStorage.getItem("graphicsClientEmail")||"";
+  document.getElementById("profileName").textContent=name;document.getElementById("profileEmail").textContent=email;
+
+  const orders=(await getOrders(user)).slice().sort((a,b)=>{const da=new Date(a.createdAt||0).getTime(),db=new Date(b.createdAt||0).getTime();return db-da;});
+  const active=orders.filter(o=>!(/deliver|cancel|reject/i.test(String(o.status||""))));
+  const delivered=orders.filter(o=>/deliver/i.test(String(o.status||"")));
+  document.getElementById("totalCount").textContent=String(orders.length);
+  document.getElementById("activeCount").textContent=String(active.length);
+  document.getElementById("deliveredCount").textContent=String(delivered.length);
+
+  const list=document.getElementById("ordersList");
+  if(!orders.length){list.innerHTML=`<div class="empty">No orders yet. Place your first RIVENZ order to see it here.</div>`;}
+  else{
+    list.innerHTML=orders.map(order=>{
+      const items=order.items||order.products||[];const first=items[0]||{};const count=items.reduce((sum,it)=>sum+Math.max(1,Number(it.quantity)||1),0);const names=items.length?items.map(it=>it.productName||it.name||it.title||"RIVENZ Product").slice(0,2).join(", "):"RIVENZ Order";const extra=items.length>2?` +${items.length-2} more`:"";const rank=progressRank(order.status,order.paymentStatus);const pct=Math.round((rank/6)*100);const status=order.status||"Awaiting Payment";const date=order.createdAt?new Date(order.createdAt).toLocaleDateString("en-LK",{day:"2-digit",month:"short",year:"numeric"}):"";return `<div class="order"><div class="order-main"><div class="order-top"><span class="order-id">${esc(order.id||"Order")}</span><span class="order-date">${esc(date)}</span></div><div class="order-name">${esc(names+extra)}</div><div class="order-meta"><span>${count} item${count===1?"":"s"}</span><span>·</span><span>${esc(order.paymentMethod||"Payment pending")}</span></div><div class="order-progress"><i style="width:${pct}%"></i></div><span class="order-action">Open order to view details & tracking →</span></div><div class="order-side"><div class="order-total">${money(order.total)}</div><span class="status ${statusClass(status)}">${esc(status)}</span><br><a class="track-btn" href="order-details.html?id=${encodeURIComponent(order.id||"")}">View Order</a></div></div>`;}).join("");
+  }
+
+  const notificationsBox=document.getElementById("notificationsBox");
+  try{
+    let updates=await graphicsOrderFlow.notifications(orders);
+    if(!updates.length){
+      const fallback=orders.map(o=>o?.lastNotification).filter(n=>n&&String(n.uid||'')===String(user.uid));
+      fallback.sort((a,b)=>{const stamp=v=>v?.toMillis?v.toMillis():Date.parse(String(v||''))||0;return stamp(b.createdAt)-stamp(a.createdAt)});
+      updates=fallback.slice(0,12);
+    }
+    if(!updates.length) notificationsBox.innerHTML=`<div class="empty">No notifications yet. Order updates will appear here automatically.</div>`;
+    else notificationsBox.innerHTML='<div class="notification-list">'+updates.map(n=>{
+      const date=n.createdAt?.toDate?n.createdAt.toDate().toLocaleString("en-LK",{day:"2-digit",month:"short",year:"numeric",hour:"numeric",minute:"2-digit"}):(n.time||"");
+      const orderId=String(n.orderId||"");
+      return `<div class="notification-item"><span class="notification-dot"></span><div><div class="notification-message">${esc(n.message||"RIVENZ order update")}</div><div class="notification-meta"><span>${esc(date)}</span>${orderId?`<span>·</span><a href="order-details.html?id=${encodeURIComponent(orderId)}">${esc(orderId)}</a>`:""}</div></div></div>`;
+    }).join('')+'</div>';
+  }catch(error){
+    console.warn("Could not load notifications:",error);
+    notificationsBox.innerHTML=`<div class="empty">Notifications are temporarily unavailable.</div>`;
+  }
+
+  const newestNotification=orders.map(o=>o?.lastNotification).filter(Boolean).sort((a,b)=>{const stamp=v=>v?.toMillis?v.toMillis():Date.parse(String(v||''))||0;return stamp(b.createdAt||b.time)-stamp(a.createdAt||a.time)})[0];
+  if(newestNotification){const stamp=newestNotification.createdAt?.toMillis?newestNotification.createdAt.toMillis():Date.parse(String(newestNotification.createdAt||newestNotification.time||''))||0;const key=String(newestNotification.orderId||'')+'|'+String(newestNotification.message||'')+'|'+String(stamp);if(notificationBaselineReady&&key!==lastSeenNotificationKey&&String(newestNotification.uid||'')===String(user.uid)){window.graphicsMessage?.info?.(newestNotification.message||'Your RIVENZ order has been updated.');}lastSeenNotificationKey=key;}
+  notificationBaselineReady=true;
+  const latest=orders[0];
+  if(!latest){document.getElementById("paymentBox").innerHTML=`<div class="empty">No payment information yet.</div>`;document.getElementById("deliveryBox").innerHTML=`<div class="empty">Your latest order will appear here.</div>`;return;}
+  const paymentStatus=latest.paymentStatus||(/cash/i.test(String(latest.paymentMethod||""))?"Pending on Delivery":"Pending");
+  document.getElementById("paymentBox").innerHTML=`<div class="info-list"><div class="info-row"><span>Order</span><strong>${esc(latest.id)}</strong></div><div class="info-row"><span>Method</span><strong>${esc(latest.paymentMethod||"—")}</strong></div><div class="info-row"><span>Status</span><strong>${esc(paymentStatus)}</strong></div><div class="info-row"><span>Total</span><strong>${money(latest.total)}</strong></div></div>`;
+  const deliveryStatus=latest.status||"Awaiting Payment";const tracking=latest.trackingNumber||latest.trackingNo||latest.deliveryTrackingNumber||"";document.getElementById("deliveryBox").innerHTML=`<div class="info-list"><div class="info-row"><span>Order status</span><strong>${esc(deliveryStatus)}</strong></div><div class="info-row"><span>Delivery</span><strong>Standard Delivery</strong></div>${tracking?`<div class="info-row"><span>Tracking no.</span><strong>${esc(tracking)}</strong></div>`:""}</div><a class="track-btn" href="order-details.html?id=${encodeURIComponent(latest.id||"")}">Track Order →</a>`;
+}
+
+function renderWishlist(){
+  const box=document.getElementById("wishlistBox");if(!box)return;let list=[];try{list=JSON.parse(localStorage.getItem("rivenzWishlistV1")||"[]")}catch(e){}
+  if(!Array.isArray(list)||!list.length){box.innerHTML='<div class="empty">Your wishlist is empty. Tap the ♡ on any product in the Shop to save it here.</div>';return;}
+  box.innerHTML='<div class="wishlist-grid">'+list.map(item=>{const price=Number(item.offer||0)>0?item.offer:item.price;const old=Number(item.offer||0)>0&&Number(item.price||0)>0?'<span style="color:#9a9da2;text-decoration:line-through;margin-left:5px">'+money(item.price)+'</span>':'';const image=item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="wishlist-placeholder">RIVENZ</div>';return '<div class="wishlist-item">'+image+'<div class="wishlist-info"><div class="wishlist-name">'+esc(item.name||"RIVENZ Product")+'</div><div class="wishlist-price"><strong>'+money(price)+'</strong>'+old+'</div><div class="wishlist-actions"><a href="services.html">Shop</a><button type="button" data-wish-remove="'+esc(item.id||'')+'">Remove</button></div></div></div>'}).join('')+'</div>';
+  box.querySelectorAll('[data-wish-remove]').forEach(btn=>btn.addEventListener('click',()=>{const id=btn.getAttribute('data-wish-remove');list=list.filter(x=>String(x.id)!==String(id));localStorage.setItem('rivenzWishlistV1',JSON.stringify(list));renderWishlist();}));
+}
+let dashboardUser=null;let stopOrderWatch=null;let lastSeenNotificationKey=null;let notificationBaselineReady=false;
+function watchCustomerOrders(user){if(stopOrderWatch)clearInterval(stopOrderWatch);let running=false;const tick=async()=>{if(running)return;running=true;try{await render(user);}catch(e){console.warn("Customer order refresh unavailable:",e);}finally{running=false;}};stopOrderWatch=setInterval(tick,4000);}
+renderWishlist();window.addEventListener('storage',renderWishlist);window.addEventListener('rivenz:wishlist-change',renderWishlist);
+
+document.getElementById("dashboardLogout")?.addEventListener("click",async e=>{e.preventDefault();try{await signOut(auth);}catch(error){console.error("Logout failed:",error);}location.href="index.html";});
+onAuthStateChanged(auth,user=>{if(!user){if(stopOrderWatch)stopOrderWatch();location.replace("auth.html?next=dashboard.html");return;}dashboardUser=user;render(user);watchCustomerOrders(user);});
+</script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+TARGETED FIX BUILD
+==================
+
+This build is based on the last known working CORS-integrated website, not the later broken variants.
+
+Targeted fixes only:
+1. Client order-details: server-first load + Firestore realtime listener that ignores stale cache snapshots after the server load.
+2. Preview delivery: admin preview saves preview, previewRef and previewUrl; client file resolver understands private R2 Worker URLs.
+3. Our Work: admin image upload is stored in private R2 under public/portfolio and catalog metadata is stored in R2. Public portfolio page reads the catalog.
+4. Wedding E-Invitations: admin uploads multiple screenshots + live website URL to R2 and catalog; public wedding page reads the R2 catalog. Admin list shows an Open website link.
+5. Home page portfolio highlights read the public portfolio catalog.
+
+Cloudflare Worker:
+- Deploy cloudflare-worker.js to graphics-file-api.
+- Keep R2 bucket graphics-order-files PRIVATE.
+- Keep the existing FILES binding to graphics-order-files.
+
+Do not mix files from Realtime-Fix-v2/v3/v4/v5/v6 with this build.
+
+Validation performed locally: JavaScript syntax checks passed for worker.js, public-content.js, order-flow.js and all inline scripts in the affected HTML pages. Live Firebase/R2 end-to-end behavior must still be verified after deployment.

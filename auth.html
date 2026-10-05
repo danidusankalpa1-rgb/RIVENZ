@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login / Register — Graphics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="home.css">
+<script src="ui-messages.js"></script>
+<style>
+/* =========================================================
+   AUTH — FULL REDESIGN
+   Only this page is changed in this step.
+   Existing Firebase/auth markup + IDs are preserved.
+   ========================================================= */
+.auth-page{
+  min-height:calc(100vh - 78px);
+  padding:58px 24px 80px;
+  background:#f7f7f4;
+  color:#111316;
+}
+.auth-shell{
+  width:min(1160px,100%);
+  min-height:690px;
+  margin:0 auto;
+  display:grid;
+  grid-template-columns:minmax(0,1.02fr) minmax(420px,.78fr);
+  gap:18px;
+}
+.auth-intro{
+  position:relative;
+  overflow:hidden;
+  border-radius:32px;
+  padding:58px;
+  background:#111316;
+  color:#fff;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  min-height:690px;
+}
+.auth-intro:before,.auth-intro:after{
+  content:"";
+  position:absolute;
+  border-radius:50%;
+  pointer-events:none;
+}
+.auth-intro:before{
+  width:430px;height:430px;right:-170px;top:-150px;
+  background:rgba(231,152,8,.16);filter:blur(45px);
+}
+.auth-intro:after{
+  width:300px;height:300px;left:-130px;bottom:-150px;
+  background:rgba(255,255,255,.07);filter:blur(55px);
+}
+.auth-intro-content,.auth-intro-bottom{position:relative;z-index:1}
+.auth-kicker{
+  display:inline-flex;align-items:center;gap:8px;
+  width:max-content;padding:8px 11px;border-radius:999px;
+  background:rgba(255,255,255,.08);
+  color:#e7e8e5;font-size:10px;font-weight:800;
+  letter-spacing:.13em;text-transform:uppercase;
+}
+.auth-kicker i{width:6px;height:6px;border-radius:50%;background:#e79808;display:block}
+.auth-intro h1{
+  max-width:600px;margin:25px 0 20px;
+  font-size:clamp(44px,5vw,72px);line-height:.98;
+  letter-spacing:-.06em;color:#fff;
+}
+.auth-intro h1 span{color:#aeb0b4}
+.auth-intro-copy{max-width:510px;color:#aeb1b6;font-size:14px;line-height:1.8}
+.auth-benefits{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:38px}
+.auth-benefit{
+  min-height:112px;padding:17px;border-radius:18px;
+  background:rgba(255,255,255,.055);
+  border:1px solid rgba(255,255,255,.08);
+}
+.auth-benefit b{display:block;font-size:12px;margin-bottom:7px;color:#fff}
+.auth-benefit span{display:block;color:#8f939a;font-size:10px;line-height:1.55}
+.auth-intro-bottom{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-top:35px;color:#777b83;font-size:10px}
+.auth-intro-bottom strong{color:#fff;font-size:11px}
+.auth-panel{
+  border-radius:32px;
+  background:#fff;
+  padding:42px;
+  border:1px solid #e8e8e4;
+  box-shadow:0 24px 60px rgba(18,22,25,.08);
+  display:flex;flex-direction:column;justify-content:center;
+}
+.auth-panel-head .eyebrow{
+  color:#9b6805;font-size:10px;font-weight:800;letter-spacing:.17em;
+}
+.auth-panel-head h2{margin:10px 0 7px;font-size:31px;line-height:1.05;letter-spacing:-.045em;color:#111316}
+.auth-panel-head p{color:#7d8086;font-size:12px;line-height:1.65;margin-bottom:25px}
+.tabs{
+  display:grid;grid-template-columns:1fr 1fr;gap:4px;
+  padding:4px;margin-bottom:25px;background:#f2f2ef;border-radius:13px;
+}
+.tab{
+  border:0;background:transparent;color:#888b90;padding:12px 10px;border-radius:10px;
+  font:inherit;font-size:11px;font-weight:700;cursor:pointer;
+}
+.tab.active{background:#111316;color:#fff;box-shadow:0 5px 14px rgba(17,19,22,.12)}
+.form{display:none}.form.active{display:block}
+.field{margin-bottom:15px}
+.field label{display:block;margin-bottom:7px;color:#53565c;font-size:10px;font-weight:700}
+.field input{
+  width:100%;height:47px;padding:0 14px;border:1px solid #e1e1dd;border-radius:12px;
+  background:#fafaf8;color:#111316;font:inherit;font-size:12px;outline:none;
+  transition:border-color .2s,box-shadow .2s,background .2s;
+}
+.field input::placeholder{color:#b2b4b8}
+.field input:focus{background:#fff;border-color:#c9c9c4;box-shadow:0 0 0 4px rgba(17,19,22,.045)}
+.submit{
+  width:100%;min-height:48px;margin-top:4px;border:0;border-radius:12px;
+  background:#111316;color:#fff;font:inherit;font-size:11px;font-weight:800;cursor:pointer;
+  transition:transform .2s,box-shadow .2s,opacity .2s;
+}
+.submit:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(17,19,22,.15)}
+.submit:disabled{opacity:.55;cursor:not-allowed;transform:none;box-shadow:none}
+.small{margin-top:16px;color:#9a9ca1;font-size:9px;line-height:1.7}
+.auth-note{margin-top:25px;padding-top:18px;border-top:1px solid #ededeb;color:#9a9ca1;font-size:9px;line-height:1.7}
+.auth-note strong{color:#5d6066}
+@media(max-width:900px){
+  .auth-shell{grid-template-columns:1fr;max-width:650px}
+  .auth-intro{min-height:auto;padding:42px}
+  .auth-benefits{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:600px){
+  .auth-page{padding:25px 14px 45px}
+  .auth-shell{gap:12px}
+  .auth-intro,.auth-panel{border-radius:24px}
+  .auth-intro{padding:30px 24px;min-height:520px}
+  .auth-intro h1{font-size:46px}
+  .auth-benefits{grid-template-columns:1fr;gap:8px;margin-top:27px}
+  .auth-benefit{min-height:auto;padding:14px}
+  .auth-intro-bottom{align-items:flex-start;flex-direction:column;gap:8px;margin-top:25px}
+  .auth-panel{padding:28px 22px}
+  .auth-panel-head h2{font-size:27px}
+}
+
+/* Shared new navigation treatment for this redesigned auth page. */
+.site-header{height:74px;padding:0 28px;background:rgba(255,255,255,.94);border-bottom:1px solid #e9e9e4;box-shadow:0 8px 25px rgba(17,19,22,.035);backdrop-filter:blur(14px);position:sticky;top:0;z-index:50}
+.site-header .brand{display:flex;align-items:center}.site-header .brand img{max-height:29px;width:auto}
+.site-header .nav{gap:6px;align-items:center}.site-header .nav a{padding:9px 11px;border-radius:10px;color:#686c72;font-size:10px;font-weight:700;text-decoration:none}.site-header .nav a:hover{background:#f2f2ef;color:#111316}.site-header .nav a:last-child{background:#111316;color:#fff;padding-inline:14px}.site-header .menu-toggle{border:0;background:#111316;color:#fff;border-radius:10px;width:38px;height:34px}
+@media(max-width:760px){.site-header{height:64px;padding:0 16px}.site-header .nav{background:#fff;border:1px solid #e7e7e2;box-shadow:0 16px 35px rgba(17,19,22,.1);border-radius:16px;padding:8px}.site-header .nav.open{top:58px}.site-header .nav a{padding:11px 12px}}
+
+/* Step 10.1 — popup auth + home navigation */
+.auth-popup-page{position:relative;min-height:calc(100vh - 72px);display:grid;place-items:center;padding:52px 20px 70px;background:#f7f7f4;overflow:hidden}
+.auth-backdrop{position:absolute;inset:0;background:radial-gradient(circle at 15% 20%,rgba(239,35,60,.055),transparent 28%),radial-gradient(circle at 90% 80%,rgba(17,19,22,.06),transparent 30%)}
+.auth-modal{position:relative;z-index:2;width:min(920px,100%);display:grid;grid-template-columns:.92fr 1.08fr;background:#fff;border:1px solid #e6e6e1;border-radius:30px;overflow:hidden;box-shadow:0 30px 90px rgba(18,22,25,.12)}
+.auth-modal-side{padding:44px;background:#111316;color:#fff;display:flex;flex-direction:column;justify-content:center;min-height:560px}
+.auth-modal-side .auth-kicker{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#c3c5c9;font-weight:800}.auth-modal-side .auth-kicker i{width:7px;height:7px;border-radius:50%;background:#ef233c;display:inline-block;margin-right:7px;box-shadow:0 0 0 5px rgba(239,35,60,.12)}
+.auth-modal-side h1{font-size:clamp(42px,5vw,64px);line-height:.98;letter-spacing:-.06em;margin:24px 0 18px}.auth-modal-side h1 span{color:#8e9299}.auth-modal-side p{color:#a5a8ae;font-size:12px;line-height:1.75;max-width:390px}.auth-modal-points{display:grid;gap:10px;margin-top:28px}.auth-modal-points span{font-size:11px;color:#e2e3e5}
+.auth-modal .auth-panel{position:relative;border:0;border-radius:0;box-shadow:none;padding:44px;min-height:560px}.auth-close{position:absolute;right:20px;top:18px;width:34px;height:34px;border:1px solid #e5e5e0;border-radius:50%;background:rgba(255,255,255,.82);color:#74777d;font-size:22px;line-height:1;cursor:pointer}.auth-close:hover{background:#111316;color:#fff}.auth-modal .submit{border-radius:999px;background:#ef233c}.auth-modal .submit:hover{box-shadow:0 12px 28px rgba(239,35,60,.2);background:#d91f35}.auth-modal .tabs{border-radius:999px}.auth-modal .tab{border-radius:999px}.auth-modal .tab.active{background:#111316}.auth-modal .field input{border-radius:15px}
+@media(max-width:760px){.auth-popup-page{padding:28px 14px 45px;min-height:calc(100vh - 66px)}.auth-modal{grid-template-columns:1fr;border-radius:24px}.auth-modal-side{min-height:auto;padding:28px 24px}.auth-modal-side h1{font-size:42px;margin:18px 0 13px}.auth-modal-side p{font-size:11px}.auth-modal-points{grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:18px}.auth-modal-points span{font-size:9px}.auth-modal .auth-panel{min-height:auto;padding:30px 22px 25px}}
+</style>
+</head>
+<body class="page-ready">
+<header class="home-header">
+  <div class="home-nav-wrap">
+    <a class="home-brand" href="index.html" aria-label="Graphics home"><img src="logo.png" alt="Graphics"></a>
+    <button class="home-menu-toggle" type="button" aria-label="Open menu" aria-expanded="false">☰</button>
+    <nav class="home-nav nav">
+      <a href="index.html">Home</a>
+      <a href="services.html">Services</a>
+      <a href="portfolio.html">Our Work</a>
+      <a href="weddings.html">E-Invitations</a>
+      <a href="index.html#contact">Contact</a>
+      <a class="home-login active" href="auth.html">Login</a>
+    </nav>
+  </div>
+</header>
+
+<main class="auth-page auth-popup-page">
+  <div class="auth-backdrop"></div>
+  <div class="auth-modal" role="dialog" aria-modal="true" aria-labelledby="authModalTitle">
+    <div class="auth-modal-side">
+      <span class="auth-kicker"><i></i> Graphics Client Account</span>
+      <h1 id="authModalTitle">Your projects.<br><span>One simple place.</span></h1>
+      <p>Login to keep orders, payment updates, design previews and final files together in one place.</p>
+      <div class="auth-modal-points"><span>✓ Track orders</span><span>✓ Easy updates</span><span>✓ Final files</span></div>
+    </div>
+    <section class="auth-panel">
+      <button class="auth-close" type="button" aria-label="Close login" onclick="history.length>1 ? history.back() : location.href='index.html'">×</button>
+      <div class="auth-panel-head">
+        <span class="eyebrow">CLIENT PORTAL</span>
+        <h2>Welcome back.</h2>
+        <p>Login to your account or create a new client account.</p>
+      </div>
+      <div class="tabs">
+        <button class="tab active" type="button" data-tab="login">Login</button>
+        <button class="tab" type="button" data-tab="register">Create account</button>
+      </div>
+      <form class="form active" id="login">
+        <div class="field"><label>Email address</label><input id="loginEmail" type="email" placeholder="you@example.com" autocomplete="email"></div>
+        <div class="field"><label>Password</label><input id="loginPassword" type="password" placeholder="Enter your password" autocomplete="current-password"></div>
+        <button class="submit" type="submit" id="loginBtn">Login to my account</button>
+        <p class="small">Securely authenticated using Firebase.</p>
+      </form>
+      <form class="form" id="register">
+        <div class="field"><label>Full name</label><input id="registerName" type="text" placeholder="Your name" autocomplete="name"></div>
+        <div class="field"><label>WhatsApp / Phone</label><input id="registerPhone" type="tel" placeholder="07XXXXXXXX" autocomplete="tel"></div>
+        <div class="field"><label>Email address</label><input id="registerEmail" type="email" placeholder="you@example.com" autocomplete="email"></div>
+        <div class="field"><label>Password</label><input id="registerPassword" type="password" placeholder="Create a password" autocomplete="new-password"></div>
+        <button class="submit" type="submit" id="registerBtn">Create my account</button>
+        <p class="small">Your orders and delivered files will stay linked to your client account.</p>
+      </form>
+      <p class="auth-note"><strong>Already have an order?</strong> Login with the same email you used for your client account.</p>
+    </section>
+  </div>
+</main>
+
+<script type="module">
+
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
+
+import {
+  doc,
+  setDoc,
+  getDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+
+import { app, db } from "./firebase-config.js";
+
+const auth = getAuth(app);
+
+const tabs = document.querySelectorAll(".tab");
+const forms = document.querySelectorAll(".form");
+
+const loginForm = document.getElementById("login");
+const registerForm = document.getElementById("register");
+
+const loginBtn = document.getElementById("loginBtn");
+const registerBtn = document.getElementById("registerBtn");
+
+function message(type, text){
+  if(window.graphicsMessage && typeof window.graphicsMessage[type] === "function"){
+    window.graphicsMessage[type](text);
+  }else{
+    alert(text);
+  }
+}
+
+function getNext(){
+  const params = new URLSearchParams(location.search);
+  return params.get("next") || "dashboard.html";
+}
+
+function getRedirectUrl(){
+  const params = new URLSearchParams(location.search);
+  const next = params.get("next") || "dashboard.html";
+  const service = params.get("service");
+
+  if(service){
+    const separator = next.includes("?") ? "&" : "?";
+    return next + separator + "service=" + encodeURIComponent(service);
+  }
+
+  return next;
+}
+
+/*
+  If Firebase already has a signed-in user,
+  send them to the requested page.
+*/
+let authInitialised = false;
+let redirecting = false;
+let authFormBusy = false;
+onAuthStateChanged(auth, (user) => {
+  if(!authInitialised){
+    authInitialised = true;
+    if(user && !authFormBusy){
+      redirecting = true;
+      window.location.replace(getRedirectUrl());
+    }
+    return;
+  }
+  if(user && !redirecting && !authFormBusy){
+    redirecting = true;
+    authFormBusy = false;
+    window.location.replace(getRedirectUrl());
+  }
+});
+
+
+// ======================================================
+// REGISTER
+// ======================================================
+
+registerForm.addEventListener("submit", async (event) => {
+
+  event.preventDefault();
+
+  const name = document.getElementById("registerName").value.trim();
+  const phone = document.getElementById("registerPhone").value.trim();
+  const email = document.getElementById("registerEmail").value.trim().toLowerCase();
+  const password = document.getElementById("registerPassword").value;
+
+  if(!name || !phone || !email || !password){
+    message("error", "Please complete all registration fields.");
+    return;
+  }
+
+  if(password.length < 6){
+    message("error", "Password must contain at least 6 characters.");
+    return;
+  }
+
+  registerBtn.disabled = true;
+  registerBtn.textContent = "Creating Account...";
+  authFormBusy = true;
+
+  try{
+
+    const credential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+
+    const user = credential.user;
+
+    await updateProfile(user, {
+      displayName: name
+    });
+
+    try{
+      await setDoc(
+        doc(db, "clients", user.uid),
+        {
+          uid: user.uid,
+          name: name,
+          phone: phone,
+          email: email,
+          createdAt: serverTimestamp(),
+          accountStatus: "active"
+        },
+        { merge: true }
+      );
+    }catch(profileError){
+      // The Firebase Auth account is already valid. A Firestore profile
+      // failure must not make the registration look like it failed.
+      console.warn("Client profile save failed after registration:", profileError);
+    }
+
+    /*
+      These are only convenience values for old
+      parts of the website. Password is NEVER stored.
+    */
+    localStorage.setItem("graphicsClientName", name);
+    localStorage.setItem("graphicsClientEmail", email);
+    localStorage.setItem("graphicsClientPhone", phone);
+    localStorage.setItem("graphicsClientRegistered", "1");
+
+    message("success", "Account created successfully.");
+
+    redirecting = true;
+    authFormBusy = false;
+    window.location.replace(getRedirectUrl());
+
+  }catch(error){
+
+    console.error("Firebase registration error:", error);
+
+    if(error.code === "auth/email-already-in-use"){
+      message("error", "An account already exists with this email. Please login.");
+    }
+    else if(error.code === "auth/invalid-email"){
+      message("error", "Please enter a valid email address.");
+    }
+    else if(error.code === "auth/weak-password"){
+      message("error", "Password is too weak. Use at least 6 characters.");
+    }
+    else{
+      message("error", "Registration failed. Please try again.");
+    }
+
+    authFormBusy = false;
+    registerBtn.disabled = false;
+    registerBtn.textContent = "Create Account";
+  }
+
+});
+
+
+// ======================================================
+// LOGIN
+// ======================================================
+
+loginForm.addEventListener("submit", async (event) => {
+
+  event.preventDefault();
+
+  const email = document.getElementById("loginEmail").value.trim().toLowerCase();
+  const password = document.getElementById("loginPassword").value;
+
+  if(!email || !password){
+    message("error", "Enter your email and password.");
+    return;
+  }
+
+  loginBtn.disabled = true;
+  loginBtn.textContent = "Logging in...";
+  authFormBusy = true;
+
+  try{
+
+    const credential = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+
+    const user = credential.user;
+
+    /*
+      Make sure a Firestore client profile exists.
+      This also repairs profiles created before this version.
+    */
+    try{
+      const profileRef = doc(db, "clients", user.uid);
+      const profileSnap = await getDoc(profileRef);
+
+      if(!profileSnap.exists()){
+        await setDoc(
+          profileRef,
+          {
+            uid: user.uid,
+            name: user.displayName || "",
+            phone: "",
+            email: user.email || email,
+            createdAt: serverTimestamp(),
+            accountStatus: "active"
+          },
+          { merge: true }
+        );
+      }
+    }catch(profileError){
+      // Login itself succeeded; keep going even when the optional profile
+      // document cannot be read or created yet.
+      console.warn("Client profile repair failed after login:", profileError);
+    }
+
+    localStorage.setItem(
+      "graphicsClientName",
+      user.displayName || ""
+    );
+
+    localStorage.setItem(
+      "graphicsClientEmail",
+      user.email || email
+    );
+
+    localStorage.setItem(
+      "graphicsClientRegistered",
+      "1"
+    );
+
+    message("success", "Welcome back!");
+
+    redirecting = true;
+    window.location.replace(getRedirectUrl());
+
+  }catch(error){
+
+    console.error("Firebase login error:", error);
+
+    if(
+      error.code === "auth/invalid-credential" ||
+      error.code === "auth/wrong-password" ||
+      error.code === "auth/user-not-found"
+    ){
+      message("error", "Email or password is incorrect.");
+    }
+    else if(error.code === "auth/invalid-email"){
+      message("error", "Please enter a valid email address.");
+    }
+    else if(error.code === "auth/too-many-requests"){
+      message("error", "Too many attempts. Please try again later.");
+    }
+    else{
+      message("error", "Login failed. Please check your email and password.");
+    }
+
+    authFormBusy = false;
+    loginBtn.disabled = false;
+    loginBtn.textContent = "Login";
+  }
+
+});
+
+
+// ======================================================
+// LOGIN / REGISTER TABS
+// ======================================================
+
+tabs.forEach(tab => {
+
+  tab.addEventListener("click", () => {
+
+    tabs.forEach(item => item.classList.remove("active"));
+    tab.classList.add("active");
+
+    forms.forEach(form => {
+      form.classList.toggle(
+        "active",
+        form.id === tab.dataset.tab
+      );
+    });
+
+  });
+
+});
+
+
+// ======================================================
+// MOBILE MENU
+// ======================================================
+
+const toggle = document.querySelector(".home-menu-toggle");
+const nav = document.querySelector(".home-nav");
+
+if(toggle && nav){
+
+  toggle.addEventListener("click", () => {
+
+    const open = nav.classList.toggle("open");
+
+    toggle.setAttribute(
+      "aria-expanded",
+      String(open)
+    );
+
+  });
+
+}
+
+</script>
+
+</body>
+</html>

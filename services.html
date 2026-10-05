@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop — RIVENZ Clothing</title>
+  <meta name="description" content="Shop RIVENZ clothing — new arrivals, essentials and selected offers.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="home.css">
+  <script src="ui-messages.js"></script>
+  <style>
+    :root{--svc-ink:#15171b;--svc-muted:#747983;--svc-line:#e9eaed;--svc-soft:#f6f7f8}
+    body{background:#fbfbfa;color:var(--svc-ink)}
+    .services-page{max-width:1240px;margin:0 auto;padding:76px 24px 110px}
+    .services-intro{display:flex;justify-content:space-between;gap:40px;align-items:end;margin-bottom:42px}
+    .services-kicker{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#7a7e85;font-weight:700}
+    .services-intro h1{font-size:clamp(44px,6vw,76px);line-height:.96;letter-spacing:-.055em;margin:12px 0 18px;max-width:760px}
+    .services-intro p{margin:0;color:var(--svc-muted);font-size:15px;line-height:1.75;max-width:650px}
+    .services-note{flex:0 0 250px;border:1px solid var(--svc-line);background:#fff;border-radius:22px;padding:20px;box-shadow:0 14px 35px rgba(25,29,35,.05)}
+    .services-note strong{display:block;font-size:13px;margin-bottom:8px}.services-note span{display:block;color:var(--svc-muted);font-size:11px;line-height:1.6}
+    .shop-filters{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 24px;padding:6px;border:1px solid #ecece8;background:#fff;border-radius:16px;width:max-content;max-width:100%;box-shadow:0 8px 25px rgba(20,24,30,.035)}
+    .shop-filter{border:0;background:transparent;color:#6f747c;border-radius:11px;padding:10px 14px;font-size:10px;font-weight:800;cursor:pointer;white-space:nowrap}
+    .shop-filter:hover{background:#f4f4f1;color:#17191c}.shop-filter.active{background:#15171b;color:#fff}
+    .shop-subfilters{display:none;flex-wrap:wrap;gap:7px;margin:-14px 0 24px}.shop-subfilters.show{display:flex}.shop-subfilter{border:1px solid #e7e8e5;background:#fff;color:#6f747c;border-radius:999px;padding:8px 11px;font-size:9px;font-weight:800;cursor:pointer}.shop-subfilter.active{background:#f0f0ed;color:#17191c;border-color:#dfe0dc}
+    .service-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+    .service-card{position:relative;overflow:hidden;min-height:505px;background:#fff;border:1px solid var(--svc-line);border-radius:28px;box-shadow:0 18px 45px rgba(20,24,30,.07);display:flex;flex-direction:column;transition:transform .25s ease,box-shadow .25s ease}
+    .service-card:hover{transform:translateY(-5px);box-shadow:0 24px 55px rgba(20,24,30,.11)}
+    .service-media{height:285px;position:relative;overflow:hidden;background:linear-gradient(145deg,#eef0f2,#dfe2e5)}
+    .service-media img{width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .25s ease,transform .45s ease}.service-card:hover .service-media img{transform:scale(1.035)}
+    .service-media.loaded img{opacity:1}
+    .service-media:after{content:"";position:absolute;inset:35% 0 0;background:linear-gradient(to bottom,rgba(255,255,255,0),rgba(255,255,255,.5) 42%,#fff 100%);pointer-events:none}
+    .service-placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#9b9fa5;font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+    .service-top{position:absolute;z-index:2;left:18px;right:18px;top:18px;display:flex;justify-content:space-between;align-items:center}
+    .service-badge,.service-offer{display:inline-flex;align-items:center;min-height:28px;padding:0 10px;border-radius:999px;background:rgba(255,255,255,.82);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.8);font-size:9px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;box-shadow:0 6px 16px rgba(0,0,0,.05)}
+    .service-offer{color:#555b64;letter-spacing:.03em;text-transform:none}
+    .service-body{position:relative;margin-top:-48px;z-index:3;padding:0 22px 22px;display:flex;flex-direction:column;flex:1}
+    .service-title{font-size:24px;line-height:1.05;letter-spacing:-.035em;margin:0 0 9px}.service-desc{font-size:12px;line-height:1.65;color:var(--svc-muted);margin:0 0 15px;min-height:40px}
+    .service-includes{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}.service-chip{font-size:9px;color:#5e636b;border:1px solid #e6e8eb;background:#fafafa;border-radius:999px;padding:6px 8px;display:inline-flex;align-items:center;gap:6px}.color-dot{width:12px;height:12px;border-radius:50%;display:inline-block;border:1px solid rgba(0,0,0,.12);box-shadow:inset 0 0 0 1px rgba(255,255,255,.35);flex:0 0 auto}.rivenz-color{display:inline-flex!important;align-items:center!important;gap:7px!important}
+    .service-price-row{display:flex;align-items:baseline;gap:9px;margin-top:auto}.service-old{font-size:13px;color:#a4a7ad;text-decoration:line-through}.service-new{font-size:23px;font-weight:800;letter-spacing:-.035em}
+    .service-actions{display:flex;gap:9px;margin-top:15px}.service-actions a{flex:1;display:flex;justify-content:center;align-items:center;min-height:43px;border-radius:13px;text-decoration:none;font-size:11px;font-weight:700}.service-order{background:#15171b;color:#fff}.service-details{border:1px solid #e4e6e9;color:#24272c;background:#fff}
+    .service-wide{grid-column:1/-1;min-height:255px;display:grid;grid-template-columns:1.05fr .95fr}.service-wide .service-media{height:100%}.service-wide .service-body{margin-top:0;justify-content:center;padding:34px}.service-wide .service-desc{max-width:520px}.service-wide .service-title{font-size:30px}
+    .empty-state{grid-column:1/-1;border:1px dashed #dfe1e4;border-radius:24px;padding:60px 24px;text-align:center;color:#858991;background:#fff}.empty-state strong{display:block;color:#24272c;margin-bottom:8px}
+    .services-bottom{margin-top:34px;padding:24px;border:1px solid var(--svc-line);background:#fff;border-radius:24px;display:flex;justify-content:space-between;align-items:center;gap:25px}.services-bottom strong{font-size:15px}.services-bottom span{display:block;color:var(--svc-muted);font-size:11px;margin-top:5px}.services-bottom a{white-space:nowrap}
+
+    .rivenz-modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}.rivenz-modal-cart,.rivenz-modal-order{min-height:48px;border-radius:14px;border:1px solid #dedfe3;display:flex;align-items:center;justify-content:center;gap:7px;font-size:11px;font-weight:800;text-decoration:none;cursor:pointer;box-sizing:border-box}.rivenz-modal-cart{background:#f4f4f1;color:#17191c}.rivenz-modal-order{background:#15171b;color:#fff;border-color:#15171b}.rivenz-modal-cart:disabled,.rivenz-modal-order.disabled{opacity:.45;pointer-events:none}.rivenz-qty-wrap{margin-top:18px}.rivenz-qty{display:inline-flex;align-items:center;border:1px solid #e4e5e1;border-radius:12px;overflow:hidden}.rivenz-qty button{width:40px;height:40px;border:0;background:#fff;font-size:18px;cursor:pointer}.rivenz-qty button:disabled{opacity:.35;cursor:not-allowed}.rivenz-qty span{width:42px;text-align:center;font-size:12px;font-weight:800}
+    @media(max-width:950px){.service-grid{grid-template-columns:repeat(2,minmax(0,360px));justify-content:center}.services-intro{align-items:start;flex-direction:column}.services-note{flex-basis:auto;width:min(100%,420px)}}
+    @media(max-width:640px){.services-page{padding:42px 16px 48px}.services-intro h1{font-size:48px}.service-grid{grid-template-columns:1fr}.service-wide{grid-template-columns:1fr;min-height:0}.service-wide .service-media{height:230px}.service-wide .service-body{padding:22px}.services-bottom{align-items:flex-start;flex-direction:column}.services-bottom a{width:100%}}
+    /* RIVENZ clothing shop — clean fashion catalog cards */
+    .services-page{padding-bottom:58px}
+    .service-grid{grid-template-columns:repeat(auto-fit,minmax(300px,340px));gap:18px;justify-content:center;align-items:stretch;margin-top:6px}
+    .service-card{min-height:0;height:100%;background:transparent;border:0!important;border-radius:0!important;overflow:visible;box-shadow:none!important;display:flex;flex-direction:column;transition:transform .22s ease}
+    .service-card:hover{transform:translateY(-3px);box-shadow:none!important}
+    .service-media{position:relative!important;width:100%;height:auto!important;aspect-ratio:4/5;background:#f0f1ef;overflow:hidden;border-radius:24px}
+    .service-media:after{display:none}
+    .service-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:none!important;transition:opacity .25s ease}
+    .service-media.loaded img{opacity:1}
+    .service-placeholder{position:absolute;inset:0;display:grid;place-items:center;color:#9da2a8;font-size:10px;letter-spacing:.12em;text-transform:uppercase}
+    .service-top{position:absolute;z-index:4;left:14px;right:14px;top:14px}
+    .service-badge,.service-offer{min-height:28px;padding:0 10px;border:0!important;background:rgba(255,255,255,.9);color:#202328;box-shadow:0 5px 15px rgba(0,0,0,.06);backdrop-filter:blur(12px);font-size:9px}
+    .service-body{position:relative;inset:auto;margin:0!important;padding:15px 4px 0!important;color:#17191c;min-height:205px;background:transparent;display:flex;flex-direction:column;justify-content:flex-start}
+    .service-title{color:#17191c;font-size:20px;line-height:1.08;letter-spacing:-.035em;margin:0 0 6px;text-shadow:none}
+    .service-desc{color:#7a7f87;font-size:10px;line-height:1.5;margin:0 0 10px;min-height:30px;max-width:none;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .product-meta{gap:5px;margin:0 0 9px}.product-meta span{font-size:8px;color:#676c73;border:0;background:#f2f2ef;border-radius:999px;padding:5px 7px;backdrop-filter:none}
+    .service-includes{gap:5px;margin-bottom:10px;min-height:25px}.service-chip{font-size:8px;color:#555a61;border:0!important;background:#f7f7f4;backdrop-filter:none;border-radius:999px;padding:5px 8px}
+    .service-price-row{margin-top:0;gap:8px;min-height:28px;align-items:baseline}.service-old{color:#a2a5aa;font-size:11px}.service-new{color:#17191c;font-size:20px}
+    .service-actions{display:grid;grid-template-columns:1fr;gap:8px;margin-top:auto;padding-top:12px;align-items:stretch}.service-actions a,.service-actions button{width:100%;min-height:42px;height:42px;border-radius:12px!important;font-size:10px;font-weight:800;box-sizing:border-box}.service-order{background:#15171b;color:#fff;display:flex;align-items:center;justify-content:center}.service-details{background:#f2f2ef;color:#17191c;border:0!important;cursor:pointer;padding:0 10px}.service-order.disabled{opacity:.45;pointer-events:none}
+    .service-wide{grid-column:auto;min-height:0;height:auto;display:flex}.service-wide .service-media{height:auto!important}.service-wide .service-body{padding:15px 4px 0!important;justify-content:flex-start}.service-wide .service-title{font-size:20px}
+    .services-bottom{margin-top:42px;margin-bottom:8px;padding:20px 22px;border:1px solid #ecece8;background:#fff;border-radius:20px;box-shadow:0 10px 28px rgba(20,24,30,.035)}
+    @media(max-width:950px){.service-grid{grid-template-columns:repeat(2,minmax(0,340px));justify-content:center}.services-intro{align-items:start;flex-direction:column}.services-note{flex-basis:auto;width:min(100%,420px)}}
+    @media(max-width:640px){.services-page{padding:42px 16px 36px}.services-intro h1{font-size:48px}.service-grid{grid-template-columns:1fr;gap:30px}.service-media{border-radius:22px}.service-body{padding-top:13px!important}.service-title{font-size:21px}.service-actions{grid-template-columns:1fr}.services-bottom{margin-top:34px;margin-bottom:0}.services-bottom a{width:auto}}
+    .rivenz-wishlist-btn{position:absolute;z-index:6;right:14px;top:14px;width:34px;height:34px;border:0;border-radius:50%;background:rgba(255,255,255,.92);color:#17191c;display:grid;place-items:center;box-shadow:0 6px 18px rgba(0,0,0,.08);backdrop-filter:blur(12px);cursor:pointer;transition:transform .18s ease,background .18s ease}.rivenz-wishlist-btn:hover{transform:scale(1.05)}.rivenz-wishlist-btn svg{width:16px;height:16px}.rivenz-wishlist-btn.active{background:#15171b;color:#fff}.rivenz-wishlist-btn[aria-pressed="true"] svg{fill:currentColor}.rivenz-wishlist-note{font-size:9px;color:#777c84;margin-top:7px}
+    .rivenz-product-modal{position:fixed;inset:0;z-index:9999;background:rgba(17,18,20,.48);backdrop-filter:blur(7px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s ease}
+    .rivenz-product-modal.open{opacity:1;pointer-events:auto}
+    .rivenz-product-sheet{width:min(940px,100%);max-height:min(900px,94vh);overflow:auto;background:#fff;border-radius:30px;box-shadow:0 30px 90px rgba(0,0,0,.22);display:grid;grid-template-columns:minmax(0,1.03fr) minmax(330px,.97fr);position:relative}
+    .rivenz-gallery{padding:18px;background:#f2f2ef;display:flex;flex-direction:column;gap:10px;min-width:0}.rivenz-main-image{position:relative;aspect-ratio:4/5;border-radius:22px;overflow:hidden;background:#e5e6e3}.rivenz-main-image img{width:100%;height:100%;object-fit:cover;display:block}.rivenz-gallery-arrow{position:absolute;top:50%;transform:translateY(-50%);width:38px;height:38px;border:0;border-radius:50%;background:rgba(255,255,255,.9);box-shadow:0 6px 18px rgba(0,0,0,.1);cursor:pointer;font-size:20px}.rivenz-gallery-arrow.prev{left:12px}.rivenz-gallery-arrow.next{right:12px}.rivenz-thumbs{display:flex;gap:8px;overflow-x:auto;padding:2px 1px 3px;scrollbar-width:none}.rivenz-thumbs::-webkit-scrollbar{display:none}.rivenz-thumb{flex:0 0 64px;width:64px;height:78px;padding:0;border:2px solid transparent;border-radius:12px;overflow:hidden;background:#fff;cursor:pointer}.rivenz-thumb.active{border-color:#15171b}.rivenz-thumb img{width:100%;height:100%;object-fit:cover;display:block}.rivenz-gallery-count{text-align:center;font-size:9px;color:#858a91;letter-spacing:.08em;text-transform:uppercase}
+    .rivenz-product-info{padding:30px 30px 26px;display:flex;flex-direction:column;min-width:0}.rivenz-close{position:absolute;right:18px;top:18px;width:38px;height:38px;border:0;border-radius:50%;background:#f2f2ef;color:#17191c;font-size:20px;cursor:pointer;z-index:4}.rivenz-product-kicker{font-size:9px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:#8a8e94;margin-bottom:9px}.rivenz-product-name{font-size:32px;line-height:1.02;letter-spacing:-.045em;margin:0 52px 10px 0}.rivenz-product-description{font-size:12px;line-height:1.7;color:#777c84;margin:0 0 17px}.rivenz-price{font-size:24px;font-weight:800;letter-spacing:-.035em}.rivenz-old-price{font-size:12px;color:#a1a4a9;text-decoration:line-through;margin-left:8px}.rivenz-option-label{font-size:10px;font-weight:800;color:#4f545b;margin:20px 0 8px}.rivenz-options{display:flex;gap:7px;flex-wrap:wrap}.rivenz-size{min-width:43px;height:38px;border:1px solid #e4e5e1;border-radius:11px;background:#fff;font-size:10px;font-weight:800;cursor:pointer}.rivenz-size.selected{background:#15171b;color:#fff;border-color:#15171b}.rivenz-size:disabled{opacity:.35;text-decoration:line-through;cursor:not-allowed}.rivenz-color{border:1px solid #e4e5e1;background:#fff;border-radius:11px;padding:9px 11px;font-size:10px;font-weight:700;cursor:pointer}.rivenz-color.selected{border-color:#15171b;box-shadow:inset 0 0 0 1px #15171b}.rivenz-stock-note{font-size:10px;color:#7a7f87;margin-top:10px}.rivenz-detail-block{margin-top:20px;border-top:1px solid #ededeb;padding-top:16px}.rivenz-detail-block strong{font-size:10px}.rivenz-detail-block p{font-size:10px;color:#777c84;line-height:1.6;margin:6px 0 0}.rivenz-add{margin-top:auto;padding-top:22px}.rivenz-add a{display:flex;align-items:center;justify-content:center;min-height:48px;border-radius:14px;background:#15171b;color:#fff;text-decoration:none;font-size:11px;font-weight:800}.rivenz-add a.disabled{opacity:.45;pointer-events:none}
+    @media(max-width:950px){.service-grid{grid-template-columns:repeat(2,minmax(285px,360px));justify-content:center}.rivenz-product-sheet{grid-template-columns:1fr;max-height:94vh}.rivenz-product-info{padding-top:22px}.rivenz-gallery{padding:12px}.rivenz-main-image{aspect-ratio:1/1.08}}
+    @media(max-width:640px){.services-page{padding:42px 16px 48px}.services-intro h1{font-size:48px}.service-grid{grid-template-columns:minmax(0,1fr);gap:16px}.service-card{border-radius:24px!important}.services-bottom{align-items:flex-start;flex-direction:column}.services-bottom a{width:100%}.rivenz-product-modal{padding:0;align-items:flex-end}.rivenz-product-sheet{width:100%;max-height:94vh;border-radius:28px 28px 0 0;display:block;overflow:auto}.rivenz-gallery{padding:10px 10px 0}.rivenz-main-image{aspect-ratio:4/4.8;border-radius:22px}.rivenz-gallery-arrow{width:34px;height:34px}.rivenz-thumb{flex-basis:58px;width:58px;height:70px}.rivenz-product-info{padding:20px 20px 22px}.rivenz-product-name{font-size:28px}.rivenz-modal-actions{grid-template-columns:1fr}.rivenz-add{position:sticky;bottom:0;background:#fff;padding-top:16px;padding-bottom:2px}}
+    /* RIVENZ Step 2 — product presentation layer */
+    .product-meta{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 13px}
+    .product-meta span{font-size:9px;color:rgba(255,255,255,.88);border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.11);border-radius:999px;padding:5px 8px;backdrop-filter:blur(8px)}
+    .product-price-note{font-size:9px;color:rgba(255,255,255,.62);margin-left:auto;align-self:center}
+      /* RIVENZ — final product-row redesign v2: image-led fashion cards */
+    .services-page{padding-bottom:28px!important}
+    .service-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:16px!important;max-width:1080px!important;margin:22px auto 0!important;justify-content:stretch!important}
+    .service-card{position:relative!important;display:block!important;width:100%!important;height:390px!important;min-height:390px!important;padding:0!important;background:#15171b!important;border:0!important;border-radius:28px!important;box-shadow:0 18px 42px rgba(20,24,30,.10)!important;overflow:hidden!important;transition:transform .22s ease,box-shadow .22s ease!important}
+    .service-card:hover{transform:translateY(-4px)!important;box-shadow:0 24px 52px rgba(20,24,30,.15)!important}
+    .service-media{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;aspect-ratio:auto!important;border-radius:0!important;background:#ecece8!important;overflow:hidden!important}
+    .service-media img{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:cover!important;opacity:0!important;transition:opacity .25s ease,transform .55s ease!important;transform:scale(1.015)!important}
+    .service-card:hover .service-media img{transform:scale(1.045)!important}
+    .service-media.loaded img{opacity:1!important}
+    .service-media:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,11,13,.02) 30%,rgba(10,11,13,.06) 44%,rgba(10,11,13,.46) 62%,rgba(10,11,13,.94) 100%);pointer-events:none}
+    .service-placeholder{position:absolute!important;inset:0!important;display:flex!important;align-items:center!important;justify-content:center!important;color:#8b8f94!important;font-size:10px!important;z-index:0!important}
+    .service-top{position:absolute!important;z-index:3!important;left:16px!important;right:16px!important;top:16px!important;display:flex!important;justify-content:space-between!important;align-items:center!important;pointer-events:none!important}
+    .service-badge,.service-offer{min-height:28px!important;padding:0 10px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;font-size:8px!important;font-weight:800!important;letter-spacing:.02em!important;border-radius:999px!important;background:rgba(255,255,255,.88)!important;color:#17191c!important;box-shadow:0 5px 18px rgba(0,0,0,.08)!important;backdrop-filter:blur(10px)!important}
+    .service-offer{background:rgba(21,23,27,.72)!important;color:#fff!important}
+    .service-body{position:absolute!important;z-index:3!important;left:0!important;right:0!important;bottom:0!important;margin:0!important;padding:28px 18px 17px!important;min-height:0!important;height:auto!important;display:flex!important;flex-direction:column!important;justify-content:flex-end!important;background:linear-gradient(180deg,transparent 0%,rgba(10,11,13,.12) 10%,rgba(10,11,13,.76) 48%,rgba(10,11,13,.96) 100%)!important;color:#fff!important}
+    .service-title{font-size:20px!important;line-height:1.06!important;letter-spacing:-.035em!important;margin:0 0 7px!important;color:#fff!important}
+    .service-desc{font-size:10px!important;line-height:1.5!important;min-height:0!important;margin:0 0 10px!important;color:rgba(255,255,255,.72)!important;display:-webkit-box!important;-webkit-line-clamp:2!important;-webkit-box-orient:vertical!important;overflow:hidden!important}
+    .product-meta{display:flex!important;flex-wrap:wrap!important;gap:5px!important;margin:0 0 8px!important}
+    .product-meta span{font-size:8px!important;color:rgba(255,255,255,.9)!important;background:rgba(255,255,255,.13)!important;padding:5px 7px!important;border:1px solid rgba(255,255,255,.12)!important;border-radius:999px!important;backdrop-filter:blur(8px)!important}
+    .service-includes{min-height:0!important;gap:5px!important;margin:0 0 7px!important;display:flex!important;flex-wrap:wrap!important}
+    .service-chip{font-size:8px!important;padding:5px 8px!important;background:rgba(255,255,255,.12)!important;border:1px solid rgba(255,255,255,.10)!important;color:rgba(255,255,255,.82)!important;border-radius:999px!important}
+    .service-price-row{margin:0 0 12px!important;min-height:26px!important;gap:7px!important;display:flex!important;align-items:baseline!important}
+    .service-old{font-size:10px!important;color:rgba(255,255,255,.45)!important;text-decoration:line-through!important}.service-new{font-size:18px!important;color:#fff!important;letter-spacing:-.03em!important}
+    .service-actions{display:block!important;margin:0!important;padding:0!important;position:relative!important}
+    .service-actions a{height:43px!important;min-height:43px!important;width:100%!important;border-radius:14px!important;font-size:9px!important;font-weight:800!important;box-sizing:border-box!important}
+    .service-order{background:#fff!important;color:#15171b!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;text-decoration:none!important}
+    .service-details{position:absolute!important;right:0!important;bottom:51px!important;width:42px!important;height:42px!important;min-height:42px!important;background:rgba(255,255,255,.13)!important;color:#fff!important;border:1px solid rgba(255,255,255,.20)!important;cursor:pointer!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:0!important;border-radius:13px!important;backdrop-filter:blur(10px)!important;box-shadow:0 8px 20px rgba(0,0,0,.14)!important}
+    .service-details span{display:none!important}.service-details svg{width:17px!important;height:17px!important;display:block!important}
+    .service-actions svg{width:14px;height:14px;display:block;flex:0 0 auto}
+    .cart-nav-link{display:inline-flex!important;align-items:center;gap:5px}.cart-count{min-width:17px;height:17px;padding:0 5px;border-radius:999px;background:#15171b;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;line-height:1}.cart-count:empty{display:none}
+    .service-wide{display:block!important;min-height:430px!important}
+    .service-wide .service-media{height:100%!important}.service-wide .service-body{padding:28px 18px 17px!important;justify-content:flex-end!important}.service-wide .service-title{font-size:24px!important}
+    .services-bottom{max-width:1080px!important;margin:22px auto 0!important;padding:18px 20px!important;border:1px solid #ecece8!important;background:#fff!important;border-radius:18px!important;box-shadow:0 8px 25px rgba(20,24,30,.03)!important}
+    footer{margin-top:0!important}
+    @media(max-width:900px){
+      .service-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:14px!important;max-width:760px!important}
+      .service-card,.service-wide{height:390px!important;min-height:390px!important}
+    }
+    @media(max-width:600px){
+      .services-page{padding:34px 14px 24px!important}
+      .service-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important;margin-top:14px!important}
+      .service-card,.service-wide{height:350px!important;min-height:350px!important;border-radius:22px!important}
+      .service-body,.service-wide .service-body{padding:22px 12px 12px!important}
+      .service-title,.service-wide .service-title{font-size:17px!important}
+      .service-desc{font-size:9px!important}
+      .product-meta span,.service-chip{font-size:7px!important;padding:4px 6px!important}
+      .service-new{font-size:16px!important}
+      .service-actions a{height:38px!important;min-height:38px!important;font-size:8px!important}
+      .services-bottom{margin-top:18px!important}
+    }
+    @media(max-width:420px){
+      .service-grid{grid-template-columns:1fr!important;max-width:360px!important}
+      .service-card,.service-wide{height:390px!important;min-height:390px!important}
+    }
+  </style>
+</head>
+<body class="page-ready">
+<header class="home-header">
+  <div class="home-nav-wrap">
+    <a class="home-brand" href="index.html" aria-label="RIVENZ home"><img src="logo.png" alt="RIVENZ"></a>
+    <button class="home-menu-toggle" type="button" aria-label="Open menu" aria-expanded="false">☰</button>
+    <nav class="home-nav nav">
+      <a href="index.html">Home</a>
+      <a class="active" href="services.html">Shop</a>
+      <a href="portfolio.html">Collections</a>
+      <a href="weddings.html">Offers</a>
+      <a href="index.html#contact">Contact</a>
+      <a class="cart-nav-link" href="cart.html">Cart <span class="cart-count" id="cartCount">0</span></a>
+      <a class="nav-login home-login" href="auth.html">Login</a>
+      <a href="dashboard.html">My Dashboard</a>
+    </nav>
+  </div>
+</header>
+
+<main class="services-page">
+  <section class="services-intro">
+    <div>
+      <div class="services-kicker">RIVENZ · Shop</div>
+      <h1>Wear your<br>RIVENZ.</h1>
+      <p>Browse live RIVENZ products added from Admin. Choose a piece, check sizes and stock, then continue to checkout.</p>
+    </div>
+    <div class="services-note"><strong>Simple shopping</strong><span>Pick a piece → choose your options → confirm your order → complete payment.</span></div>
+  </section>
+
+  <div class="shop-filters" id="shopFilters" role="group" aria-label="Shop categories">
+    <button class="shop-filter active" type="button" data-category="all">All</button>
+    <button class="shop-filter" type="button" data-category="mens">Men's</button>
+    <button class="shop-filter" type="button" data-category="ladies">Ladies</button>
+    <button class="shop-filter" type="button" data-category="unisex">Unisex</button>
+    <button class="shop-filter" type="button" data-category="kids">Kids</button>
+    <button class="shop-filter" type="button" data-category="accessories">Accessories</button>
+  </div>
+  <div class="shop-subfilters" id="shopSubFilters" role="group" aria-label="Accessory categories">
+    <button class="shop-subfilter active" type="button" data-subcategory="accessories">All Accessories</button>
+    <button class="shop-subfilter" type="button" data-subcategory="accessories-mens">Men's</button>
+    <button class="shop-subfilter" type="button" data-subcategory="accessories-ladies">Ladies</button>
+    <button class="shop-subfilter" type="button" data-subcategory="accessories-kids">Kids</button>
+  </div>
+  <section id="serviceGrid" class="service-grid" aria-live="polite">
+    <div class="empty-state"><strong>Loading products…</strong><span>Getting the latest RIVENZ products.</span></div>
+  </section>
+
+  <section class="services-bottom">
+    <div><strong>Looking for something specific?</strong><span>New RIVENZ pieces and offers will appear here as the collection grows.</span></div>
+    <a class="btn btn-primary" href="index.html">Back to Home →</a>
+  </section>
+</main>
+
+<footer><img src="logo.png" alt="Graphics logo"><span>© 2026 RIVENZ. All rights reserved.</span></footer>
+<script src="file-store.js"></script>
+<script src="public-content.js"></script>
+<script>graphicsFileStore.migrateOrders();</script>
+<script>
+(function(){
+  const PRODUCT_KEY='rivenzAdminProductsV1',grid=document.getElementById('serviceGrid');
+  const filters=document.getElementById('shopFilters'),subFilters=document.getElementById('shopSubFilters');
+  const initialParams=new URLSearchParams(location.search);
+  const initialProductId=initialParams.get('product')||'';
+  let selectedCategory=initialParams.get('category')||'all';
+  let selectedSubcategory=new URLSearchParams(location.search).get('subcategory')||'accessories';
+  const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const money=v=>'Rs. '+Number(v||0).toLocaleString('en-LK'); let products=[];let catalogLoadedAt=0;let catalogLoading=null;
+  function local(){try{const x=JSON.parse(localStorage.getItem(PRODUCT_KEY)||'[]');return Array.isArray(x)?x:[]}catch(e){return[]}}
+  function images(p){let a=Array.isArray(p?.images)?p.images.slice():[];if(!a.length&&p?.image?.url)a=[p.image];return a.filter(x=>x&&x.url)}
+  function stockTotal(p){return Object.values(p.stock||{}).reduce((a,b)=>{if(typeof b==='number')return a+Math.max(0,Number(b)||0);if(b&&typeof b==='object')return a+Object.values(b).reduce((n,v)=>n+Math.max(0,Number(v)||0),0);return a},0)}
+  const DEFAULT_COLOR_HEX={black:'#111111',white:'#ffffff',red:'#e53935',blue:'#2563eb',navy:'#172554',green:'#16a34a',yellow:'#facc15',orange:'#f97316',pink:'#ec4899',purple:'#8b5cf6',grey:'#9ca3af',gray:'#9ca3af',brown:'#8b5e3c',beige:'#d8c3a5',cream:'#f5f0df',maroon:'#7f1d1d'};
+  function colorHex(p,name){const meta=p?.colorMeta&&typeof p.colorMeta==='object'?p.colorMeta:{};const h=String(meta[name]||'').trim();if(/^#[0-9a-f]{6}$/i.test(h))return h;return DEFAULT_COLOR_HEX[String(name||'').trim().toLowerCase()]||'#d9d9d4'}
+  function readWishlist(){try{const x=JSON.parse(localStorage.getItem('rivenzWishlistV1')||'[]');return Array.isArray(x)?x:[]}catch(e){return[]}}
+  function toggleWishlist(p){const list=readWishlist(),id=String(p.id||p.name||'');const i=list.findIndex(x=>String(x.id)===id);if(i>=0)list.splice(i,1);else list.push({id:p.id||p.name||'',name:p.name||'RIVENZ Product',image:images(p)[0]?.url||'',price:Number(p.price||0),offer:Number(p.offer||0),category:p.category||'RIVENZ Clothing'});localStorage.setItem('rivenzWishlistV1',JSON.stringify(list));window.dispatchEvent(new CustomEvent('rivenz:wishlist-change'));return i<0}
+  function productSizes(p){const explicit=Array.isArray(p?.sizes)?p.sizes.map(x=>String(x||'').trim()).filter(Boolean):[];if(explicit.length)return explicit;const keys=[];const add=x=>{const v=String(x||'').trim();if(v&&!keys.includes(v))keys.push(v)};Object.keys(p?.stock||{}).forEach(add);Object.values(p?.stockByColorSize||p?.variantStock||{}).forEach(row=>Object.keys(row||{}).forEach(add));return keys.length?keys:['XS','S','M','L','XL']}
+  function availableSizes(p){return productSizes(p).filter(x=>{const v=p.stock?.[x];if(typeof v==='number')return v>0;if(v&&typeof v==='object')return Object.values(v).some(n=>Number(n)>0);const matrix=p.stockByColorSize||p.variantStock||{};return Object.values(matrix||{}).some(row=>Number(row?.[x])>0)})}
+  async function load(force=false){if(catalogLoading)return catalogLoading;if(!force&&catalogLoadedAt&&Date.now()-catalogLoadedAt<30000){render();return products}catalogLoading=(async()=>{try{const remote=await window.graphicsPublicContent.catalog('products');products=Array.isArray(remote)&&remote.length?remote:local()}catch(e){products=local()}catalogLoadedAt=Date.now();render();return products})().finally(()=>{catalogLoading=null});return catalogLoading}
+  function makeCard(p){
+    const card=document.createElement('article');card.className='service-card';
+    const media=document.createElement('div');media.className='service-media';
+    const wish=document.createElement('button');wish.type='button';wish.className='rivenz-wishlist-btn';wish.setAttribute('aria-label','Add to wishlist');wish.setAttribute('aria-pressed','false');wish.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M20.84 8.72c0 5.34-8.84 10.1-8.84 10.1S3.16 14.06 3.16 8.72A4.72 4.72 0 0 1 12 6.2a4.72 4.72 0 0 1 8.84 2.52Z"/></svg>';
+    function syncWish(){const saved=readWishlist();const active=saved.some(x=>String(x.id)===String(p.id));wish.classList.toggle('active',active);wish.setAttribute('aria-pressed',String(active));wish.setAttribute('aria-label',active?'Remove from wishlist':'Add to wishlist')}
+    wish.onclick=(e)=>{e.preventDefault();e.stopPropagation();toggleWishlist(p);syncWish();};media.appendChild(wish);
+    const top=document.createElement('div');top.className='service-top';
+    const badge=document.createElement('span');badge.className='service-badge';badge.textContent=p.category||'RIVENZ CLOTHING';
+    const offer=document.createElement('span');offer.className='service-offer';offer.textContent=Number(p.offer||0)>0?'Offer':'New arrival';top.append(badge,offer);media.appendChild(top);
+    const placeholder=document.createElement('div');placeholder.className='service-placeholder';placeholder.textContent='Product image';media.appendChild(placeholder);
+    const img=document.createElement('img');img.alt=p.name||'RIVENZ product';img.loading='lazy';img.decoding='async';media.appendChild(img);
+    const body=document.createElement('div');body.className='service-body';
+    const title=document.createElement('h2');title.className='service-title';title.textContent=p.name||'RIVENZ Product';
+    const desc=document.createElement('p');desc.className='service-desc';desc.textContent=p.description||'A clean RIVENZ piece made for everyday wear.';
+    const meta=document.createElement('div');meta.className='product-meta';
+    const sizes=availableSizes(p);(sizes.length?sizes:['Out of stock']).slice(0,5).forEach(x=>{const m=document.createElement('span');m.textContent=x;meta.appendChild(m)});
+    const galleryCount=images(p).length;if(galleryCount>1){const m=document.createElement('span');m.textContent=galleryCount+' photos';meta.appendChild(m)}
+    const chips=document.createElement('div');chips.className='service-includes';(Array.isArray(p.colors)?p.colors:[]).slice(0,3).forEach(x=>{const c=document.createElement('span');c.className='service-chip';c.innerHTML='<i class="color-dot" style="background:'+esc(colorHex(p,x))+'"></i><span>'+esc(x)+'</span>';chips.appendChild(c)});
+    const price=document.createElement('div');price.className='service-price-row';if(Number(p.offer||0)>0&&Number(p.price||0)>0){const old=document.createElement('span');old.className='service-old';old.textContent=money(p.price);price.appendChild(old)}const nw=document.createElement('strong');nw.className='service-new';nw.textContent=money(Number(p.offer||0)>0?p.offer:p.price);price.appendChild(nw);
+    const actions=document.createElement('div');actions.className='service-actions';
+    const order=document.createElement('button');order.type='button';order.className='service-order';order.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 7h12l-1 12H7L6 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><span>'+(stockTotal(p)>0?'Order Now':'Out of Stock')+'</span>';if(stockTotal(p)<=0){order.classList.add('disabled');order.disabled=true}else order.onclick=()=>openDetails(p);
+    actions.appendChild(order);
+    body.append(title,desc,meta,chips,price,actions);card.append(media,body);
+    const ref=images(p)[0]?.url||'';if(ref){img.src=ref;img.onload=()=>{media.classList.add('loaded');placeholder.style.display='none'}}
+    syncWish();
+    return card;
+  }
+  function openDetails(p){
+    let modal=document.getElementById('rivenzProductModal');
+    if(!modal){
+      modal=document.createElement('div');modal.id='rivenzProductModal';modal.className='rivenz-product-modal';
+      modal.innerHTML='<div class="rivenz-product-sheet" role="dialog" aria-modal="true" aria-label="Product details"><button class="rivenz-close" id="rivenzProductClose" type="button" aria-label="Close">×</button><div class="rivenz-gallery"><div class="rivenz-main-image"><img id="rivenzMainImage" alt=""><button class="rivenz-gallery-arrow prev" id="rivenzPrev" type="button" aria-label="Previous image">‹</button><button class="rivenz-gallery-arrow next" id="rivenzNext" type="button" aria-label="Next image">›</button></div><div class="rivenz-thumbs" id="rivenzThumbs"></div><div class="rivenz-gallery-count" id="rivenzGalleryCount"></div></div><div class="rivenz-product-info" id="rivenzProductContent"></div></div>';
+      document.body.appendChild(modal);
+      modal.addEventListener('click',e=>{if(e.target===modal)closeModal()});document.getElementById('rivenzProductClose').onclick=closeModal;document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+    }
+    const imgs=images(p);let current=0;const main=document.getElementById('rivenzMainImage'),thumbs=document.getElementById('rivenzThumbs'),count=document.getElementById('rivenzGalleryCount');
+    function show(i){current=(i+imgs.length)%imgs.length;main.src=imgs[current]?.url||'';main.alt=p.name||'RIVENZ product';thumbs.querySelectorAll('.rivenz-thumb').forEach((b,j)=>b.classList.toggle('active',j===current));count.textContent=imgs.length>1?`${current+1} / ${imgs.length} photos`:''}
+    thumbs.innerHTML='';imgs.forEach((im,i)=>{const b=document.createElement('button');b.type='button';b.className='rivenz-thumb'+(i===0?' active':'');b.innerHTML='<img src="'+esc(im.url)+'" alt="" loading="lazy" decoding="async">';b.onclick=()=>show(i);thumbs.appendChild(b)});
+    document.getElementById('rivenzPrev').onclick=()=>show(current-1);document.getElementById('rivenzNext').onclick=()=>show(current+1);document.getElementById('rivenzPrev').style.display=imgs.length>1?'block':'none';document.getElementById('rivenzNext').style.display=imgs.length>1?'block':'none';
+    const sizesAll=productSizes(p);
+    const colors=Array.isArray(p.colors)?p.colors.filter(Boolean):[];
+    const price=Number(p.offer||0)>0?p.offer:p.price;
+    const sizeLabel={clothing:'Size','shoe-eu':'Shoe size · EU','shoe-uk':'Shoe size · UK','shoe-us':'Shoe size · US','one-size':'Size',custom:'Size'}[p.sizeType]||'Size';
+    const info=document.getElementById('rivenzProductContent');
+    info.innerHTML='<div class="rivenz-product-kicker">'+esc(p.category||'RIVENZ CLOTHING')+'</div><h2 class="rivenz-product-name">'+esc(p.name||'RIVENZ Product')+'</h2><p class="rivenz-product-description">'+esc(p.description||'A clean RIVENZ piece made for everyday wear.')+'</p><div><span class="rivenz-price">'+money(price)+'</span>'+(Number(p.offer||0)>0&&Number(p.price||0)>0?'<span class="rivenz-old-price">'+money(p.price)+'</span>':'')+'</div>';
+    function stockFor(size,color){
+      const matrix=p.stockByColorSize||p.variantStock||{};
+      if(color&&matrix[color]&&typeof matrix[color]==='object'&&Object.prototype.hasOwnProperty.call(matrix[color],size)) return Math.max(0,Number(matrix[color][size])||0);
+      const st=p.stock||{};
+      if(color && st[size] && typeof st[size]==='object') return Math.max(0,Number(st[size][color])||0);
+      if(color){const keys=[color+'__'+size,size+'__'+color,color+'/'+size,size+'/'+color];for(const k of keys)if(typeof st[k]==='number')return Math.max(0,Number(st[k])||0)}
+      return typeof st[size]==='number'?Math.max(0,Number(st[size])||0):0;
+    }
+    function sizesFor(color){return sizesAll.filter(sz=>stockFor(sz,color)>0 || (p.stock&&Object.prototype.hasOwnProperty.call(p.stock,sz) && typeof p.stock[sz]==='object'))}
+    let chosenColor=colors[0]||'';let chosenSize='';let qty=1;
+    if(colors.length){const lab=document.createElement('div');lab.className='rivenz-option-label';lab.textContent='Color';info.appendChild(lab);const wrap=document.createElement('div');wrap.className='rivenz-options';colors.forEach((c,i)=>{const b=document.createElement('button');b.type='button';b.className='rivenz-color'+(i===0?' selected':'');b.innerHTML='<i class="color-dot" style="background:'+esc(colorHex(p,c))+'"></i><span>'+esc(c)+'</span>';b.setAttribute('aria-label','Color '+c);b.onclick=()=>{chosenColor=c;wrap.querySelectorAll('.rivenz-color').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');renderSizes();updateActions()};wrap.appendChild(b)});info.appendChild(wrap)}
+    const lab=document.createElement('div');lab.className='rivenz-option-label';lab.textContent=sizeLabel;info.appendChild(lab);const sw=document.createElement('div');sw.className='rivenz-options';info.appendChild(sw);
+    const stock=document.createElement('div');stock.className='rivenz-stock-note';info.appendChild(stock);
+    function renderSizes(){const available=sizesFor(chosenColor);if(!available.includes(chosenSize))chosenSize=available[0]||'';sw.innerHTML='';sizesAll.forEach(sz=>{const b=document.createElement('button');b.type='button';b.className='rivenz-size'+(sz===chosenSize?' selected':'');b.textContent=sz;b.disabled=!available.includes(sz);b.onclick=()=>{chosenSize=sz;qty=1;sw.querySelectorAll('.rivenz-size').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');updateActions()};sw.appendChild(b)});updateActions()}
+    const qtyWrap=document.createElement('div');qtyWrap.className='rivenz-qty-wrap';qtyWrap.innerHTML='<div class="rivenz-option-label">Quantity</div><div class="rivenz-qty"><button type="button" id="rivenzQtyMinus" aria-label="Decrease quantity">−</button><span id="rivenzQtyValue">1</span><button type="button" id="rivenzQtyPlus" aria-label="Increase quantity">+</button></div>';info.appendChild(qtyWrap);
+    const details=document.createElement('div');details.className='rivenz-detail-block';details.innerHTML='<strong>Product details</strong><p>Choose your color, size and quantity, then place the order or add this piece to your cart.</p>'+(p.sku?'<p>SKU: '+esc(p.sku)+'</p>':'');info.appendChild(details);
+    const add=document.createElement('div');add.className='rivenz-add';add.innerHTML='<div class="rivenz-modal-actions"><button type="button" class="rivenz-modal-cart" id="rivenzAddCart">🛒 Add to Cart</button><a id="rivenzOrderNow" class="rivenz-modal-order" href="#">⚡ Order Now</a></div>';info.appendChild(add);
+    const qtyEl=()=>document.getElementById('rivenzQtyValue');
+    function updateActions(){const available=stockFor(chosenSize,chosenColor);if(!chosenSize&&sizesFor(chosenColor).length)chosenSize=sizesFor(chosenColor)[0];const current=stockFor(chosenSize,chosenColor);if(qty>Math.max(1,current))qty=Math.max(1,current);qtyEl().textContent=qty;stock.innerHTML=current>0?'<strong>'+current+' units</strong> available'+(chosenColor?' · '+esc(chosenColor):''):'<strong>Unavailable</strong> for this selection';const can=!!chosenSize&&current>0;const orderBtn=document.getElementById('rivenzOrderNow'),cartBtn=document.getElementById('rivenzAddCart');orderBtn.classList.toggle('disabled',!can);cartBtn.disabled=!can;orderBtn.href=can?'order.html?product='+encodeURIComponent(p.id)+'&color='+encodeURIComponent(chosenColor)+'&size='+encodeURIComponent(chosenSize)+'&quantity='+encodeURIComponent(qty):'#';document.getElementById('rivenzQtyMinus').disabled=qty<=1;document.getElementById('rivenzQtyPlus').disabled=!can||qty>=current}
+    document.getElementById('rivenzQtyMinus').onclick=()=>{if(qty>1){qty--;updateActions()}};document.getElementById('rivenzQtyPlus').onclick=()=>{const current=stockFor(chosenSize,chosenColor);if(qty<current){qty++;updateActions()}};
+    document.getElementById('rivenzAddCart').onclick=()=>{const current=stockFor(chosenSize,chosenColor);if(!chosenSize||current<1)return;let items=[];try{items=JSON.parse(localStorage.getItem('rivenzCartV1')||'[]')}catch(e){}if(!Array.isArray(items))items=[];const key=[p.id,chosenSize,chosenColor].join('|'),item=items.find(x=>x.key===key);if(item)item.quantity=Math.min(current,Number(item.quantity||0)+qty);else items.push({key,productId:p.id,name:p.name||'RIVENZ Product',image:imgs[0]?.url||'',size:chosenSize,color:chosenColor,quantity:qty,price:Number(price||0)});localStorage.setItem('rivenzCartV1',JSON.stringify(items));updateRivenzCartCount();const cartButton=document.getElementById('rivenzAddCart');cartButton.textContent='✓ Added to Cart';setTimeout(()=>{cartButton.textContent='🛒 Add to Cart'},1300)};
+    renderSizes();
+    show(0);modal.classList.add('open');document.body.style.overflow='hidden';
+    const mainWrap=document.querySelector('.rivenz-main-image');let sx=0,sy=0;mainWrap.ontouchstart=e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY};mainWrap.ontouchend=e=>{const dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy)){show(current+(dx<0?1:-1))}};
+  }
+  function closeModal(){const m=document.getElementById('rivenzProductModal');if(m){m.classList.remove('open');document.body.style.overflow=''}}
+  function matchesCategory(p){
+    const c=String(p?.category||'').toLowerCase();
+    if(selectedCategory==='all') return true;
+    if(selectedCategory==='accessories') return c==='accessories'||c.indexOf('accessories-')===0;
+    if(selectedCategory==='mens'||selectedCategory==='ladies') return c===selectedCategory||c==='unisex';
+    return c===selectedCategory;
+  }
+  function matchesSubcategory(p){
+    if(selectedCategory!=='accessories'||selectedSubcategory==='accessories') return true;
+    return String(p?.category||'').toLowerCase()===selectedSubcategory;
+  }
+  function syncFilterUI(){
+    filters?.querySelectorAll('[data-category]').forEach(b=>b.classList.toggle('active',b.dataset.category===selectedCategory));
+    subFilters?.classList.toggle('show',selectedCategory==='accessories');
+    subFilters?.querySelectorAll('[data-subcategory]').forEach(b=>b.classList.toggle('active',b.dataset.subcategory===selectedSubcategory));
+  }
+  function setCategory(value){
+    selectedCategory=value;
+    if(value!=='accessories') selectedSubcategory='accessories';
+    syncFilterUI();render();
+    const url=new URL(location.href); if(value==='all') url.searchParams.delete('category'); else url.searchParams.set('category',value); url.searchParams.delete('subcategory'); if(value==='accessories'&&selectedSubcategory!=='accessories') url.searchParams.set('subcategory',selectedSubcategory); history.replaceState({},'',url);
+  }
+  function setSubcategory(value){
+    selectedSubcategory=value;syncFilterUI();render();
+    const url=new URL(location.href); if(value==='accessories') url.searchParams.delete('subcategory'); else url.searchParams.set('subcategory',value); history.replaceState({},'',url);
+  }
+  filters?.addEventListener('click',e=>{const b=e.target.closest('[data-category]');if(b)setCategory(b.dataset.category)});
+  subFilters?.addEventListener('click',e=>{const b=e.target.closest('[data-subcategory]');if(b)setSubcategory(b.dataset.subcategory)});
+  function render(){
+    const list=products.filter(x=>x&&x.active!==false&&matchesCategory(x)&&matchesSubcategory(x));
+    if(!list.length){grid.innerHTML='<div class="empty-state"><strong>No products in this category yet.</strong><span>Add active RIVENZ products from the Admin side and they will appear here automatically.</span></div>';return}
+    const frag=document.createDocumentFragment();list.forEach(p=>frag.appendChild(makeCard(p)));grid.replaceChildren(frag);
+  }
+  syncFilterUI();
+  async function loadAndOpen(){
+    await load();
+    if(initialProductId){
+      const target=products.find(x=>x&&x.active!==false&&String(x.id)===String(initialProductId));
+      if(target) openDetails(target);
+    }
+  }
+  loadAndOpen();window.addEventListener('focus',()=>load(false));
+})();
+</script>
+<script>
+function updateRivenzCartCount(){try{const items=JSON.parse(localStorage.getItem('rivenzCartV1')||'[]');const n=Array.isArray(items)?items.reduce((sum,x)=>sum+Math.max(0,Number(x.quantity)||0),0):0;const el=document.getElementById('cartCount');if(el)el.textContent=n||'';}catch(e){}}
+updateRivenzCartCount();window.addEventListener('storage',updateRivenzCartCount);
+const homeToggle=document.querySelector('.home-menu-toggle'),homeNav=document.querySelector('.home-nav');
+if(homeToggle&&homeNav){homeToggle.addEventListener('click',()=>{const open=homeNav.classList.toggle('open');homeToggle.setAttribute('aria-expanded',open)});homeNav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>homeNav.classList.remove('open')))}
+</script>
+<script type="module" src="session-nav.js"></script>
+</body>
+</html>

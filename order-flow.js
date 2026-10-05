@@ -1,0 +1,263 @@
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
+import { collection, doc, getDoc, getDocs, query, orderBy, limit, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+import { app, db } from "./firebase-config.js";
+
+const auth = getAuth(app);
+const KEY = "graphicsOrders";
+const NOTIFY = "graphicsNotifications";
+const FILE_API = window.GRAPHICS_FILE_API || "https://graphics-file-api.danidusankalpa56.workers.dev";
+const fileUrlCache = new Map();
+
+function read(key, fallback){ try{return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback));}catch(e){return fallback;} }
+function write(key,value){ localStorage.setItem(key,JSON.stringify(value)); window.dispatchEvent(new Event("graphics-data")); }
+function session(){ return auth.currentUser || null; }
+
+async function account(){
+  const user=auth.currentUser; if(!user) return null;
+  try{const snap=await getDoc(doc(db,"clients",user.uid)); const profile=snap.exists()?snap.data():{}; return {uid:user.uid,email:profile.email||user.email||"",name:profile.name||user.displayName||"",phone:profile.phone||""};}
+  catch(e){return {uid:user.uid,email:user.email||"",name:user.displayName||"",phone:""};}
+}
+
+async function withTimeout(promise, ms, label){
+  let timer;
+  const timeout=new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error(label+" timed out after "+Math.round(ms/1000)+" seconds.")),ms);});
+  try{return await Promise.race([promise,timeout]);} finally{clearTimeout(timer);}
+}
+
+async function getIdToken(forceRefresh=false){
+  const user=auth.currentUser;
+  if(!user) throw new Error("AUTH_REQUIRED");
+  return user.getIdToken(forceRefresh);
+}
+
+async function newId(){
+  const year=new Date().getFullYear();
+  try{
+    const snap=await withTimeout(getDocs(query(collection(db,"orders"),orderBy("sequence","desc"),limit(1))),12000,"Firebase order-number request");
+    let last=0; if(!snap.empty) last=Number(snap.docs[0].data().sequence||0);
+    const next=last+1; return {id:`GLK-${year}-${String(next).padStart(4,"0")}`,sequence:next};
+  }catch(e){
+    console.warn("Firebase order number unavailable; using local sequence.",e);
+    const local=read(KEY,[]); const nums=local.map(o=>parseInt(String(o.id||"").split("-").pop(),10)).filter(Number.isFinite); const next=Math.max(0,...nums)+1;
+    return {id:`GLK-${year}-${String(next).padStart(4,"0")}`,sequence:next};
+  }
+}
+
+function safeHeaderName(name){return String(name||"file").replace(/[^a-zA-Z0-9._-]/g,"_").slice(0,180)||"file";}
+
+async function uploadOrderFile(orderId,file,folder="client"){
+  if(!file) throw new Error("FILE_REQUIRED");
+  if(file.size>50*1024*1024) throw new Error("FILE_TOO_LARGE");
+  const token=await getIdToken();
+  async function send(targetFolder){
+    const response=await withTimeout(fetch(FILE_API+"/upload",{
+      method:"POST",
+      headers:{
+        Authorization:"Bearer "+token,
+        "X-Order-Id":String(orderId),
+        "X-Folder":String(targetFolder),
+        "X-File-Name":safeHeaderName(file.name),
+        "X-File-Type":file.type||"application/octet-stream",
+        "X-File-Size":String(file.size||0),
+        "Content-Type":file.type||"application/octet-stream"
+      },
+      body:file
+    }), 120000, "Cloudflare R2 upload");
+    let data=null;
+    try{data=await response.json();}catch(e){}
+    if(!response.ok||!data?.ok){
+      const error=new Error(data?.error||("R2 upload failed (HTTP "+response.status+")"));
+      error.status=response.status;
+      throw error;
+    }
+    return {path:data.path,name:data.name||file.name,type:data.type||file.type||"",size:Number(data.size||file.size||0),url:data.url||"",storage:"r2",folder:targetFolder};
+  }
+  try{
+    return await send(folder);
+  }catch(error){
+    if(error?.status===401){
+      try{
+        await getIdToken(true);
+        return await send(folder);
+      }catch(refreshError){ error=refreshError; }
+    }
+    if(String(folder)==="payment"){
+      console.warn("Payment upload path unavailable; retrying with the existing private client folder.",error);
+      try{return await send("client");}catch(clientError){
+        if(clientError?.status===401){await getIdToken(true);return await send("client");}
+        throw clientError;
+      }
+    }
+    throw error;
+  }
+}
+
+async function fileUrl(ref){
+  if(!ref) return "";
+  const raw=typeof ref==="string"?ref:"";
+  const value=typeof ref==="string"?{path:ref}:ref;
+  if(raw && /^https?:/i.test(raw)){
+    try{
+      const u=new URL(raw);
+      if(u.pathname==="/file" && u.searchParams.get("key")){
+        value.path=u.searchParams.get("key");
+        value.storage="r2";
+      }else if(u.pathname==="/public/file") return raw;
+      else return raw;
+    }catch(e){return raw;}
+  }
+  if(value?.url && /^https?:/i.test(String(value.url)) && value?.storage!=="r2") return value.url;
+  if(value?.storage==="r2" && value?.url){
+    try{
+      const u=new URL(value.url);
+      if(u.pathname==="/file" && u.searchParams.get("key")) value.path=u.searchParams.get("key");
+      else if(u.pathname==="/public/file") return value.url;
+    }catch(e){}
+  }
+  const path=value?.path||value?.key||((typeof ref==="string"&&ref.startsWith("users/"))?ref:"");
+  if(!path) return "";
+  if(fileUrlCache.has(path)) return fileUrlCache.get(path);
+  const token=await getIdToken();
+  const response=await withTimeout(fetch(FILE_API+"/file?key="+encodeURIComponent(path),{headers:{Authorization:"Bearer "+token}}),30000,"Cloudflare R2 file request");
+  if(!response.ok){
+    if(response.status===401){
+      const fresh=await getIdToken(true);
+      const retry=await withTimeout(fetch(FILE_API+"/file?key="+encodeURIComponent(path),{headers:{Authorization:"Bearer "+fresh}}),30000,"Cloudflare R2 file retry");
+      if(!retry.ok) throw new Error("FILE_ACCESS_DENIED");
+      const blob=await retry.blob(); const url=URL.createObjectURL(blob); fileUrlCache.set(path,url); return url;
+    }
+    throw new Error("FILE_NOT_FOUND");
+  }
+  const blob=await response.blob();
+  const url=URL.createObjectURL(blob);
+  fileUrlCache.set(path,url);
+  return url;
+}
+
+async function save(order){
+  const user=auth.currentUser; if(!user) throw new Error("AUTH_REQUIRED");
+  const ownerUid=order.uid||user.uid;
+  const payload={...order,uid:ownerUid,email:order.email||user.email||"",updatedAt:serverTimestamp()};
+  if(!order.createdAt) payload.createdAt=serverTimestamp();
+  await withTimeout(setDoc(doc(db,"orders",order.id),payload,{merge:true}),15000,"Firestore order save");
+  const local=read(KEY,[]); const i=local.findIndex(x=>x.id===order.id);
+  const cache={...order,uid:ownerUid}; if(i>=0) local[i]={...local[i],...cache}; else local.push(cache);
+  write(KEY,local); write("graphicsOrder_"+order.id,cache); return cache;
+}
+
+async function adminGet(orderId){
+  try{const snap=await getDoc(doc(db,"orders",orderId)); return snap.exists()?{id:snap.id,...snap.data()}:null;}catch(e){console.warn("Firebase admin order read failed:",e); return read(KEY,[]).find(o=>o.id===orderId)||null;}
+}
+
+async function get(orderId){
+  const user=auth.currentUser; if(!user) return null;
+  try{
+    const snap=await getDoc(doc(db,"orders",orderId));
+    if(snap.exists()){
+      const data={id:snap.id,...snap.data()};
+      if(data.uid && data.uid!==user.uid) return null;
+      return data;
+    }
+  }catch(e){console.warn("Firebase order read failed:",e);}
+  const local=read(KEY,[]); const found=local.find(x=>x.id===orderId);
+  if(found && found.uid && found.uid!==user.uid) return null;
+  return found||null;
+}
+
+async function orders(){
+  const user=auth.currentUser; if(!user) return [];
+  try{
+    // Avoid an orderBy query here: older orders can contain mixed timestamp/string
+    // values and that can make the whole customer query fail. Read the collection
+    // and sort client-side so status/notification updates are always visible.
+    const snap=await withTimeout(getDocs(collection(db,"orders")),15000,"Firebase customer orders request");
+    const list=snap.docs.map(d=>({id:d.id,...d.data()})).filter(o=>
+      String(o.uid||"")===String(user.uid) || (!o.uid && String(o.email||"").toLowerCase()===String(user.email||"").toLowerCase())
+    );
+    const stamp=v=>v?.toMillis?v.toMillis():typeof v==="number"?v:Date.parse(String(v||""))||0;
+    return list.sort((a,b)=>stamp(b.updatedAt||b.createdAt)-stamp(a.updatedAt||a.createdAt));
+  }catch(e){
+    console.warn("Firebase orders read failed:",e);
+    const local=read(KEY,[]).filter(o=>String(o.uid||"")===String(user.uid)||(!o.uid&&String(o.email||"").toLowerCase()===String(user.email||"").toLowerCase()));
+    const stamp=v=>v?.toMillis?v.toMillis():typeof v==="number"?v:Date.parse(String(v||""))||0;
+    return local.sort((a,b)=>stamp(b.updatedAt||b.createdAt)-stamp(a.updatedAt||a.createdAt));
+  }
+}
+
+async function adminOrders(){
+  // Admin view must show both Firestore orders and the local cache used by
+  // older orders. Never let a Firestore permission/index problem hide orders
+  // that are already available locally.
+  let remote=[];
+  try{
+    const snap=await withTimeout(getDocs(collection(db,"orders")),15000,"Firebase admin orders request");
+    remote=snap.docs.map(d=>({id:d.id,...d.data()}));
+  }catch(e){
+    console.warn("Firebase admin order read failed:",e);
+  }
+
+  const local=read(KEY,[]);
+  const merged=new Map();
+  for(const item of local) if(item?.id) merged.set(item.id,item);
+  for(const item of remote) if(item?.id) merged.set(item.id,{...(merged.get(item.id)||{}),...item});
+
+  const list=[...merged.values()];
+  list.sort((a,b)=>{
+    const stamp=value=>{
+      if(value?.toMillis) return value.toMillis();
+      if(value instanceof Date) return value.getTime();
+      if(typeof value==="number") return value;
+      const parsed=Date.parse(String(value||""));
+      return Number.isFinite(parsed)?parsed:0;
+    };
+    return stamp(b.updatedAt||b.createdAt)-stamp(a.updatedAt||a.createdAt);
+  });
+  return list;
+}
+
+async function notify(order,message){
+  const user=auth.currentUser;
+  const item={client:order.email||user?.email||"",clientName:order.client||"",uid:order.uid||user?.uid||"",orderId:order.id,message,time:new Date().toLocaleString()};
+  let remoteSaved=false;
+  try{
+    await setDoc(doc(db,"orders",order.id,"notifications",String(Date.now())),{...item,createdAt:serverTimestamp()});
+    remoteSaved=true;
+  }catch(e){console.warn("Notification subcollection save failed:",e);}
+  // Keep a notification on the order itself as a reliable fallback. The customer
+  // already has permission to read their own order, so this avoids losing status
+  // updates when subcollection notification rules are stricter.
+  try{
+    await setDoc(doc(db,"orders",order.id),{lastNotification:{...item,createdAt:serverTimestamp()}},{merge:true});
+    remoteSaved=true;
+  }catch(e){console.warn("Order notification fallback save failed:",e);}
+  const notifications=read(NOTIFY,[]); notifications.push(item); write(NOTIFY,notifications);
+  return remoteSaved;
+}
+
+async function notifications(orderList=[]){
+  const user=auth.currentUser;
+  if(!user) return [];
+  const orders=Array.isArray(orderList)?orderList:[];
+  const merged=new Map();
+  // The order document is the canonical notification source. This avoids a
+  // separate subcollection permission/index problem and guarantees that the
+  // customer sees the same update that was written with the order status.
+  orders.forEach(o=>{
+    const n=o?.lastNotification;
+    if(n && String(n.uid||o.uid||"")===String(user.uid)){
+      const key=String(o.id||"");
+      merged.set(key,{id:'order-'+key,orderId:o.id,...n});
+    }
+  });
+  const local=read(NOTIFY,[]).filter(n=>String(n?.uid||"")===String(user.uid)).map((n,i)=>({...n,id:n.id||'local-'+i}));
+  const remote=[...merged.values()];
+  const all=[...remote,...local];
+  const stamp=v=>v?.toMillis?v.toMillis():typeof v==="number"?v:Date.parse(String(v||""))||0;
+  return all.sort((a,b)=>stamp(b.createdAt||b.time)-stamp(a.createdAt||a.time)).slice(0,12);
+}
+let resolveReady; const ready=new Promise(resolve=>resolveReady=resolve);
+onAuthStateChanged(auth,user=>{resolveReady(user); window.dispatchEvent(new CustomEvent("graphics-auth-ready",{detail:{user}}));});
+
+window.graphicsOrderFlow={read,write,session,account,save,get,adminGet,orders,adminOrders,notify,newId,uploadOrderFile,fileUrl,ready};
+window.graphicsOrderFlowReady=ready;
+window.dispatchEvent(new Event("graphics-order-flow-ready"));

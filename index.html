@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RIVENZ — Clothing & Fashion</title>
+  <meta name="description" content="RIVENZ — modern clothing, everyday essentials and new fashion collections.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="home.css">
+<style>
+/* Targeted fix: dark home action buttons must always show readable text. */
+.view-all{color:#fff!important;background:#111316!important;border-color:#111316!important;min-width:132px;justify-content:center;text-shadow:none!important;opacity:1!important}
+.view-all b{color:#fff!important;opacity:1!important}
+#work-preview .view-all{color:#fff!important;background:#111316!important;border-color:#111316!important}
+</style>
+</head>
+<body class="home-page page-ready">
+  <header class="home-header">
+    <div class="home-nav-wrap">
+      <a class="home-brand" href="index.html" aria-label="RIVENZ home">
+        <img src="logo.png" alt="RIVENZ">
+      </a>
+      <button class="home-menu-toggle" type="button" aria-label="Open menu" aria-expanded="false">☰</button>
+      <nav class="home-nav nav">
+        <a class="active" href="index.html">Home</a>
+        <a href="services.html">Shop</a>
+        <a href="portfolio.html">Collections</a>
+        <a href="weddings.html">Offers</a>
+        <a href="#contact">Contact</a>
+        <a class="nav-login home-login" href="auth.html">Login</a>
+        <a href="dashboard.html">My Account</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- HOME / HERO -->
+    <section class="home-hero home-shell" id="homeHero">
+      <div class="hero-content">
+        <div class="soft-pill"><span></span> <span id="homeHeroPillText">RIVENZ CLOTHING</span></div>
+        <h1><span id="homeHeroLine1">Everyday style.</span><br><span id="homeHeroLine2">Made for you.</span><br><span id="homeHeroLine3">Made to stand out.</span></h1>
+        <p id="homeHeroDescription">Discover clean, modern clothing made for everyday life. Explore new drops, timeless essentials and pieces that fit your style.</p>
+        <div class="hero-buttons">
+          <a class="home-btn dark" href="services.html"><span id="homePrimaryButton">Shop Now</span> <b>→</b></a>
+          <a class="home-btn light" href="#collections"><span id="homeSecondaryButton">Explore Collection</span> <b>→</b></a>
+        </div>
+        <div class="hero-trust">
+          <div><i>✦</i><span><strong>Quality Pieces</strong><small>Made to be worn</small></span></div>
+          <div><i>◇</i><span><strong>Easy Shopping</strong><small>Simple online checkout</small></span></div>
+          <div><i>◌</i><span><strong>Islandwide Delivery</strong><small>Delivered to your door</small></span></div>
+        </div>
+      </div>
+
+      <div class="hero-showcase" aria-label="Design showcase">
+        <div class="hero-art-bg"></div>
+        <div class="hero-art-main">
+          <div class="art-topline"><span>RIVENZ</span><span>NEW COLLECTION</span></div>
+          <div class="art-title">Wear<br><span>your style.</span></div>
+          <div class="art-sub">Minimal pieces. Strong identity. Everyday confidence.</div>
+          <div class="art-shape shape-a"></div>
+          <div class="art-shape shape-b"></div>
+          <div class="art-shape shape-c"></div>
+        </div>
+        <div class="float-card float-brand"><span class="float-icon">✦</span><span><b>New Drop</b><small>Fresh arrivals</small></span><em>→</em></div>
+        <div class="float-card float-social"><span class="float-thumb" id="heroWorkThumb"></span><span><b>Essentials</b><small>Everyday wear</small></span><em>→</em></div>
+        <div class="client-chip"><span class="avatars"><i></i><i></i><i></i></span><b>RIVENZ</b><span>Wear it your way</span></div>
+      </div>
+    </section>
+
+    <!-- SHOP PREVIEW -->
+    <section class="home-section home-shell" id="shop-preview" data-home-section="shop">
+      <div class="home-section-head">
+        <div>
+          <span class="section-kicker">• Shop by Category</span>
+          <h2>Find your everyday style</h2>
+          <p>Shop Men's, Ladies, Kids and Accessories from one simple place.</p>
+        </div>
+        <a class="view-all" href="services.html">Shop All <b>→</b></a>
+      </div>
+      <div class="home-service-grid" id="homeServices">
+        <a class="service-home-card" data-home-category="mens" href="services.html?category=mens"><div class="service-image"><span class="service-number">01</span></div><div class="service-body"><div><h3>Men's</h3><p>Clean everyday pieces made for modern style.</p></div><b>Shop Men's →</b></div></a>
+        <a class="service-home-card" data-home-category="ladies" href="services.html?category=ladies"><div class="service-image"><span class="service-number">02</span></div><div class="service-body"><div><h3>Ladies</h3><p>Easy silhouettes and versatile looks for every day.</p></div><b>Shop Ladies →</b></div></a>
+        <a class="service-home-card" data-home-category="kids" href="services.html?category=kids"><div class="service-image"><span class="service-number">03</span></div><div class="service-body"><div><h3>Kids</h3><p>Comfortable everyday styles made for kids.</p></div><b>Shop Kids →</b></div></a>
+        <a class="service-home-card" data-home-category="accessories" href="services.html?category=accessories"><div class="service-image"><span class="service-number">04</span></div><div class="service-body"><div><h3>Accessories</h3><p>Finishing pieces for Men's, Ladies and Kids.</p></div><b>Shop Accessories →</b></div></a>
+      </div>
+    </section>
+
+    <!-- COLLECTIONS -->
+    <section class="home-section home-shell" id="collections" data-home-section="collections">
+      <div class="home-section-head">
+        <div>
+          <span class="section-kicker">• Collections</span>
+          <h2>Find your everyday style</h2>
+          <p>Explore collections built around simple silhouettes, easy colours and confident everyday looks.</p>
+        </div>
+        <a class="view-all" href="portfolio.html">View Collections <b>→</b></a>
+      </div>
+      <div class="home-work-grid" id="homeWork">
+        <div class="work-home-card" data-home-collection="new-drop"><div><span>RIVENZ</span><b>New Drop</b></div></div>
+        <div class="work-home-card" data-home-collection="essentials"><div><span>RIVENZ</span><b>Everyday Essentials</b></div></div>
+        <div class="work-home-card" data-home-collection="weekend"><div><span>RIVENZ</span><b>Weekend Edit</b></div></div>
+        <div class="work-home-card" data-home-collection="offers"><div><span>RIVENZ</span><b>Special Offers</b></div></div>
+      </div>
+    </section>
+
+    <!-- BRAND PROMO -->
+    <section class="invite-section home-shell" id="offers-preview" data-home-section="promo">
+      <div class="invite-copy">
+        <span class="section-kicker">• RIVENZ Essentials</span>
+        <h2 id="homePromoTitle">Simple pieces.<br>Strong style.</h2>
+        <p id="homePromoText">Build your wardrobe with clean, comfortable pieces designed to work together and last beyond one season.</p>
+        <div class="hero-buttons">
+          <a class="home-btn dark" href="portfolio.html">View Collections <b>→</b></a>
+          <a class="home-btn light" href="weddings.html">View Offers <b>→</b></a>
+        </div>
+      </div>
+      <div class="invite-visual" id="homeInvites">
+        <div class="invite-paper">
+          <span>RIVENZ</span><strong>ESSENTIALS</strong><small>Modern everyday wear<br>made for your style.</small>
+        </div>
+        <div class="invite-flower flower-one"></div><div class="invite-flower flower-two"></div>
+        <div class="invite-tag">New Collection</div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="home-section home-shell process-section" data-home-section="process">
+      <div class="home-section-head single">
+        <div>
+          <span class="section-kicker">• How It Works</span>
+          <h2>Simple shopping in 4 steps</h2>
+        </div>
+      </div>
+      <div class="process-grid">
+        <div class="process-card"><span>01</span><i>⌕</i><h3>Choose Your Style</h3><p>Browse products, sizes and colours to find what fits you.</p></div>
+        <div class="process-card"><span>02</span><i>＋</i><h3>Add to Cart</h3><p>Select your size, colour and quantity, then add it to your cart.</p></div>
+        <div class="process-card"><span>03</span><i>✓</i><h3>Checkout & Pay</h3><p>Enter your delivery details and complete your order payment.</p></div>
+        <div class="process-card"><span>04</span><i>↓</i><h3>Track Your Order</h3><p>Follow your order from confirmation to delivery.</p></div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="home-contact home-shell" id="contact" data-home-section="contact">
+      <div><span class="section-kicker">• Need Help?</span><h2 id="homeContactTitle">Questions about your order?</h2><p>We are here to help with sizes, products, delivery and anything else you need.</p></div>
+      <a class="home-btn dark" href="https://wa.me/94753443030" target="_blank" rel="noopener">Chat with RIVENZ <b>→</b></a>
+    </section>
+  </main>
+
+  <footer class="home-footer home-shell">
+    <div><img src="logo.png" alt="RIVENZ"><small>© 2026 RIVENZ. All rights reserved.</small></div>
+    <nav><a href="index.html">Home</a><a href="services.html">Shop</a><a href="portfolio.html">Collections</a><a href="weddings.html">Offers</a><a href="#contact">Contact</a></nav>
+    <span>Modern clothing for everyday style.</span>
+  </footer>
+
+  <script src="file-store.js"></script>
+  <script src="public-content.js"></script>
+  <script src="script.js"></script>
+  <script type="module" src="session-nav.js"></script>
+  <script>
+    (function(){
+      const KEY='rivenzHomeSettingsV1';
+      const DEFAULT={heroPill:'RIVENZ CLOTHING',heroLine1:'Everyday style.',heroLine2:'Made for you.',heroLine3:'Made to stand out.',heroDescription:'Discover clean, modern clothing made for everyday life. Explore new drops, timeless essentials and pieces that fit your style.',primaryButton:'Shop Now',secondaryButton:'Explore Collection',promoTitle:'Simple pieces. Strong style.',promoText:'Build your wardrobe with clean, comfortable pieces designed to work together and last beyond one season.',contactTitle:'Questions about your order?',showShop:true,showCollections:true,showPromo:true,showProcess:true,showContact:true};
+      let s=DEFAULT;try{const x=JSON.parse(localStorage.getItem(KEY)||'null');if(x&&typeof x==='object')s={...DEFAULT,...x}}catch(e){}
+      const text=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v||''};
+      text('homeHeroPillText',s.heroPill);text('homeHeroLine1',s.heroLine1);text('homeHeroLine2',s.heroLine2);text('homeHeroLine3',s.heroLine3);text('homeHeroDescription',s.heroDescription);text('homePrimaryButton',s.primaryButton);text('homeSecondaryButton',s.secondaryButton);text('homePromoText',s.promoText);text('homeContactTitle',s.contactTitle);
+      const promo=document.getElementById('homePromoTitle');if(promo){promo.textContent=s.promoTitle||'';promo.style.whiteSpace='pre-line'}
+      const sections={shop:!!s.showShop,collections:!!s.showCollections,promo:!!s.showPromo,process:!!s.showProcess,contact:!!s.showContact};
+      document.querySelectorAll('[data-home-section]').forEach(el=>{const key=el.dataset.homeSection;if(key in sections)el.hidden=!sections[key]});
+    })();
+  </script>
+  <script>
+    (() => {
+      const cards=document.querySelectorAll('[data-home-category]');
+      if(!cards.length) return;
+      const key='rivenzAdminProductsV1';
+      const read=()=>{try{const x=JSON.parse(localStorage.getItem(key)||'[]');return Array.isArray(x)?x:[]}catch(e){return []}};
+      const imgs=p=>{const a=Array.isArray(p?.images)?p.images:[];return (a.find(x=>x&&x.url)?.url)||(p?.image?.url)||''};
+      const apply=list=>{cards.forEach(card=>{const cat=card.dataset.homeCategory;const p=list.find(x=>x&&x.active!==false&&String(x.category||'').toLowerCase()===cat&&imgs(x));if(p){const url=imgs(p).replace(/\"/g,'\\\"');card.querySelector('.service-image')?.style.setProperty('--card-image',`url("${url}")`);}})};
+      apply(read());
+      try{const api=window.graphicsPublicContent?.catalog?.('products');if(api&&typeof api.then==='function')api.then(x=>apply(Array.isArray(x)?x:[])).catch(()=>{});else if(Array.isArray(api))apply(api)}catch(e){}
+    })();
+  </script>
+  <script>
+    (() => {
+      const cards=document.querySelectorAll('[data-home-collection]');
+      if(!cards.length) return;
+      const key='rivenzAdminProductsV1', settingsKey='rivenzHomeSettingsV1';
+      const read=()=>{try{const x=JSON.parse(localStorage.getItem(key)||'[]');return Array.isArray(x)?x:[]}catch(e){return []}};
+      const settings=()=>{try{const x=JSON.parse(localStorage.getItem(settingsKey)||'null');return x&&typeof x==='object'?x:{}}catch(e){return {}}};
+      const imageOf=p=>{const a=Array.isArray(p?.images)?p.images:[];return (a.find(x=>x&&x.url)?.url)||(p?.image?.url)||''};
+      const active=list=>list.filter(x=>x&&x.active!==false&&imageOf(x));
+      const price=x=>Number(x?.price||0), offer=x=>Number(x?.offer||0);
+      const idOf=x=>String(x?.id||x?.sku||'');
+      const merge=(remote,local)=>{const out=[],seen=new Set();[...(Array.isArray(remote)?remote:[]),...(Array.isArray(local)?local:[])].forEach(p=>{const id=idOf(p);if(!id||seen.has(id))return;seen.add(id);out.push(p)});return out};
+      const fallback=(list,type)=>{if(type==='new-drop')return list.find(x=>x?.newArrival===true)||list[0];if(type==='essentials')return list.find(x=>x?.featured===true)||list[0];if(type==='offers')return list.find(x=>offer(x)>0&&offer(x)<price(x));return list.find(x=>x?.newArrival!==true&&!(offer(x)>0&&offer(x)<price(x)))||list[1]||list[0]};
+      const apply=list=>{const items=active(list),cp=settings().collectionProducts||{};cards.forEach(card=>{const type=card.dataset.homeCollection;const selected=String(type==='new-drop'?cp.newDrop:type==='essentials'?cp.essentials:type==='weekend'?cp.weekend:type==='offers'?cp.offers:'');const p=(selected&&items.find(x=>idOf(x)===selected))||fallback(items,type);if(!p)return;const url=imageOf(p);if(!url)return;const safe=url.replace(/"/g,'\"');card.style.setProperty('--card-image',`url("${safe}")`);card.style.backgroundImage=`linear-gradient(180deg,rgba(0,0,0,.02),rgba(0,0,0,.5)),url("${safe}")`;card.style.backgroundSize='cover';card.style.backgroundPosition='center';card.setAttribute('data-product-source',idOf(p))})};
+      const local=read();
+      apply(local);
+      (async()=>{try{const api=window.graphicsPublicContent?.catalog;if(typeof api!=='function')return;const remote=await api('products');apply(merge(remote,local))}catch(e){}})();
+    })();
+  </script>
+  <script>
+    (() => {
+      const btn=document.querySelector('.home-menu-toggle');
+      const nav=document.querySelector('.home-nav');
+      if(btn&&nav){btn.addEventListener('click',()=>{const open=nav.classList.toggle('open');btn.setAttribute('aria-expanded',String(open));});nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{nav.classList.remove('open');btn.setAttribute('aria-expanded','false')}));}
+    })();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Order Confirmation — RIVENZ</title>
+<link rel="stylesheet" href="style.css">
+<script src="ui-messages.js"></script>
+<style>
+:root{--ink:#171717;--muted:#777b80;--line:#ececef;--soft:#f7f7f8;--white:#fff;--accent:#151515;}
+.confirm-page{min-height:calc(100vh - 82px);padding:48px 18px 72px;background:linear-gradient(180deg,#fff 0%,#fafafa 58%,#f6f6f7 100%)}
+.confirm-shell{width:min(1040px,100%);margin:0 auto}
+.confirm-hero{text-align:center;max-width:720px;margin:0 auto 26px}
+.confirm-mark{width:70px;height:70px;margin:0 auto 16px;display:grid;place-items:center;border-radius:24px;background:#171717;color:#fff;font-size:31px;font-weight:900;box-shadow:0 16px 34px rgba(0,0,0,.14)}
+.confirm-eyebrow{display:inline-flex;padding:7px 12px;border-radius:999px;background:#f1f1f2;color:#55585d;font-size:10px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+.confirm-hero h1{margin:14px 0 9px;font-size:clamp(30px,5vw,48px);line-height:1.04;letter-spacing:-.045em;color:var(--ink)}
+.confirm-hero p{margin:0;color:var(--muted);font-size:14px;line-height:1.7}
+.confirm-id-card{margin:0 auto 22px;width:min(560px,100%);padding:17px 20px;border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.9);box-shadow:0 14px 34px rgba(20,20,20,.05);text-align:center}
+.confirm-id-label{display:block;color:#909398;font-size:10px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px}.confirm-id{color:var(--ink);font-size:23px;font-weight:900;letter-spacing:.02em;word-break:break-word}
+.confirm-grid{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(300px,.92fr);gap:18px;align-items:start}
+.confirm-card{background:rgba(255,255,255,.95);border:1px solid var(--line);border-radius:24px;padding:23px;box-shadow:0 16px 42px rgba(20,20,20,.055)}
+.confirm-card h2{margin:0 0 6px;color:var(--ink);font-size:19px;letter-spacing:-.02em}.confirm-card>p{margin:0;color:var(--muted);font-size:13px;line-height:1.65}
+.payment-badge{display:inline-flex;padding:7px 10px;border-radius:999px;background:#f2f2f3;color:#55585d;font-size:10px;font-weight:900;margin-bottom:12px}
+.payment-options{display:grid;gap:10px;margin-top:18px}.payment-option{padding:16px;border:1px solid #e7e7e9;border-radius:18px;background:#fff}.payment-option h3{margin:0 0 5px;font-size:14px;color:var(--ink)}.payment-option p{margin:0 0 12px;font-size:11px;line-height:1.55;color:var(--muted)}
+.action-row{display:flex;gap:9px;flex-wrap:wrap}.btn{appearance:none;border:0;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:43px;padding:10px 14px;border-radius:13px;font:inherit;font-size:12px;font-weight:900;cursor:pointer;transition:.18s ease}.btn.primary{background:#171717;color:#fff}.btn.secondary{background:#fff;color:#171717;border:1px solid #e5e5e7}.btn:hover{transform:translateY(-1px)}.btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.hidden-file{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}.proof-name{display:block;margin:0 0 11px;color:#85888d;font-size:11px;overflow-wrap:anywhere}.summary-list{display:grid;gap:0;margin-top:14px}.summary-row{display:flex;justify-content:space-between;gap:14px;padding:11px 0;border-bottom:1px solid #f0f0f2}.summary-row:last-child{border-bottom:0}.summary-row span:first-child{color:#85888d;font-size:11px}.summary-row span:last-child{color:var(--ink);font-size:12px;font-weight:800;text-align:right}.items{display:grid;gap:9px;margin-top:14px}.item{display:flex;gap:11px;align-items:center;padding:10px;border:1px solid #efeff1;border-radius:15px;background:#fafafa}.item img{width:52px;height:64px;object-fit:cover;border-radius:11px;background:#eee}.item-info{min-width:0;flex:1}.item-name{font-size:12px;font-weight:900;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.item-meta{margin-top:3px;font-size:10px;color:#85888d}.item-price{font-size:11px;font-weight:900;color:var(--ink)}.success-box{padding:18px;border-radius:18px;background:#f5f5f5;border:1px solid #e7e7e8}.success-box strong{display:block;font-size:15px;color:var(--ink);margin-bottom:5px}.success-box span{font-size:11px;line-height:1.6;color:var(--muted)}.confirm-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:17px}
+@media(max-width:780px){.confirm-page{padding:35px 14px 55px}.confirm-grid{grid-template-columns:1fr}.confirm-card{padding:19px;border-radius:21px}}
+@media(max-width:520px){.confirm-hero h1{font-size:34px}.confirm-mark{width:62px;height:62px;border-radius:21px}.action-row,.confirm-actions{display:grid;grid-template-columns:1fr}.btn{width:100%}}
+</style>
+</head>
+<body class="page-ready">
+<header class="site-header">
+<a class="brand" href="index.html"><img src="logo.png" alt="RIVENZ"></a>
+<button class="menu-toggle" aria-label="Open menu" aria-expanded="false">☰</button>
+<nav class="nav"><a href="index.html">Home</a><a href="services.html">Shop</a><a href="index.html#contact">Contact</a><a href="dashboard.html">My Dashboard</a></nav>
+</header>
+<main class="confirm-page"><div class="confirm-shell">
+<section class="confirm-hero"><div class="confirm-mark" id="heroMark">✓</div><span class="confirm-eyebrow" id="heroEyebrow">RIVENZ · Payment</span><h1 id="heroTitle">Complete your order.</h1><p id="heroText">Your order is saved. Choose one payment method and pay the full order amount.</p></section>
+<section class="confirm-id-card"><span class="confirm-id-label">Order reference</span><div class="confirm-id" id="id">Loading...</div></section>
+<div class="confirm-grid">
+<section class="confirm-card" id="paymentCard"><span class="payment-badge">PAYMENT</span><h2>Payment status</h2><p id="paymentMessage">Your selected payment method and order status are shown here.</p><div class="success-box"><strong id="paymentHeadline">Checking order…</strong><span id="paymentDetail">Please wait while we load your order.</span></div></section>
+<aside class="confirm-card"><h2>Order summary</h2><p>Your selected product options are saved with this order.</p><div class="items" id="items"></div><div class="summary-list"><div class="summary-row"><span>Subtotal</span><span id="subtotal">Rs. 0</span></div><div class="summary-row"><span>Delivery</span><span id="delivery">To be confirmed</span></div><div class="summary-row"><span>Total</span><span id="total">Rs. 0</span></div><div class="summary-row"><span>Payment</span><span id="paymentStatus">Pending</span></div></div><div class="confirm-actions"><a class="btn secondary" href="services.html">Continue Shopping</a><a class="btn secondary" href="dashboard.html">My Orders</a></div></aside>
+</div></div></main>
+<script type="module">
+import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
+import {app} from "./firebase-config.js";
+import "./order-flow.js";
+const auth=getAuth(app); const id=new URLSearchParams(location.search).get("id"); const confirmed=new URLSearchParams(location.search).get("confirmed")==="1"; const submitted=new URLSearchParams(location.search).get("submitted")==="1";
+const $=x=>document.getElementById(x); let currentOrder=null,currentUser=null;
+function msg(type,text){if(window.graphicsMessage&&typeof window.graphicsMessage[type]==="function")window.graphicsMessage[type](text);else alert(text)}
+function money(v){return "Rs. "+Number(v||0).toLocaleString("en-LK")}
+function setDone(mode){const submitted=mode==="submitted";$("paymentHeadline").textContent=submitted?"Receipt submitted successfully.":"Order confirmed successfully.";$("paymentDetail").textContent=submitted?"RIVENZ will review your bank transfer receipt and confirm the payment after approval.":"Your selected payment method has been recorded and your order is ready for the next stage.";$("heroEyebrow").textContent=submitted?"RIVENZ · Receipt Submitted":"RIVENZ · Order Confirmed";$("heroTitle").textContent=submitted?"Payment receipt received.":"Order placed successfully.";$("heroText").textContent=submitted?"Your receipt is waiting for admin approval.":"Thank you. Your RIVENZ order has been placed successfully.";$("heroMark").textContent="✓";}
+async function load(){if(!id){$("id").textContent="Order not found";return} $("id").textContent=id; currentOrder=await window.graphicsOrderFlow.get(id); if(!currentOrder){$("heroText").textContent="We could not find this order.";return} $("subtotal").textContent=money(currentOrder.subtotal??currentOrder.total); $("total").textContent=money(currentOrder.total); $("paymentStatus").textContent=currentOrder.paymentStatus||"Pending"; $("delivery").textContent=currentOrder.deliveryFee==null?"To be confirmed":money(currentOrder.deliveryFee); const items=currentOrder.items||currentOrder.products||[]; $("items").innerHTML=items.map(it=>'<div class="item">'+(it.image?'<img src="'+String(it.image).replace(/"/g,'&quot;')+'" alt="">':'<div style="width:52px;height:64px;border-radius:11px;background:#eee"></div>')+'<div class="item-info"><div class="item-name">'+String(it.name||it.title||"Product").replace(/</g,'&lt;')+'</div><div class="item-meta">'+String(it.size||"Size —")+' · '+String(it.color||"Color —")+' · Qty '+Number(it.quantity||1)+'</div></div><div class="item-price">'+money(Number(it.price||0)*Number(it.quantity||1))+'</div></div>').join(""); if(confirmed||submitted||currentOrder.confirmed){setDone(submitted&&!confirmed?"submitted":"confirmed")} }
+onAuthStateChanged(auth,async user=>{if(!user){location.href="auth.html?next="+encodeURIComponent("order-confirmation.html?id="+(id||""));return} currentUser=user; try{await load()}catch(e){console.error(e);$("heroText").textContent="We could not load this order. Please try again."}});
+const toggle=document.querySelector(".menu-toggle"),nav=document.querySelector(".nav");if(toggle&&nav)toggle.addEventListener("click",()=>{const open=nav.classList.toggle("open");toggle.setAttribute("aria-expanded",String(open))});
+</script></body></html>

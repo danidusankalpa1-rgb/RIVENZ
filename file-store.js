@@ -1,0 +1,14 @@
+(function(){
+  const DB='graphicsFileStoreV1', STORE='files';
+  function openDB(){return new Promise((resolve,reject)=>{const r=indexedDB.open(DB,1);r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains(STORE))r.result.createObjectStore(STORE)};r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});}
+  async function dataUrlToBlob(data){const r=await fetch(data);return await r.blob()}
+  async function migrateOrders(){let orders=[];try{orders=JSON.parse(localStorage.getItem('graphicsOrders')||'[]')}catch(e){return}let changed=false;for(const o of orders){const key='graphicsOrder_'+o.id;let full=null;try{full=JSON.parse(localStorage.getItem(key)||'null')}catch(e){}const obj=full||o;for(const [field,refField] of [['paymentProof','paymentProofRef'],['balancePaymentProof','balancePaymentProofRef'],['preview','previewRef'],['finalFile','finalFileRef'],['refundReceipt','refundReceiptRef']]){if(obj[field]&&String(obj[field]).startsWith('data:')&&!obj[refField]){try{const ref=field+'_'+o.id;await window.graphicsFileStore.put(ref,await dataUrlToBlob(obj[field]));obj[refField]=ref;delete obj[field];changed=true}catch(e){}}}if(full){localStorage.setItem(key,JSON.stringify(obj))}Object.assign(o,obj)}if(changed){try{localStorage.setItem('graphicsOrders',JSON.stringify(orders))}catch(e){/* keep metadata small */}}}
+  async function migrateSamples(){let all={};try{all=JSON.parse(localStorage.getItem('graphicsServiceSamplesV16')||'{}')}catch(e){return}let changed=false;for(const id of Object.keys(all)){const list=Array.isArray(all[id])?all[id]:[];for(const x of list){if(x&&x.data&&String(x.data).startsWith('data:')&&!x.ref){try{x.ref='sample_'+id+'_'+Date.now()+'_'+Math.random().toString(36).slice(2);await window.graphicsFileStore.put(x.ref,await dataUrlToBlob(x.data));delete x.data;changed=true}catch(e){}}}}if(changed){try{localStorage.setItem('graphicsServiceSamplesV16',JSON.stringify(all))}catch(e){}}}
+  window.graphicsFileStore={
+    put:function(key,file){return openDB().then(db=>new Promise((resolve,reject)=>{const tx=db.transaction(STORE,'readwrite');const value=(file instanceof Blob)?file:new Blob([file],{type:(file&&file.type)||'application/octet-stream'});tx.objectStore(STORE).put(value,key);tx.oncomplete=()=>resolve(key);tx.onerror=()=>reject(tx.error||new Error('File store write failed'));}));},
+    get:function(key){return openDB().then(db=>new Promise((resolve,reject)=>{const tx=db.transaction(STORE,'readonly');const r=tx.objectStore(STORE).get(key);r.onsuccess=()=>resolve(r.result||null);r.onerror=()=>reject(r.error);}));},
+    del:function(key){return openDB().then(db=>new Promise((resolve,reject)=>{const tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).delete(key);tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error);}));},
+    migrateOrders:migrateOrders,
+    migrateSamples:migrateSamples
+  };
+})();

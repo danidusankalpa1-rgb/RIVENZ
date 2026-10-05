@@ -1,0 +1,29 @@
+GRAPHICS CONNECTION FIX — IMPORTANT
+
+The front-end bugs have been fixed, but Firebase Security Rules still control whether Firestore/Storage requests are accepted. The original project did not include rules files, so they cannot be deployed from this ZIP automatically.
+
+1) Firebase Authentication
+Firebase Console -> Authentication -> Sign-in method -> Email/Password -> ENABLE
+
+2) Cloud Firestore
+Firebase Console -> Firestore Database -> Create database (if not already created).
+For a quick development test, use authenticated-only rules while testing. Do NOT keep broad open rules for production.
+
+3) Cloud Storage
+Firebase Console -> Storage -> Get started (if not already enabled).
+Authenticated users must be allowed to upload/read the orders/* paths. Firebase Storage Security Rules are what allow/deny file uploads and reads.
+
+4) Why the previous registration could say the account already exists:
+Firebase Authentication creates the account first. If the following Firestore profile write failed, the UI could incorrectly show registration failed even though the Auth account already existed. This version treats the optional profile write separately and then continues.
+
+5) Why Continue could appear to do nothing:
+The old order page performed a Firestore clients/{uid} read OUTSIDE the click handler's try/catch. A Firestore permission error could reject the handler before it disabled the button or showed a message. This version no longer requires that profile read before creating the order, and it shows Firebase error messages.
+
+6) Correct module loading:
+Firebase modular files use ES module imports. session-nav.js is now loaded as type="module" everywhere it is used.
+
+7) Required data paths used by this site:
+Firestore: clients/{uid}, orders/{orderId}, orders/{orderId}/notifications/{notificationId}
+Storage: orders/{orderId}/client/*, orders/{orderId}/preview/*, orders/{orderId}/final/*, orders/{orderId}/balance/*, orders/{orderId}/refund/*
+
+If the Continue button still reports 'Firebase denied access', that is a Firebase Security Rules setting, not an HTML/button bug.

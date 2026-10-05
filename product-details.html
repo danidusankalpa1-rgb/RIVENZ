@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="refresh" content="0;url=services.html">
+<title>RIVENZ Product</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="home.css">
+<style>body{margin:0;background:#f7f7f5;color:#17191d;font-family:Inter,Arial,sans-serif;min-height:100vh;display:grid;place-items:center}.redirect-note{width:min(520px,calc(100% - 32px));padding:32px;background:#fff;border:1px solid #e7e7e3;border-radius:22px;text-align:center;box-shadow:0 18px 55px rgba(25,28,35,.055)}.redirect-note strong{display:block;font-size:18px;margin-bottom:8px}.redirect-note span{display:block;color:#777d86;font-size:12px;line-height:1.6}.redirect-note a{display:inline-flex;margin-top:18px;padding:11px 16px;border-radius:12px;background:#111318;color:#fff;text-decoration:none;font-size:12px;font-weight:800}</style>
+</head>
+<body>
+<main class="redirect-note">
+<strong>RIVENZ Product</strong>
+<span>Product details now open in the Shop popup, so there is one simple product browsing flow.</span>
+<a id="shopLink" href="services.html">Open Shop →</a>
+</main>
+<script>
+(function(){
+  const p=new URLSearchParams(location.search);
+  const id=p.get('id')||p.get('product')||'';
+  const url=new URL('services.html',location.href);
+  if(id)url.searchParams.set('product',id);
+  const link=document.getElementById('shopLink');
+  if(link)link.href=url.href;
+  location.replace(url.href);
+})();
+</script>
+</body>
+</html>
