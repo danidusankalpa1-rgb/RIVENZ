@@ -1,5 +1,5 @@
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
-import { collection, doc, getDoc, getDocs, query, orderBy, limit, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+import { collection, doc, getDoc, getDocs, query, where, orderBy, limit, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
 import { app, db } from "./firebase-config.js";
 
 const auth = getAuth(app);
@@ -31,16 +31,11 @@ async function getIdToken(forceRefresh=false){
 }
 
 async function newId(){
+  // Never query the entire orders collection just to generate an order number.
+  // Customer rules intentionally prevent broad order reads, so IDs use a collision-resistant token.
   const year=new Date().getFullYear();
-  try{
-    const snap=await withTimeout(getDocs(query(collection(db,"orders"),orderBy("sequence","desc"),limit(1))),12000,"Firebase order-number request");
-    let last=0; if(!snap.empty) last=Number(snap.docs[0].data().sequence||0);
-    const next=last+1; return {id:`GLK-${year}-${String(next).padStart(4,"0")}`,sequence:next};
-  }catch(e){
-    console.warn("Firebase order number unavailable; using local sequence.",e);
-    const local=read(KEY,[]); const nums=local.map(o=>parseInt(String(o.id||"").split("-").pop(),10)).filter(Number.isFinite); const next=Math.max(0,...nums)+1;
-    return {id:`GLK-${year}-${String(next).padStart(4,"0")}`,sequence:next};
-  }
+  const token=crypto.randomUUID().replace(/-/g,"").slice(0,8).toUpperCase();
+  return {id:`GLK-${year}-${token}`,sequence:Date.now()};
 }
 
 function safeHeaderName(name){return String(name||"file").replace(/[^a-zA-Z0-9._-]/g,"_").slice(0,180)||"file";}
@@ -75,18 +70,12 @@ async function uploadOrderFile(orderId,file,folder="client"){
   try{
     return await send(folder);
   }catch(error){
-    if(error?.status===401){
-      try{
-        await getIdToken(true);
-        return await send(folder);
-      }catch(refreshError){ error=refreshError; }
-    }
+    // Older deployed R2 workers may not yet know the newer `payment` folder.
+    // Keep the receipt private under the existing authenticated `client` folder
+    // so checkout continues to work until the worker is redeployed.
     if(String(folder)==="payment"){
-      console.warn("Payment upload path unavailable; retrying with the existing private client folder.",error);
-      try{return await send("client");}catch(clientError){
-        if(clientError?.status===401){await getIdToken(true);return await send("client");}
-        throw clientError;
-      }
+      console.warn("Payment-folder upload failed; retrying with legacy private client folder.",error);
+      return await send("client");
     }
     throw error;
   }
@@ -167,20 +156,14 @@ async function get(orderId){
 async function orders(){
   const user=auth.currentUser; if(!user) return [];
   try{
-    // Avoid an orderBy query here: older orders can contain mixed timestamp/string
-    // values and that can make the whole customer query fail. Read the collection
-    // and sort client-side so status/notification updates are always visible.
-    const snap=await withTimeout(getDocs(collection(db,"orders")),15000,"Firebase customer orders request");
-    const list=snap.docs.map(d=>({id:d.id,...d.data()})).filter(o=>
-      String(o.uid||"")===String(user.uid) || (!o.uid && String(o.email||"").toLowerCase()===String(user.email||"").toLowerCase())
-    );
-    const stamp=v=>v?.toMillis?v.toMillis():typeof v==="number"?v:Date.parse(String(v||""))||0;
-    return list.sort((a,b)=>stamp(b.updatedAt||b.createdAt)-stamp(a.updatedAt||a.createdAt));
+    const snap=await getDocs(query(collection(db,"orders"),where("uid","==",user.uid)));
+    return snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>{
+      const stamp=v=>v?.toMillis?v.toMillis():Date.parse(String(v||""))||0;
+      return stamp(b.createdAt)-stamp(a.createdAt);
+    });
   }catch(e){
     console.warn("Firebase orders read failed:",e);
-    const local=read(KEY,[]).filter(o=>String(o.uid||"")===String(user.uid)||(!o.uid&&String(o.email||"").toLowerCase()===String(user.email||"").toLowerCase()));
-    const stamp=v=>v?.toMillis?v.toMillis():typeof v==="number"?v:Date.parse(String(v||""))||0;
-    return local.sort((a,b)=>stamp(b.updatedAt||b.createdAt)-stamp(a.updatedAt||a.createdAt));
+    return read(KEY,[]).filter(o=>!o.uid||o.uid===user.uid);
   }
 }
 
@@ -223,13 +206,6 @@ async function notify(order,message){
     await setDoc(doc(db,"orders",order.id,"notifications",String(Date.now())),{...item,createdAt:serverTimestamp()});
     remoteSaved=true;
   }catch(e){console.warn("Notification subcollection save failed:",e);}
-  // Keep a notification on the order itself as a reliable fallback. The customer
-  // already has permission to read their own order, so this avoids losing status
-  // updates when subcollection notification rules are stricter.
-  try{
-    await setDoc(doc(db,"orders",order.id),{lastNotification:{...item,createdAt:serverTimestamp()}},{merge:true});
-    remoteSaved=true;
-  }catch(e){console.warn("Order notification fallback save failed:",e);}
   const notifications=read(NOTIFY,[]); notifications.push(item); write(NOTIFY,notifications);
   return remoteSaved;
 }
@@ -238,22 +214,30 @@ async function notifications(orderList=[]){
   const user=auth.currentUser;
   if(!user) return [];
   const orders=Array.isArray(orderList)?orderList:[];
+  const ids=orders.filter(o=>String(o?.uid||user.uid)===String(user.uid)&&o?.id).map(o=>String(o.id));
   const merged=new Map();
-  // The order document is the canonical notification source. This avoids a
-  // separate subcollection permission/index problem and guarantees that the
-  // customer sees the same update that was written with the order status.
+  // Always use the order-level lastNotification as the primary fallback. This
+  // works even when Firestore rules do not allow the notification subcollection.
   orders.forEach(o=>{
     const n=o?.lastNotification;
-    if(n && String(n.uid||o.uid||"")===String(user.uid)){
-      const key=String(o.id||"");
-      merged.set(key,{id:'order-'+key,orderId:o.id,...n});
-    }
+    if(n&&String(n.uid||user.uid)===String(user.uid)) merged.set(String(o.id)+':fallback',{id:'fallback-'+String(o.id),orderId:o.id,...n});
   });
-  const local=read(NOTIFY,[]).filter(n=>String(n?.uid||"")===String(user.uid)).map((n,i)=>({...n,id:n.id||'local-'+i}));
+  for(const orderId of ids){
+    try{
+      const snap=await getDocs(query(collection(db,"orders",orderId,"notifications"),orderBy("createdAt","desc"),limit(8)));
+      snap.forEach(d=>merged.set(orderId+':'+d.id,{id:d.id,orderId,...d.data()}));
+    }catch(e){console.warn("Notification read failed for",orderId,e);}
+  }
   const remote=[...merged.values()];
-  const all=[...remote,...local];
-  const stamp=v=>v?.toMillis?v.toMillis():typeof v==="number"?v:Date.parse(String(v||""))||0;
-  return all.sort((a,b)=>stamp(b.createdAt||b.time)-stamp(a.createdAt||a.time)).slice(0,12);
+  remote.sort((a,b)=>{
+    const stamp=v=>v?.toMillis?v.toMillis():Date.parse(String(v||''))||0;
+    return stamp(b.createdAt)-stamp(a.createdAt);
+  });
+  const local=read(NOTIFY,[]).filter(n=>String(n?.uid||'')===String(user.uid)).map((n,i)=>({...n,id:n.id||'local-'+i}));
+  return [...remote,...local].sort((a,b)=>{
+    const stamp=v=>v?.toMillis?v.toMillis():Date.parse(String(v||''))||0;
+    return stamp(b.createdAt||b.time)-stamp(a.createdAt||a.time);
+  }).slice(0,12);
 }
 let resolveReady; const ready=new Promise(resolve=>resolveReady=resolve);
 onAuthStateChanged(auth,user=>{resolveReady(user); window.dispatchEvent(new CustomEvent("graphics-auth-ready",{detail:{user}}));});
