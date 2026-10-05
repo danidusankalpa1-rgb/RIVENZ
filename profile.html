@@ -58,7 +58,7 @@ body{background:#fbfbfa;color:#15171b}
 
 <script type="module">
 import {getAuth,onAuthStateChanged,signOut,updateProfile} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
-import {doc,onSnapshot,collection,setDoc,serverTimestamp} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+import {doc,onSnapshot,collection,query,where,setDoc,serverTimestamp} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
 import {app,db} from "./firebase-config.js";
 const auth=getAuth(app), $=id=>document.getElementById(id); let user=null,stopClient=null,stopOrders=null,saving=false;
 const nameEl=$("name"),phoneEl=$("phone"),emailEl=$("email"),saveBtn=$("save"),statusEl=$("status");
@@ -80,7 +80,7 @@ function renderOrders(list){
  $("paymentBox").innerHTML=`<div class="pay-row"><span>Order</span><strong>${esc(latest.id)}</strong></div><div class="pay-row"><span>Total</span><strong>${money(total)}</strong></div><div class="pay-row"><span>Paid</span><strong>${money(paidLatest)}</strong></div><div class="pay-row"><span>Method</span><strong>${esc(method)}</strong></div><div class="pay-row"><span>Status</span><strong>${esc(pstatus)}</strong></div>`;
  $("activityBox").innerHTML=orders.slice(0,5).map(o=>`<div class="activity-item"><strong>${esc(o.id)} · ${esc(statusText(o))}</strong><small>${esc(firstProduct(o))} · Open order details for tracking and delivery updates.</small></div>`).join("");
 }
-function subscribeOrders(){if(stopOrders)stopOrders();stopOrders=onSnapshot(collection(db,"orders"),snap=>{const list=snap.docs.map(d=>({id:d.id,...d.data()})).filter(o=>String(o.uid||o.userId||"")===String(user.uid)||( !o.uid&&!o.userId&&String(o.email||"").toLowerCase()===String(user.email||"").toLowerCase()));renderOrders(list);},err=>{console.error(err);$("ordersList").innerHTML='<div class="notice">Orders could not be loaded. Please check your connection.</div>';});}
+function subscribeOrders(){if(stopOrders)stopOrders();stopOrders=onSnapshot(query(collection(db,"orders"),where("uid","==",user.uid)),snap=>{const list=snap.docs.map(d=>({id:d.id,...d.data()}));renderOrders(list);},err=>{console.error(err);$("ordersList").innerHTML='<div class="notice">Orders could not be loaded. Please check your connection.</div>';});}
 saveBtn.addEventListener("click",async()=>{if(!user||saving)return;const name=nameEl.value.trim(),phone=phoneEl.value.trim();if(!name){setStatus("Please enter your name.","err");return}saving=true;saveBtn.disabled=true;setStatus("Saving...");try{await setDoc(doc(db,"clients",user.uid),{uid:user.uid,name,phone,email:user.email||"",updatedAt:serverTimestamp()},{merge:true});await updateProfile(user,{displayName:name});setStatus("Profile saved successfully.","ok");}catch(e){console.error(e);setStatus("Could not save profile. Please try again.","err")}finally{saving=false;saveBtn.disabled=false;}});
 $("logout").addEventListener("click",async e=>{e.preventDefault();try{await signOut(auth)}finally{location.href="auth.html"}});$("toggle")?.addEventListener("click",()=>$("nav").classList.toggle("open"));
 onAuthStateChanged(auth,u=>{if(stopClient)stopClient();if(stopOrders)stopOrders();if(!u){location.replace("auth.html?next=profile.html");return}user=u;stopClient=onSnapshot(doc(db,"clients",u.uid),snap=>renderProfile(snap.exists()?snap.data():{name:u.displayName||"",email:u.email||"",phone:""}),err=>{console.error(err);setStatus("Profile could not be loaded. Check Firebase access.","err")});subscribeOrders();});
