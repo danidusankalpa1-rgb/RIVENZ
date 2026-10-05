@@ -100,7 +100,7 @@
 
 <script type="module">
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
-import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+import { collection, doc, getDoc, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
 import { app, db } from "./firebase-config.js";
 import "./order-flow.js";
 
@@ -170,7 +170,7 @@ function renderWishlist(){
   box.querySelectorAll('[data-wish-remove]').forEach(btn=>btn.addEventListener('click',()=>{const id=btn.getAttribute('data-wish-remove');list=list.filter(x=>String(x.id)!==String(id));localStorage.setItem('rivenzWishlistV1',JSON.stringify(list));renderWishlist();}));
 }
 let dashboardUser=null;let stopOrderWatch=null;let lastSeenNotificationKey=null;let notificationBaselineReady=false;
-function watchCustomerOrders(user){if(stopOrderWatch)clearInterval(stopOrderWatch);let running=false;const tick=async()=>{if(running)return;running=true;try{await render(user);}catch(e){console.warn("Customer order refresh unavailable:",e);}finally{running=false;}};stopOrderWatch=setInterval(tick,4000);}
+function watchCustomerOrders(user){if(stopOrderWatch)stopOrderWatch();try{stopOrderWatch=onSnapshot(query(collection(db,"orders"),where("uid","==",user.uid)),()=>render(user),err=>console.warn("Customer order listener unavailable:",err));}catch(e){console.warn("Customer order listener unavailable:",e)}}
 renderWishlist();window.addEventListener('storage',renderWishlist);window.addEventListener('rivenz:wishlist-change',renderWishlist);
 
 document.getElementById("dashboardLogout")?.addEventListener("click",async e=>{e.preventDefault();try{await signOut(auth);}catch(error){console.error("Logout failed:",error);}location.href="index.html";});
