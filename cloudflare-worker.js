@@ -171,6 +171,12 @@ function publicFileKey(type, name) {
   return `public/${type}/${crypto.randomUUID()}_${safePart(name, "file")}`;
 }
 
+const ADMIN_UIDS = new Set([
+  "ZtK5IGFUs5euV4xIMrHQMgLa7gS2",
+  "c9LzUbKr16Zp0H6nu282z2DR7CG2"
+]);
+function isAdminUser(user) { return !!user && ADMIN_UIDS.has(String(user.sub || "")); }
+
 
 export default {
   async fetch(request, env) {
@@ -228,6 +234,7 @@ export default {
     }
 
     if (request.method === "POST" && url.pathname === "/public/upload") {
+      if (!isAdminUser(user)) return json({ ok: false, error: "FORBIDDEN" }, 403);
       const type = publicType(request.headers.get("X-Public-Type"));
       if (!type) return json({ ok: false, error: "Invalid public type" }, 400);
       const size = Number(request.headers.get("X-File-Size") || request.headers.get("Content-Length") || 0);
@@ -244,6 +251,7 @@ export default {
     }
 
     if (request.method === "POST" && url.pathname === "/public/catalog") {
+      if (!isAdminUser(user)) return json({ ok: false, error: "FORBIDDEN" }, 403);
       const body = await request.json().catch(()=>null);
       const type = publicType(body?.type);
       if (!type) return json({ ok: false, error: "Invalid public catalog type" }, 400);
@@ -254,6 +262,7 @@ export default {
     }
 
     if (request.method === "DELETE" && url.pathname === "/public/file") {
+      if (!isAdminUser(user)) return json({ ok: false, error: "FORBIDDEN" }, 403);
       const key = url.searchParams.get("key") || "";
       if (!key || key.includes("..") || !key.startsWith("public/")) return json({ ok: false, error: "Invalid public key" }, 400);
       await env.FILES.delete(key);
@@ -264,6 +273,9 @@ export default {
       const orderId = safePart(request.headers.get("X-Order-Id"), "order");
       const folder = String(request.headers.get("X-Folder") || "client");
       if (!allowedFolder(folder)) return json({ ok: false, error: "Invalid folder" }, 400);
+      if (!isAdminUser(user) && !new Set(["client", "payment", "balance"]).has(folder)) {
+        return json({ ok: false, error: "FORBIDDEN" }, 403);
+      }
 
       const size = Number(request.headers.get("X-File-Size") || request.headers.get("Content-Length") || 0);
       if (size > 50 * 1024 * 1024) return json({ ok: false, error: "FILE_TOO_LARGE" }, 413);
@@ -292,6 +304,8 @@ export default {
     if (request.method === "GET" && url.pathname === "/file") {
       const key = url.searchParams.get("key") || "";
       if (!key || key.includes("..") || !key.startsWith("users/")) return json({ ok: false, error: "Invalid key" }, 400);
+      const ownerUid = key.split("/")[1] || "";
+      if (!isAdminUser(user) && ownerUid !== String(user.sub || "")) return json({ ok: false, error: "FORBIDDEN" }, 403);
 
       const object = await env.FILES.get(key);
       if (!object) return json({ ok: false, error: "FILE_NOT_FOUND" }, 404);
