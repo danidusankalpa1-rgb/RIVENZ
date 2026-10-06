@@ -157,8 +157,12 @@
       .services-bottom{margin-top:18px!important}
     }
     @media(max-width:420px){
-      .service-grid{grid-template-columns:1fr!important;max-width:360px!important}
-      .service-card,.service-wide{height:390px!important;min-height:390px!important}
+      .service-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important;max-width:none!important}
+      .service-card,.service-wide{height:300px!important;min-height:300px!important;border-radius:18px!important}
+      .service-body,.service-wide .service-body{padding:18px 10px 10px!important}
+      .service-title,.service-wide .service-title{font-size:15px!important}
+      .service-new{font-size:14px!important}
+      .service-actions a{height:35px!important;min-height:35px!important;font-size:7px!important}
     }
   </style>
 </head>
@@ -271,8 +275,19 @@
     const fee=Math.max(0,Number(p?.deliveryFee)||0);
     return type==='fee'&&fee>0?fee:0;
   }
-  function latestProductExcept(excludeId){
-    const active=products.filter(x=>x&&x.active!==false&&String(x.id)!==String(excludeId));
+  function latestProductExcept(excludeProduct){
+    const excludeId=String(excludeProduct?.id||'').trim();
+    const excludeName=String(excludeProduct?.name||'').trim().toLowerCase();
+    const excludeImage=String(images(excludeProduct)[0]?.url||'').trim();
+    const active=products.filter(x=>{
+      if(!x||x.active===false||x===excludeProduct)return false;
+      const id=String(x.id||'').trim();
+      if(excludeId&&id&&id===excludeId)return false;
+      const name=String(x.name||'').trim().toLowerCase();
+      const image=String(images(x)[0]?.url||'').trim();
+      if(excludeName&&name===excludeName&&excludeImage&&image===excludeImage)return false;
+      return true;
+    });
     if(!active.length)return null;
     const timeOf=x=>{const v=x?.createdAt||x?.created_at||x?.updatedAt||x?.updated_at;const t=Date.parse(v||'');return Number.isFinite(t)?t:0};
     return active.slice().sort((a,b)=>timeOf(a)-timeOf(b)).at(-1)||active.at(-1);
@@ -337,7 +352,7 @@
     page.querySelector('#rivenzDetailBack').onclick=()=>{closeProduct(true)};
     const detailCart=page.querySelector('#rivenzDetailCartCount');if(detailCart){try{const items=JSON.parse(localStorage.getItem('rivenzCartV1')||'[]');detailCart.textContent='('+items.reduce((n,x)=>n+Math.max(0,Number(x.quantity)||0),0)+')'}catch(e){}}
     renderSizes();
-    let sx=0,sy=0;const wrap=page.querySelector('.rivenz-detail-main');wrap.ontouchstart=e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY};wrap.ontouchend=e=>{const dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy))show(current+(dx<0?1:-1))};    renderLatestProduct(p.id);
+    let sx=0,sy=0;const wrap=page.querySelector('.rivenz-detail-main');wrap.ontouchstart=e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY};wrap.ontouchend=e=>{const dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy))show(current+(dx<0?1:-1))};    renderLatestProduct(p);
   }
 
   function matchesCategory(p){
