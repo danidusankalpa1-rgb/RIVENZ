@@ -214,34 +214,62 @@ async function notifications(orderList=[]){
   const user=auth.currentUser;
   if(!user) return [];
   const orders=Array.isArray(orderList)?orderList:[];
-  const ids=orders.filter(o=>String(o?.uid||user.uid)===String(user.uid)&&o?.id).map(o=>String(o.id));
   const merged=new Map();
-  // Always use the order-level lastNotification as the primary fallback. This
-  // works even when Firestore rules do not allow the notification subcollection.
+
+  // The order document is the reliable primary source. Admin status updates
+  // write `lastNotification` together with the order, so customer rules only
+  // need to permit access to the customer's own order.
   orders.forEach(o=>{
+    if(!o?.id || String(o.uid||user.uid)!==String(user.uid)) return;
     const n=o?.lastNotification;
-    if(n&&String(n.uid||user.uid)===String(user.uid)) merged.set(String(o.id)+':fallback',{id:'fallback-'+String(o.id),orderId:o.id,...n});
+    if(n && String(n.uid||user.uid)===String(user.uid)){
+      merged.set(String(o.id)+':last',{
+        id:'last-'+String(o.id),
+        orderId:o.id,
+        ...n
+      });
+    }
   });
-  for(const orderId of ids){
+
+  // Also read the notification subcollection when available. A permission,
+  // index, or older-document issue must never make the whole notifications
+  // panel fail.
+  for(const order of orders){
+    const orderId=String(order?.id||'');
+    if(!orderId || String(order?.uid||user.uid)!==String(user.uid)) continue;
     try{
-      const snap=await getDocs(query(collection(db,"orders",orderId,"notifications"),orderBy("createdAt","desc"),limit(8)));
+      const snap=await getDocs(query(
+        collection(db,"orders",orderId,"notifications"),
+        orderBy("createdAt","desc"),
+        limit(8)
+      ));
       snap.forEach(d=>merged.set(orderId+':'+d.id,{id:d.id,orderId,...d.data()}));
-    }catch(e){console.warn("Notification read failed for",orderId,e);}
+    }catch(e){
+      console.warn("Notification subcollection unavailable for",orderId,e);
+    }
   }
-  const remote=[...merged.values()];
-  remote.sort((a,b)=>{
-    const stamp=v=>v?.toMillis?v.toMillis():Date.parse(String(v||''))||0;
-    return stamp(b.createdAt)-stamp(a.createdAt);
-  });
-  const local=read(NOTIFY,[]).filter(n=>String(n?.uid||'')===String(user.uid)).map((n,i)=>({...n,id:n.id||'local-'+i}));
-  return [...remote,...local].sort((a,b)=>{
+
+  // Keep local notifications only as a compatibility fallback for older
+  // sessions; never let malformed local data break the panel.
+  let local=[];
+  try{
+    local=read(NOTIFY,[])
+      .filter(n=>String(n?.uid||'')===String(user.uid))
+      .map((n,i)=>({...n,id:n.id||'local-'+i}));
+  }catch(e){
+    local=[];
+  }
+
+  const all=[...merged.values(),...local];
+  all.sort((a,b)=>{
     const stamp=v=>v?.toMillis?v.toMillis():Date.parse(String(v||''))||0;
     return stamp(b.createdAt||b.time)-stamp(a.createdAt||a.time);
-  }).slice(0,12);
+  });
+  return all.slice(0,12);
 }
 let resolveReady; const ready=new Promise(resolve=>resolveReady=resolve);
 onAuthStateChanged(auth,user=>{resolveReady(user); window.dispatchEvent(new CustomEvent("graphics-auth-ready",{detail:{user}}));});
 
-window.graphicsOrderFlow={read,write,session,account,save,get,adminGet,orders,adminOrders,notify,newId,uploadOrderFile,fileUrl,ready};
+window.graphicsOrderFlow={read,write,session,account,save,get,adminGet,orders,adminOrders,notify,notifications,newId,uploadOrderFile,fileUrl,ready};
 window.graphicsOrderFlowReady=ready;
 window.dispatchEvent(new Event("graphics-order-flow-ready"));
