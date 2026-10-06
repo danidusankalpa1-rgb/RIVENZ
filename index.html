@@ -174,5 +174,57 @@
 <script>
 (function(){function syncHomeCart(){try{var items=JSON.parse(localStorage.getItem('rivenzCartV1')||'[]');var n=Array.isArray(items)?items.reduce(function(s,x){return s+Math.max(0,Number(x.quantity)||0)},0):0;var el=document.getElementById('homeCartCount');if(el)el.textContent=n>0?String(n):'';}catch(e){}}syncHomeCart();window.addEventListener('storage',syncHomeCart);window.addEventListener('rivenz-cart-updated',syncHomeCart);})();
 </script>
+<script>
+(function(){
+  const KEY='rivenzHomeSettingsV1';
+  const DEFAULT={heroPill:'RIVENZ CLOTHING',heroLine1:'Everyday style.',heroLine2:'Made for you.',heroLine3:'Made to stand out.',heroDescription:'Discover clean, modern clothing made for everyday life. Explore new drops, timeless essentials and pieces that fit your style.',primaryButton:'Shop Now',secondaryButton:'Explore Collection',promoTitle:'Simple pieces. Strong style.',promoText:'Build your wardrobe with clean, comfortable pieces designed to work together and last beyond one season.',contactTitle:'Questions about your order?',showShop:true,showCollections:true,showPromo:true,showProcess:true,showContact:true,collectionProducts:{newDrop:'',essentials:'',weekend:'',offers:''}};
+  const localLoad=()=>{try{const x=JSON.parse(localStorage.getItem(KEY)||'null');return x&&typeof x==='object'?{...DEFAULT,...x}:({...DEFAULT})}catch(e){return {...DEFAULT}}};
+  const productId=p=>String(p?.id||p?.sku||'');
+  const imageOf=p=>{const a=Array.isArray(p?.images)?p.images:[];return (a.find(x=>x&&x.url)?.url)||(p?.image?.url)||''};
+  async function loadSettings(){
+    try{
+      const remote=await window.graphicsPublicContent.catalog('home-settings');
+      if(Array.isArray(remote)&&remote[0]&&typeof remote[0]==='object'){
+        const v={...DEFAULT,...remote[0]};
+        try{localStorage.setItem(KEY,JSON.stringify(v))}catch(e){}
+        return v;
+      }
+    }catch(e){console.warn('Home settings remote load unavailable.',e)}
+    return localLoad();
+  }
+  async function loadProducts(){try{const x=await window.graphicsPublicContent.catalog('products');return Array.isArray(x)?x:[]}catch(e){return []}}
+  function applyText(v){
+    const set=(id,text)=>{const el=document.getElementById(id);if(el)el.textContent=text||''};
+    const hero=document.querySelector('.soft-pill');if(hero)hero.innerHTML='<span></span> '+(v.heroPill||DEFAULT.heroPill);
+    const h=document.querySelector('.hero-content h1');if(h)h.innerHTML=[v.heroLine1,v.heroLine2,v.heroLine3].filter(Boolean).map((x,i)=>i===1?'<span>'+x+'</span>':x).join('<br>');
+    set('homeHeroDescription',v.heroDescription);
+    const heroDesc=document.querySelector('.hero-content p');if(heroDesc)heroDesc.textContent=v.heroDescription||DEFAULT.heroDescription;
+    const heroButtons=document.querySelectorAll('.hero-buttons .home-btn');if(heroButtons[0])heroButtons[0].innerHTML=(v.primaryButton||DEFAULT.primaryButton)+' <b>→</b>';if(heroButtons[1])heroButtons[1].innerHTML=(v.secondaryButton||DEFAULT.secondaryButton)+' <b>→</b>';
+    const promoTitle=document.querySelector('#offers-preview .invite-copy h2');if(promoTitle){const parts=String(v.promoTitle||DEFAULT.promoTitle).split(/\s*\.\s*/);promoTitle.innerHTML=parts.length>1?parts[0]+'.<br>'+parts.slice(1).join('. '):String(v.promoTitle||DEFAULT.promoTitle)}
+    const promoText=document.querySelector('#offers-preview .invite-copy p');if(promoText)promoText.textContent=v.promoText||DEFAULT.promoText;
+    const contactTitle=document.querySelector('#contact h2');if(contactTitle)contactTitle.textContent=v.contactTitle||DEFAULT.contactTitle;
+  }
+  function applyVisibility(v){
+    const map=[['#shop-preview',v.showShop],['#collections',v.showCollections],['#offers-preview',v.showPromo],['.process-section',v.showProcess],['#contact',v.showContact]];
+    map.forEach(([sel,on])=>{const el=document.querySelector(sel);if(el)el.style.display=on===false?'none':''});
+  }
+  function applyCollectionImages(v,products){
+    const cp=v.collectionProducts||{};
+    const ids=[cp.newDrop,cp.essentials,cp.weekend,cp.offers].map(String);
+    const chosen=ids.map(id=>products.find(p=>productId(p)===id)||null);
+    const cards=[...document.querySelectorAll('#homeWork .work-home-card')];
+    cards.forEach((card,i)=>{
+      const p=chosen[i],src=imageOf(p);
+      card.style.backgroundImage=src?`url("${src.replace(/"/g,'\\"')}")`:'';
+    });
+  }
+  (async()=>{
+    const v=await loadSettings();
+    applyText(v);applyVisibility(v);
+    const products=await loadProducts();
+    applyCollectionImages(v,products);
+  })();
+})();
+</script>
 </body>
 </html>
