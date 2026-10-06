@@ -139,6 +139,37 @@
       .service-card,.service-wide{height:315px!important;min-height:315px!important}
     }
   </style>
+
+    /* RIVENZ Step 5 — stable mobile product viewer (product card visuals unchanged) */
+    .rivenz-product-modal{position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;z-index:99999!important;box-sizing:border-box!important;padding:12px!important;display:flex!important;align-items:flex-start!important;justify-content:center!important;overflow-y:auto!important;overflow-x:hidden!important;-webkit-overflow-scrolling:touch!important;background:rgba(17,18,20,.52)!important;}
+    .rivenz-product-sheet{width:min(860px,100%)!important;max-width:860px!important;max-height:none!important;height:auto!important;margin:auto!important;overflow:visible!important;border-radius:24px!important;display:grid!important;grid-template-columns:minmax(0,1fr) minmax(310px,.9fr)!important;position:relative!important;box-sizing:border-box!important;}
+    .rivenz-gallery{min-width:0!important;}
+    .rivenz-main-image img{object-fit:contain!important;background:#f1f1ee!important;}
+    .rivenz-product-info{min-width:0!important;overflow:visible!important;}
+    .rivenz-add{position:sticky!important;bottom:0!important;z-index:5!important;background:#fff!important;padding:12px 0 2px!important;margin-top:18px!important;}
+    @media(max-width:760px){
+      .rivenz-product-modal{padding:8px!important;}
+      .rivenz-product-sheet{width:100%!important;min-height:calc(100dvh - 16px)!important;display:flex!important;flex-direction:column!important;border-radius:22px!important;margin:0 auto!important;}
+      .rivenz-gallery{padding:10px 10px 0!important;flex:0 0 auto!important;}
+      .rivenz-main-image{aspect-ratio:1/1!important;height:min(43dvh,360px)!important;max-height:none!important;min-height:230px!important;border-radius:18px!important;}
+      .rivenz-main-image img{width:100%!important;height:100%!important;object-fit:contain!important;}
+      .rivenz-thumbs{padding-bottom:2px!important;}
+      .rivenz-product-info{padding:16px 16px 18px!important;overflow:visible!important;min-height:0!important;}
+      .rivenz-product-name{font-size:24px!important;line-height:1.08!important;}
+      .rivenz-product-description{font-size:11px!important;line-height:1.55!important;}
+      .rivenz-modal-actions{grid-template-columns:1fr 1fr!important;}
+      .rivenz-add{position:sticky!important;bottom:0!important;margin-top:18px!important;padding:12px 0 2px!important;}
+      .rivenz-modal-cart,.rivenz-modal-order{min-height:46px!important;}
+      .rivenz-close{position:fixed!important;top:18px!important;right:18px!important;}
+    }
+    @media(max-width:430px){
+      .rivenz-product-modal{padding:6px!important;}
+      .rivenz-product-sheet{min-height:calc(100dvh - 12px)!important;border-radius:20px!important;}
+      .rivenz-main-image{height:34dvh!important;min-height:205px!important;}
+      .rivenz-product-info{padding:14px 14px 16px!important;}
+      .rivenz-product-name{font-size:22px!important;}
+      .rivenz-modal-actions{gap:7px!important;}
+    }
 </head>
 <body class="page-ready">
 <header class="home-header">
@@ -285,10 +316,10 @@
     document.getElementById('rivenzQtyMinus').onclick=()=>{if(qty>1){qty--;updateActions()}};document.getElementById('rivenzQtyPlus').onclick=()=>{const current=stockFor(chosenSize,chosenColor);if(qty<current){qty++;updateActions()}};
     document.getElementById('rivenzAddCart').onclick=()=>{const current=stockFor(chosenSize,chosenColor);if(!chosenSize||current<1)return;let items=[];try{items=JSON.parse(localStorage.getItem('rivenzCartV1')||'[]')}catch(e){}if(!Array.isArray(items))items=[];const productId=String(p.id||p.name||'');const key=[productId,chosenSize,chosenColor].join('|'),item=items.find(x=>String(x.key||'')===key);if(item){item.quantity=Math.min(current,Number(item.quantity||0)+qty);if(item.deliveryFee==null)item.deliveryFee=p.deliveryType==='paid'?Math.max(0,Number(p.deliveryFee||0)):0}else items.push({key,productId,name:p.name||'RIVENZ Product',image:imgs[0]?.url||'',size:chosenSize,color:chosenColor,quantity:qty,price:Number(price||0),deliveryFee:p.deliveryType==='paid'?Math.max(0,Number(p.deliveryFee||0)):0});localStorage.setItem('rivenzCartV1',JSON.stringify(items));window.dispatchEvent(new CustomEvent('rivenz-cart-updated'));updateRivenzCartCount();const cartButton=document.getElementById('rivenzAddCart');cartButton.textContent='✓ Added to Cart';setTimeout(()=>{cartButton.textContent='🛒 Add to Cart'},1300)};
     renderSizes();
-    show(0);modal.classList.add('open');document.body.style.overflow='hidden';
+    show(0);modal.classList.add('open');document.body.style.overflow='hidden';document.documentElement.style.overflow='hidden';
     const mainWrap=document.querySelector('.rivenz-main-image');let sx=0,sy=0;mainWrap.ontouchstart=e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY};mainWrap.ontouchend=e=>{const dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy)){show(current+(dx<0?1:-1))}};
   }
-  function closeModal(){const m=document.getElementById('rivenzProductModal');if(m){m.classList.remove('open');document.body.style.overflow=''}}
+  function closeModal(){const m=document.getElementById('rivenzProductModal');if(m){m.classList.remove('open');document.body.style.overflow='';document.documentElement.style.overflow=''}}
   function matchesCategory(p){
     const c=String(p?.category||'').toLowerCase();
     if(selectedCategory==='all') return true;
