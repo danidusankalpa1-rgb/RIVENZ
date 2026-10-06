@@ -15,6 +15,8 @@
 .view-all{color:#fff!important;background:#111316!important;border-color:#111316!important;min-width:132px;justify-content:center;text-shadow:none!important;opacity:1!important}
 .view-all b{color:#fff!important;opacity:1!important}
 #work-preview .view-all{color:#fff!important;background:#111316!important;border-color:#111316!important}
+
+.cart-nav-link{display:inline-flex!important;align-items:center!important;gap:5px!important}.cart-count{min-width:17px;height:17px;padding:0 5px;border-radius:999px;background:#15171b;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;line-height:1}.cart-count:empty{display:none!important}
 </style>
 </head>
 <body class="home-page page-ready">
@@ -27,10 +29,10 @@
       <nav class="home-nav nav">
         <a class="active" href="index.html">Home</a>
         <a href="services.html">Shop</a>
-        <a class="cart-nav-link" href="cart.html">Cart <span class="cart-count" id="cartCount">0</span></a>
         <a href="portfolio.html">Collections</a>
         <a href="weddings.html">Offers</a>
         <a href="#contact">Contact</a>
+        <a class="cart-nav-link" href="cart.html">Cart <span class="cart-count" id="homeCartCount" aria-label="cart items"></span></a>
         <a class="nav-login home-login" href="auth.html">Login</a>
         <a href="dashboard.html">My Account</a>
       </nav>
@@ -168,5 +170,9 @@
     })();
   </script>
 
+
+<script>
+(function(){function syncHomeCart(){try{var items=JSON.parse(localStorage.getItem('rivenzCartV1')||'[]');var n=Array.isArray(items)?items.reduce(function(s,x){return s+Math.max(0,Number(x.quantity)||0)},0):0;var el=document.getElementById('homeCartCount');if(el)el.textContent=n>0?String(n):'';}catch(e){}}syncHomeCart();window.addEventListener('storage',syncHomeCart);window.addEventListener('rivenz-cart-updated',syncHomeCart);})();
+</script>
 </body>
 </html>

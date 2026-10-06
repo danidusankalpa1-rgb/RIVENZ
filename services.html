@@ -138,40 +138,39 @@
       .service-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;max-width:100%!important;gap:10px!important}
       .service-card,.service-wide{height:315px!important;min-height:315px!important}
     }
-  </style>
-
-    <style>
-    /* RIVENZ Step 5 — stable mobile product viewer (product card visuals unchanged) */
-    .rivenz-product-modal{position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;z-index:99999!important;box-sizing:border-box!important;padding:12px!important;display:flex!important;align-items:flex-start!important;justify-content:center!important;overflow-y:auto!important;overflow-x:hidden!important;-webkit-overflow-scrolling:touch!important;background:rgba(17,18,20,.52)!important;}
-    .rivenz-product-sheet{width:min(860px,100%)!important;max-width:860px!important;max-height:none!important;height:auto!important;margin:auto!important;overflow:visible!important;border-radius:24px!important;display:grid!important;grid-template-columns:minmax(0,1fr) minmax(310px,.9fr)!important;position:relative!important;box-sizing:border-box!important;}
+  
+    /* RIVENZ Step 7 — stable product viewer; product card visuals unchanged */
+    .rivenz-product-modal{position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;z-index:99999!important;box-sizing:border-box!important;padding:18px!important;display:flex!important;align-items:center!important;justify-content:center!important;overflow:auto!important;-webkit-overflow-scrolling:touch!important;background:rgba(17,18,20,.52)!important;}
+    .rivenz-product-sheet{width:min(920px,calc(100vw - 36px))!important;max-width:920px!important;max-height:calc(100dvh - 36px)!important;height:auto!important;margin:auto!important;overflow:auto!important;border-radius:24px!important;display:grid!important;grid-template-columns:minmax(0,1fr) minmax(310px,.9fr)!important;position:relative!important;box-sizing:border-box!important;background:#fff!important;}
     .rivenz-gallery{min-width:0!important;}
     .rivenz-main-image img{object-fit:contain!important;background:#f1f1ee!important;}
     .rivenz-product-info{min-width:0!important;overflow:visible!important;}
     .rivenz-add{position:sticky!important;bottom:0!important;z-index:5!important;background:#fff!important;padding:12px 0 2px!important;margin-top:18px!important;}
-    @media(max-width:760px){
-      .rivenz-product-modal{padding:8px!important;}
-      .rivenz-product-sheet{width:100%!important;min-height:calc(100dvh - 16px)!important;display:flex!important;flex-direction:column!important;border-radius:22px!important;margin:0 auto!important;}
+    /* Touch/mobile devices: never use the desktop two-column popup. */
+    @media (max-width:900px), (pointer:coarse){
+      .rivenz-product-modal{padding:0!important;align-items:stretch!important;justify-content:stretch!important;overflow:auto!important;}
+      .rivenz-product-sheet{width:100%!important;max-width:none!important;min-height:100dvh!important;max-height:none!important;height:auto!important;margin:0!important;border-radius:0!important;display:flex!important;flex-direction:column!important;overflow:visible!important;}
       .rivenz-gallery{padding:10px 10px 0!important;flex:0 0 auto!important;}
-      .rivenz-main-image{aspect-ratio:1/1!important;height:min(43dvh,360px)!important;max-height:none!important;min-height:230px!important;border-radius:18px!important;}
-      .rivenz-main-image img{width:100%!important;height:100%!important;object-fit:contain!important;}
-      .rivenz-thumbs{padding-bottom:2px!important;}
-      .rivenz-product-info{padding:16px 16px 18px!important;overflow:visible!important;min-height:0!important;}
+      .rivenz-main-image{width:100%!important;height:min(42dvh,360px)!important;min-height:220px!important;max-height:none!important;aspect-ratio:auto!important;border-radius:18px!important;overflow:hidden!important;background:#f1f1ee!important;}
+      .rivenz-main-image img{width:100%!important;height:100%!important;object-fit:contain!important;background:#f1f1ee!important;}
+      .rivenz-thumbs{padding-bottom:2px!important;display:flex!important;gap:8px!important;overflow-x:auto!important;}
+      .rivenz-product-info{padding:16px 16px 28px!important;overflow:visible!important;min-width:0!important;min-height:0!important;}
       .rivenz-product-name{font-size:24px!important;line-height:1.08!important;}
       .rivenz-product-description{font-size:11px!important;line-height:1.55!important;}
-      .rivenz-modal-actions{grid-template-columns:1fr 1fr!important;}
-      .rivenz-add{position:sticky!important;bottom:0!important;margin-top:18px!important;padding:12px 0 2px!important;}
-      .rivenz-modal-cart,.rivenz-modal-order{min-height:46px!important;}
-      .rivenz-close{position:fixed!important;top:18px!important;right:18px!important;}
+      .rivenz-modal-actions{grid-template-columns:1fr 1fr!important;gap:8px!important;}
+      .rivenz-add{position:sticky!important;bottom:0!important;margin-top:18px!important;padding:12px 0 4px!important;}
+      .rivenz-modal-cart,.rivenz-modal-order{min-height:48px!important;}
+      .rivenz-close{position:fixed!important;top:14px!important;right:14px!important;z-index:100000!important;}
     }
-    @media(max-width:430px){
-      .rivenz-product-modal{padding:6px!important;}
-      .rivenz-product-sheet{min-height:calc(100dvh - 12px)!important;border-radius:20px!important;}
-      .rivenz-main-image{height:34dvh!important;min-height:205px!important;}
-      .rivenz-product-info{padding:14px 14px 16px!important;}
+    @media (max-width:430px){
+      .rivenz-gallery{padding:8px 8px 0!important;}
+      .rivenz-main-image{height:min(38dvh,320px)!important;min-height:205px!important;border-radius:16px!important;}
+      .rivenz-product-info{padding:14px 14px 24px!important;}
       .rivenz-product-name{font-size:22px!important;}
       .rivenz-modal-actions{gap:7px!important;}
     }
-    </style>
+</style>
+
 </head>
 <body class="page-ready">
 <header class="home-header">
