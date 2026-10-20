@@ -172,7 +172,7 @@
 
 
 <script>
-(function(){function syncHomeCart(){try{var items=JSON.parse(localStorage.getItem('rivenzCartV1')||'[]');var n=Array.isArray(items)?items.reduce(function(s,x){return s+Math.max(0,Number(x.quantity)||0)},0):0;var el=document.getElementById('homeCartCount');if(el)el.textContent=n>0?String(n):'';}catch(e){}}syncHomeCart();window.addEventListener('storage',syncHomeCart);window.addEventListener('rivenz-cart-updated',syncHomeCart);})();
+(function(){function waitForStore(){if(window.rivenzCartStore)return Promise.resolve();return new Promise(function(resolve){window.addEventListener('rivenz-cart-store-ready',resolve,{once:true})})}async function syncHomeCart(){await waitForStore();await window.rivenzCartStore.ready;var n=window.rivenzCartStore.count();var el=document.getElementById('homeCartCount');if(el)el.textContent=n>0?String(n):'';}syncHomeCart();window.addEventListener('storage',syncHomeCart);window.addEventListener('rivenz-cart-updated',syncHomeCart);window.addEventListener('rivenz-cart-session-changed',syncHomeCart);})();
 </script>
 <script>
 (function(){
@@ -226,5 +226,6 @@
   })();
 })();
 </script>
+<script type="module" src="cart-store.js"></script>
 </body>
 </html>

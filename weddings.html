@@ -259,7 +259,7 @@
     const qtyEl=()=>document.getElementById('rivenzQtyValue');
     function updateActions(){const available=stockFor(chosenSize,chosenColor);if(!chosenSize&&sizesFor(chosenColor).length)chosenSize=sizesFor(chosenColor)[0];const current=stockFor(chosenSize,chosenColor);if(qty>Math.max(1,current))qty=Math.max(1,current);qtyEl().textContent=qty;stock.innerHTML=current>0?'<strong>'+current+' units</strong> available'+(chosenColor?' · '+esc(chosenColor):''):'<strong>Unavailable</strong> for this selection';const can=!!chosenSize&&current>0;const orderBtn=document.getElementById('rivenzOrderNow'),cartBtn=document.getElementById('rivenzAddCart');orderBtn.classList.toggle('disabled',!can);cartBtn.disabled=!can;orderBtn.href=can?'order.html?product='+encodeURIComponent(p.id)+'&color='+encodeURIComponent(chosenColor)+'&size='+encodeURIComponent(chosenSize)+'&quantity='+encodeURIComponent(qty):'#';document.getElementById('rivenzQtyMinus').disabled=qty<=1;document.getElementById('rivenzQtyPlus').disabled=!can||qty>=current}
     document.getElementById('rivenzQtyMinus').onclick=()=>{if(qty>1){qty--;updateActions()}};document.getElementById('rivenzQtyPlus').onclick=()=>{const current=stockFor(chosenSize,chosenColor);if(qty<current){qty++;updateActions()}};
-    document.getElementById('rivenzAddCart').onclick=()=>{const current=stockFor(chosenSize,chosenColor);if(!chosenSize||current<1)return;let items=[];try{items=JSON.parse(localStorage.getItem('rivenzCartV1')||'[]')}catch(e){}if(!Array.isArray(items))items=[];const key=[p.id,chosenSize,chosenColor].join('|'),item=items.find(x=>x.key===key);if(item)item.quantity=Math.min(current,Number(item.quantity||0)+qty);else items.push({key,productId:p.id,name:p.name||'RIVENZ Product',image:imgs[0]?.url||'',size:chosenSize,color:chosenColor,quantity:qty,price:Number(price||0)});localStorage.setItem('rivenzCartV1',JSON.stringify(items));updateRivenzCartCount();const cartButton=document.getElementById('rivenzAddCart');cartButton.textContent='✓ Added to Cart';setTimeout(()=>{cartButton.textContent='🛒 Add to Cart'},1300)};
+    document.getElementById('rivenzAddCart').onclick=async()=>{await waitForRivenzCartStore();await window.rivenzCartStore.ready;const current=stockFor(chosenSize,chosenColor);if(!chosenSize||current<1)return;let items=window.rivenzCartStore.getCart();const key=[p.id,chosenSize,chosenColor].join('|'),item=items.find(x=>x.key===key);if(item)item.quantity=Math.min(current,Number(item.quantity||0)+qty);else items.push({key,productId:p.id,name:p.name||'RIVENZ Product',image:imgs[0]?.url||'',size:chosenSize,color:chosenColor,quantity:qty,price:Number(price||0)});window.rivenzCartStore.saveCart(items);updateRivenzCartCount();const cartButton=document.getElementById('rivenzAddCart');cartButton.textContent='✓ Added to Cart';setTimeout(()=>{cartButton.textContent='🛒 Add to Cart'},1300)};
     renderSizes();
     show(0);modal.classList.add('open');document.body.style.overflow='hidden';
     const mainWrap=document.querySelector('.rivenz-main-image');let sx=0,sy=0;mainWrap.ontouchstart=e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY};mainWrap.ontouchend=e=>{const dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy)){show(current+(dx<0?1:-1))}};
@@ -275,11 +275,13 @@
 })();
 </script>
 <script>
-function updateRivenzCartCount(){try{const items=JSON.parse(localStorage.getItem('rivenzCartV1')||'[]');const n=Array.isArray(items)?items.reduce((sum,x)=>sum+Math.max(0,Number(x.quantity)||0),0):0;const el=document.getElementById('cartCount');if(el)el.textContent=n||'';}catch(e){}}
-updateRivenzCartCount();window.addEventListener('storage',updateRivenzCartCount);
+function waitForRivenzCartStore(){if(window.rivenzCartStore)return Promise.resolve();return new Promise(resolve=>window.addEventListener('rivenz-cart-store-ready',resolve,{once:true}))}
+async function updateRivenzCartCount(){await waitForRivenzCartStore();await window.rivenzCartStore.ready;const n=window.rivenzCartStore.count();const el=document.getElementById('cartCount');if(el)el.textContent=n||'';}
+updateRivenzCartCount();window.addEventListener('storage',updateRivenzCartCount);window.addEventListener('rivenz-cart-updated',updateRivenzCartCount);window.addEventListener('rivenz-cart-session-changed',updateRivenzCartCount);
 const homeToggle=document.querySelector('.home-menu-toggle'),homeNav=document.querySelector('.home-nav');
 if(homeToggle&&homeNav){homeToggle.addEventListener('click',()=>{const open=homeNav.classList.toggle('open');homeToggle.setAttribute('aria-expanded',open)});homeNav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>homeNav.classList.remove('open')))}
 </script>
 <script type="module" src="session-nav.js"></script>
+<script type="module" src="cart-store.js"></script>
 </body>
 </html>
