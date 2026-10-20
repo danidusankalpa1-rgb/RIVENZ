@@ -123,9 +123,21 @@ async function fileUrl(ref){
   return url;
 }
 
+function belongsToUser(order,user){
+  if(!order||!user) return false;
+  if(order.uid) return String(order.uid)===String(user.uid);
+  const orderEmail=String(order.email||"").trim().toLowerCase();
+  const userEmail=String(user.email||"").trim().toLowerCase();
+  return Boolean(orderEmail && userEmail && orderEmail===userEmail);
+}
+
 async function save(order){
   const user=auth.currentUser; if(!user) throw new Error("AUTH_REQUIRED");
-  const ownerUid=order.uid||user.uid;
+  if(order?.uid && String(order.uid)!==String(user.uid)) throw new Error("ORDER_OWNER_MISMATCH");
+  if(!order?.id) throw new Error("ORDER_ID_REQUIRED");
+  // Customer-side saves must always belong to the currently authenticated user.
+  // Admin order updates use the separate Admin site's order-flow.js.
+  const ownerUid=user.uid;
   const payload={...order,uid:ownerUid,email:order.email||user.email||"",updatedAt:serverTimestamp()};
   if(!order.createdAt) payload.createdAt=serverTimestamp();
   await withTimeout(setDoc(doc(db,"orders",order.id),payload,{merge:true}),15000,"Firestore order save");
@@ -144,27 +156,42 @@ async function get(orderId){
     const snap=await getDoc(doc(db,"orders",orderId));
     if(snap.exists()){
       const data={id:snap.id,...snap.data()};
-      if(data.uid && data.uid!==user.uid) return null;
-      return data;
+      // Legacy orders without a UID are only visible to the matching account email.
+      return belongsToUser(data,user)?data:null;
     }
   }catch(e){console.warn("Firebase order read failed:",e);}
-  const local=read(KEY,[]); const found=local.find(x=>x.id===orderId);
-  if(found && found.uid && found.uid!==user.uid) return null;
-  return found||null;
+  const found=read(KEY,[]).find(x=>x.id===orderId);
+  return belongsToUser(found,user)?found:null;
 }
 
 async function orders(){
   const user=auth.currentUser; if(!user) return [];
+  const remoteById=new Map();
   try{
-    const snap=await getDocs(query(collection(db,"orders"),where("uid","==",user.uid)));
-    return snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>{
-      const stamp=v=>v?.toMillis?v.toMillis():Date.parse(String(v||""))||0;
-      return stamp(b.createdAt)-stamp(a.createdAt);
-    });
+    // Query by UID first so customer reads comply with owner-scoped Firestore rules.
+    const snap=await withTimeout(getDocs(query(collection(db,"orders"),where("uid","==",user.uid))),15000,"Firebase customer orders request");
+    snap.docs.forEach(d=>remoteById.set(d.id,{id:d.id,...d.data()}));
   }catch(e){
     console.warn("Firebase orders read failed:",e);
-    return read(KEY,[]).filter(o=>!o.uid||o.uid===user.uid);
   }
+  // Older orders may predate UID storage. Try an email-scoped query separately;
+  // if the deployed Firestore rules disallow it, keep the UID-owned results.
+  if(user.email){
+    try{
+      const legacySnap=await withTimeout(getDocs(query(collection(db,"orders"),where("email","==",user.email))),10000,"Firebase legacy customer orders request");
+      legacySnap.docs.forEach(d=>{
+        const order={id:d.id,...d.data()};
+        if(belongsToUser(order,user)) remoteById.set(d.id,{...(remoteById.get(d.id)||{}),...order});
+      });
+    }catch(e){console.warn("Legacy email-scoped orders unavailable:",e);}
+  }
+  const local=read(KEY,[]).filter(o=>belongsToUser(o,user));
+  for(const order of local){
+    if(!remoteById.has(order.id)) remoteById.set(order.id,order);
+    else remoteById.set(order.id,{...order,...remoteById.get(order.id)});
+  }
+  const stamp=v=>v?.toMillis?v.toMillis():v instanceof Date?v.getTime():typeof v==="number"?v:Date.parse(String(v||""))||0;
+  return [...remoteById.values()].sort((a,b)=>stamp(b.updatedAt||b.createdAt)-stamp(a.updatedAt||a.createdAt));
 }
 
 async function adminOrders(){
