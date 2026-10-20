@@ -31,28 +31,6 @@ body{background:#fbfbfa;color:#15171b}
 .menu-toggle{color:#15171b}
 @media(max-width:800px){.nav{top:78px;background:#fff;border-bottom:1px solid #e9eaed;color:#666b73}.nav a{color:#666b73}.nav a.active{color:#fff;background:#15171b}}
 
-/* RIVENZ Wallet card — styled from the supplied RUi design reference */
-.wallet-panel{margin-bottom:16px}
-.wallet-card{position:relative;isolation:isolate;overflow:hidden;min-height:190px;box-sizing:border-box;padding:24px 25px;border-radius:22px;color:#fff;background:radial-gradient(ellipse at 85% 10%,rgba(77,92,143,.25),transparent 38%),linear-gradient(135deg,#080d21 0%,#111a38 54%,#080b18 100%);box-shadow:0 18px 38px rgba(8,13,33,.22);}
-.wallet-card:before{content:"";position:absolute;z-index:-1;inset:0;background-image:radial-gradient(circle at 20% 20%,rgba(255,255,255,.08) 0 1px,transparent 2px),radial-gradient(circle at 70% 75%,rgba(255,255,255,.06) 0 1px,transparent 2px);background-size:23px 23px,31px 31px;opacity:.6}
-.wallet-top{display:flex;justify-content:space-between;align-items:center;gap:12px}
-.wallet-brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;letter-spacing:.01em}
-.wallet-mark{width:29px;height:29px;display:grid;place-items:center;border-radius:50%;background:#fff;color:#111a38;font-size:17px;font-weight:900}
-.wallet-type{font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:#c2c7d8;border:1px solid rgba(255,255,255,.2);border-radius:99px;padding:7px 9px}
-.wallet-balance-label{margin-top:26px;font-size:8px;letter-spacing:.19em;text-transform:uppercase;color:#aeb6ce}
-.wallet-balance{font-size:clamp(27px,5vw,36px);line-height:1.1;font-weight:800;letter-spacing:-.04em;margin-top:6px;font-variant-numeric:tabular-nums}
-.wallet-card-bottom{display:flex;justify-content:space-between;align-items:end;gap:14px;margin-top:22px}
-.wallet-holder-label{font-size:7px;letter-spacing:.17em;text-transform:uppercase;color:#9ba5c0;margin-bottom:5px}
-.wallet-holder{font-size:12px;font-weight:750;letter-spacing:.04em;max-width:70%;overflow-wrap:anywhere}
-.wallet-number{font-size:9px;letter-spacing:.15em;color:#c7cde0;white-space:nowrap}
-.wallet-brand-name{font-size:11px;letter-spacing:.18em;font-weight:800;white-space:nowrap}
-.wallet-caption{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:12px;color:#777d86;font-size:9px}
-.wallet-caption strong{color:#111318}
-.wallet-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}
-.wallet-actions a{display:inline-flex;align-items:center;justify-content:center;padding:10px 13px;border-radius:10px;border:1px solid var(--profile-line);font-size:10px;text-decoration:none;color:#111318;background:#fff}
-.wallet-actions a.wallet-primary{background:#111318;color:#fff;border-color:#111318;font-weight:750}
-@media(max-width:480px){.wallet-card{padding:20px;min-height:178px;border-radius:19px}.wallet-balance-label{margin-top:22px}.wallet-card-bottom{margin-top:19px}.wallet-brand{font-size:16px}.wallet-number{font-size:8px}.wallet-holder{font-size:11px}}
-
 </style>
 </head>
 <body class="page-ready">
@@ -66,18 +44,6 @@ body{background:#fbfbfa;color:#15171b}
 
 <main class="profile-page">
 <section class="profile-hero"><div class="profile-hero-inner"><div><div class="profile-kicker">RIVENZ · MY ACCOUNT</div><h1>Welcome, <span id="heroName">there.</span></h1><p>Manage your RIVENZ account details and quickly check your clothing orders, payment status and delivery progress.</p></div><div class="account-chip"><small>ACCOUNT EMAIL</small><strong id="heroEmail">Loading...</strong></div></div></section>
-
-<section class="profile-card wallet-panel" aria-labelledby="walletTitle">
-<div class="profile-card-head"><h2 id="walletTitle">RIVENZ Wallet</h2><span class="live-pill">R Points · 1 point = Rs. 1</span></div>
-<div class="wallet-card" role="group" aria-label="RIVENZ R Points wallet card">
-  <div class="wallet-top"><div class="wallet-brand"><span class="wallet-mark" aria-hidden="true">R</span><span>RIVENZ</span></div><span class="wallet-type">Shopping Card</span></div>
-  <div class="wallet-balance-label">Available balance</div><div class="wallet-balance" id="walletBalance">0 R</div>
-  <div class="wallet-card-bottom"><div><div class="wallet-holder-label">Card holder</div><div class="wallet-holder" id="walletHolder">RIVENZ CUSTOMER</div></div><div class="wallet-number" id="walletNumber">R ••• ••• ••••</div><div class="wallet-brand-name">RIVENZ</div></div>
-</div>
-<div class="wallet-caption"><span>Reward balance</span><strong id="walletCashValue">Rs. 0.00</strong></div>
-<div class="wallet-actions"><a class="wallet-primary" href="services.html">Earn R Points</a><a href="dashboard.html">View orders</a></div>
-<div class="status-line" id="walletStatus">Your wallet balance will appear here when available.</div>
-</section>
 
 <div class="profile-layout">
 <div>
@@ -105,10 +71,6 @@ function itemCount(o){if(Array.isArray(o?.items))return o.items.reduce((n,i)=>n+
 function firstProduct(o){const i=Array.isArray(o?.items)?o.items[0]:null; return i?.productName||i?.name||o?.productName||o?.service||"RIVENZ Order";}
 function setStatus(t,c=""){statusEl.textContent=t;statusEl.className="status-line "+c;}
 function renderProfile(data){const name=data?.name||user?.displayName||"there";const email=data?.email||user?.email||"";nameEl.value=name;phoneEl.value=data?.phone||"";emailEl.value=email;$("heroName").textContent=name.split(" ")[0]||"there";$("heroEmail").textContent=email||"—";
- const pointsRaw=data?.rPointsBalance??data?.walletBalance??data?.rPoints??data?.pointsBalance??data?.points??0;
- const points=Math.max(0,Number(pointsRaw)||0);$("walletBalance").textContent=points.toLocaleString(undefined,{maximumFractionDigits:2})+" R";$("walletCashValue").textContent="Rs. "+points.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});$("walletHolder").textContent=String(name||"RIVENZ CUSTOMER").toUpperCase();
- const uid=String(user?.uid||"");$("walletNumber").textContent=uid?"R "+uid.slice(-3).padStart(3,"0")+" ••• ••••":"R ••• ••• ••••";
- $("walletStatus").textContent=(data?.rPointsBalance!==undefined||data?.walletBalance!==undefined||data?.rPoints!==undefined||data?.pointsBalance!==undefined||data?.points!==undefined)?"Wallet balance synced from your account.":"Wallet card ready. Your available points will appear here once rewards are enabled.";
  if(!saving)setStatus("Profile synced.","ok");}
 function renderOrders(list){
  const orders=[...list].sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
