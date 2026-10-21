@@ -32,6 +32,7 @@ body{background:#fbfbfa;color:#15171b}
 @media(max-width:800px){.nav{top:78px;background:#fff;border-bottom:1px solid #e9eaed;color:#666b73}.nav a{color:#666b73}.nav a.active{color:#fff;background:#15171b}}
 
 </style>
+<link rel="stylesheet" href="user-nav.css">
 </head>
 <body class="page-ready">
 <header class="site-header">
@@ -87,5 +88,7 @@ saveBtn.addEventListener("click",async()=>{if(!user||saving)return;const name=na
 $("logout").addEventListener("click",async e=>{e.preventDefault();try{await signOut(auth)}finally{location.href="auth.html"}});$("toggle")?.addEventListener("click",()=>$("nav").classList.toggle("open"));
 onAuthStateChanged(auth,u=>{if(stopClient)stopClient();if(stopOrders)stopOrders();if(!u){location.replace("auth.html?next=profile.html");return}user=u;stopClient=onSnapshot(doc(db,"clients",u.uid),snap=>renderProfile(snap.exists()?snap.data():{name:u.displayName||"",email:u.email||"",phone:""}),err=>{console.error(err);setStatus("Profile could not be loaded. Check Firebase access.","err")});subscribeOrders();});
 </script>
+<script type="module" src="account-guard.js"></script>
+<script type="module" src="user-nav.js"></script>
 </body>
 </html>

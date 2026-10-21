@@ -27,6 +27,7 @@
 @media(max-width:780px){.confirm-page{padding:35px 14px 55px}.confirm-grid{grid-template-columns:1fr}.confirm-card{padding:19px;border-radius:21px}}
 @media(max-width:520px){.confirm-hero h1{font-size:34px}.confirm-mark{width:62px;height:62px;border-radius:21px}.action-row,.confirm-actions{display:grid;grid-template-columns:1fr}.btn{width:100%}}
 </style>
+<link rel="stylesheet" href="user-nav.css">
 </head>
 <body class="page-ready">
 <header class="site-header">
@@ -53,4 +54,6 @@ function setDone(mode){const submitted=mode==="submitted";$("paymentHeadline").t
 async function load(){if(!id){$("id").textContent="Order not found";return} $("id").textContent=id; currentOrder=await window.graphicsOrderFlow.get(id); if(!currentOrder){$("heroText").textContent="We could not find this order.";return} $("subtotal").textContent=money(currentOrder.subtotal??currentOrder.total); $("total").textContent=money(currentOrder.total); $("paymentStatus").textContent=currentOrder.paymentStatus||"Pending"; $("delivery").textContent=currentOrder.deliveryFee==null?"To be confirmed":money(currentOrder.deliveryFee); const items=currentOrder.items||currentOrder.products||[]; $("items").innerHTML=items.map(it=>'<div class="item">'+(it.image?'<img src="'+String(it.image).replace(/"/g,'&quot;')+'" alt="">':'<div style="width:52px;height:64px;border-radius:11px;background:#eee"></div>')+'<div class="item-info"><div class="item-name">'+String(it.name||it.title||"Product").replace(/</g,'&lt;')+'</div><div class="item-meta">'+String(it.size||"Size —")+' · '+String(it.color||"Color —")+' · Qty '+Number(it.quantity||1)+'</div></div><div class="item-price">'+money(Number(it.price||0)*Number(it.quantity||1))+'</div></div>').join(""); if(confirmed||submitted||currentOrder.confirmed){setDone(submitted&&!confirmed?"submitted":"confirmed")} }
 onAuthStateChanged(auth,async user=>{if(!user){location.href="auth.html?next="+encodeURIComponent("order-confirmation.html?id="+(id||""));return} currentUser=user; try{await load()}catch(e){console.error(e);$("heroText").textContent="We could not load this order. Please try again."}});
 const toggle=document.querySelector(".menu-toggle"),nav=document.querySelector(".nav");if(toggle&&nav)toggle.addEventListener("click",()=>{const open=nav.classList.toggle("open");toggle.setAttribute("aria-expanded",String(open))});
-</script></body></html>
+</script><script type="module" src="account-guard.js"></script>
+<script type="module" src="user-nav.js"></script>
+</body></html>
