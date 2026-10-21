@@ -143,12 +143,17 @@ async function render(user){
       fallback.sort((a,b)=>{const stamp=v=>v?.toMillis?v.toMillis():Date.parse(String(v||''))||0;return stamp(b.createdAt)-stamp(a.createdAt)});
       updates=fallback.slice(0,12);
     }
+    window.__orderNotes=updates;
+    const {mergeNotes,watchChat}=await import('./chat-notes.js');
+    const paint=()=>{const updates=mergeNotes();
     if(!updates.length) notificationsBox.innerHTML=`<div class="empty">No notifications yet. Order updates will appear here automatically.</div>`;
     else notificationsBox.innerHTML='<div class="notification-list">'+updates.map(n=>{
       const date=n.createdAt?.toDate?n.createdAt.toDate().toLocaleString("en-LK",{day:"2-digit",month:"short",year:"numeric",hour:"numeric",minute:"2-digit"}):(n.time||"");
       const orderId=String(n.orderId||"");
-      return `<div class="notification-item"><span class="notification-dot"></span><div><div class="notification-message">${esc(n.message||"RIVENZ order update")}</div><div class="notification-meta"><span>${esc(date)}</span>${orderId?`<span>·</span><a href="order-details.html?id=${encodeURIComponent(orderId)}">${esc(orderId)}</a>`:""}</div></div></div>`;
+      return `<div class="notification-item"><span class="notification-dot"></span><div><div class="notification-message">${esc(n.message||"RIVENZ order update")}</div><div class="notification-meta"><span>${esc(date)}</span>${orderId?`<span>·</span><a href="order-details.html?id=${encodeURIComponent(orderId)}">${esc(orderId)}</a>`:""}${n.chat?'<span>·</span><a href="chat.html">Open chat</a>':""}</div></div></div>`;
     }).join('')+'</div>';
+    };
+    window.__paintNotes=paint;paint();watchChat(user);
   }catch(error){
     console.warn("Could not load notifications:",error);
     notificationsBox.innerHTML=`<div class="empty">Notifications are temporarily unavailable.</div>`;
@@ -177,5 +182,6 @@ renderWishlist();window.addEventListener('storage',renderWishlist);window.addEve
 document.getElementById("dashboardLogout")?.addEventListener("click",async e=>{e.preventDefault();try{await signOut(auth);}catch(error){console.error("Logout failed:",error);}location.href="index.html";});
 onAuthStateChanged(auth,user=>{if(!user){if(stopOrderWatch)stopOrderWatch();location.replace("auth.html?next=dashboard.html");return;}dashboardUser=user;render(user);watchCustomerOrders(user);});
 </script>
+<script type="module" src="account-guard.js"></script>
 </body>
 </html>
