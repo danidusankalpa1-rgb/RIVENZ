@@ -47,11 +47,11 @@ async function upload(file,type){
     body
   });
 }
-async function catalog(type){
+async function rawCatalog(type){
   const d=await jsonRequest('/public/catalog?type='+encodeURIComponent(String(type||'portfolio')));
   return Array.isArray(d.items)?d.items:[];
 }
-async function saveCatalog(type,items){
+async function rawSave(type,items){
   const token=await getToken(true);
   const d=await jsonRequest('/public/catalog',{
     method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({type:String(type||'portfolio'),items:Array.isArray(items)?items:[]})
@@ -62,6 +62,19 @@ async function removeFile(key){
   if(!key) return;
   const token=await getToken();
   await jsonRequest('/public/file?key='+encodeURIComponent(String(key)),{method:'DELETE',headers:{Authorization:'Bearer '+token}});
+}
+// Settings (home/payment/special-event) live inside the allowed 'showcase' catalog as items tagged _key.
+const SETTINGS_KEYS=['home-settings','payment-settings','special-event'];
+async function catalog(type){
+  if(!SETTINGS_KEYS.includes(type)) return rawCatalog(type);
+  const all=await rawCatalog('showcase');const it=all.find(x=>x&&x._key===type);
+  if(!it) return [];const {_key,...rest}=it;return [rest];
+}
+async function saveCatalog(type,items){
+  if(!SETTINGS_KEYS.includes(type)) return rawSave(type,items);
+  const all=(await rawCatalog('showcase')).filter(x=>x&&x._key!==type);
+  const v=Array.isArray(items)&&items[0]?items[0]:null;if(v)all.push({...v,_key:type});
+  await rawSave('showcase',all);return items;
 }
 window.graphicsPublicContent={API,upload,catalog,saveCatalog,removeFile,getAuthUser};
 window.graphicsPublicContentReady=Promise.resolve(window.graphicsPublicContent);

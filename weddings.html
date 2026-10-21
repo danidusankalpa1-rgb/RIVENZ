@@ -7,7 +7,7 @@
   <meta name="description" content="RIVENZ special offers — selected clothing at reduced prices.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Unbounded:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="home.css">
   <script src="ui-messages.js"></script>
@@ -140,6 +140,7 @@
     .shop-filters,.shop-subfilters{display:none!important}
   .offers-only-note{font-size:10px;color:#777c84;margin:0 0 18px}
 </style>
+<link rel="stylesheet" href="shop-v2.css">
 <link rel="stylesheet" href="user-nav.css">
 </head>
 <body class="page-ready">
@@ -161,16 +162,11 @@
 </header>
 
 <main class="services-page">
-  <section class="services-intro">
-    <div>
-      <div class="services-kicker">RIVENZ · Offers</div>
-      <h1>Good style.<br>Better price.</h1>
-      <p>Browse active RIVENZ products with an offer price. Choose a piece, check sizes and stock, then continue to checkout.</p>
-    </div>
-    <div class="services-note"><strong>Selected offers</strong><span>Only products with an active offer price appear here.</span></div>
+  <section class="services-intro sx-intro">
+    <div><div class="services-kicker">RIVENZ</div><h1>Offers</h1></div>
+    <p>Selected pieces at special prices.</p>
   </section>
 
-  <div class="offers-only-note">Special offer products from the RIVENZ product catalogue.</div>
   <section id="serviceGrid" class="service-grid" aria-live="polite">
     <div class="empty-state"><strong>Loading products…</strong><span>Getting the latest RIVENZ products.</span></div>
   </section>
@@ -199,29 +195,20 @@
   function availableSizes(p){return ['XS','S','M','L','XL','XXL','XXXL'].filter(x=>{const v=p.stock?.[x];if(typeof v==='number')return v>0;if(v&&typeof v==='object')return Object.values(v).some(n=>Number(n)>0);return false})}
   async function load(){try{products=await window.graphicsPublicContent.catalog('products')}catch(e){products=[]}if(!products.length)products=local();render()}
   function makeCard(p){
-    const card=document.createElement('article');card.className='service-card';
-    const media=document.createElement('div');media.className='service-media';
-    const wish=document.createElement('button');wish.type='button';wish.className='rivenz-wishlist-btn';wish.setAttribute('aria-label','Add to wishlist');wish.setAttribute('aria-pressed','false');wish.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M20.84 8.72c0 5.34-8.84 10.1-8.84 10.1S3.16 14.06 3.16 8.72A4.72 4.72 0 0 1 12 6.2a4.72 4.72 0 0 1 8.84 2.52Z"/></svg>';
-    function syncWish(){const saved=readWishlist();const active=saved.some(x=>String(x.id)===String(p.id));wish.classList.toggle('active',active);wish.setAttribute('aria-pressed',String(active));wish.setAttribute('aria-label',active?'Remove from wishlist':'Add to wishlist')}
-    wish.onclick=(e)=>{e.preventDefault();e.stopPropagation();toggleWishlist(p);syncWish();};media.appendChild(wish);
-    const top=document.createElement('div');top.className='service-top';
-    const badge=document.createElement('span');badge.className='service-badge';badge.textContent=p.category||'RIVENZ CLOTHING';
-    const offer=document.createElement('span');offer.className='service-offer';offer.textContent=Number(p.offer||0)>0?'Offer':'New arrival';top.append(badge,offer);media.appendChild(top);
-    const placeholder=document.createElement('div');placeholder.className='service-placeholder';placeholder.textContent='Product image';media.appendChild(placeholder);
-    const img=document.createElement('img');img.alt=p.name||'RIVENZ product';media.appendChild(img);
-    const body=document.createElement('div');body.className='service-body';
-    const title=document.createElement('h2');title.className='service-title';title.textContent=p.name||'RIVENZ Product';
-    const desc=document.createElement('p');desc.className='service-desc';desc.textContent=p.description||'A clean RIVENZ piece made for everyday wear.';
-    const meta=document.createElement('div');meta.className='product-meta';
-    const sizes=availableSizes(p);(sizes.length?sizes:['Out of stock']).slice(0,5).forEach(x=>{const m=document.createElement('span');m.textContent=x;meta.appendChild(m)});
-    const galleryCount=images(p).length;if(galleryCount>1){const m=document.createElement('span');m.textContent=galleryCount+' photos';meta.appendChild(m)}
-    const chips=document.createElement('div');chips.className='service-includes';(Array.isArray(p.colors)?p.colors:[]).slice(0,3).forEach(x=>{const c=document.createElement('span');c.className='service-chip';c.textContent='• '+x;chips.appendChild(c)});
-    const price=document.createElement('div');price.className='service-price-row';if(Number(p.offer||0)>0&&Number(p.price||0)>0){const old=document.createElement('span');old.className='service-old';old.textContent=money(p.price);price.appendChild(old)}const nw=document.createElement('strong');nw.className='service-new';nw.textContent=money(Number(p.offer||0)>0?p.offer:p.price);price.appendChild(nw);
-    const actions=document.createElement('div');actions.className='service-actions';
-    const order=document.createElement('button');order.type='button';order.className='service-order';order.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 7h12l-1 12H7L6 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><span>'+(stockTotal(p)>0?'Order Now':'Out of Stock')+'</span>';if(stockTotal(p)<=0){order.classList.add('disabled');order.disabled=true}else order.onclick=()=>openDetails(p);
-    actions.appendChild(order);
-    body.append(title,desc,meta,chips,price,actions);card.append(media,body);
-    const ref=images(p)[0]?.url||'';if(ref){img.src=ref;img.onload=()=>{media.classList.add('loaded');placeholder.style.display='none'}}
+    const card=document.createElement('article');card.className='service-card sx-card';card.tabIndex=0;
+    const media=document.createElement('div');media.className='service-media sx-img';
+    const wish=document.createElement('button');wish.type='button';wish.className='rivenz-wishlist-btn';wish.setAttribute('aria-pressed','false');wish.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M20.84 8.72c0 5.34-8.84 10.1-8.84 10.1S3.16 14.06 3.16 8.72A4.72 4.72 0 0 1 12 6.2a4.72 4.72 0 0 1 8.84 2.52Z"/></svg>';
+    function syncWish(){const active=readWishlist().some(x=>String(x.id)===String(p.id));wish.classList.toggle('active',active);wish.setAttribute('aria-pressed',String(active));wish.setAttribute('aria-label',active?'Remove from wishlist':'Add to wishlist')}
+    wish.onclick=(e)=>{e.preventDefault();e.stopPropagation();toggleWishlist(p);syncWish();};
+    const ref=images(p)[0]?.url||'';
+    if(ref){const img=document.createElement('img');img.alt=p.name||'RIVENZ product';img.loading='lazy';img.decoding='async';img.src=ref;media.appendChild(img)}
+    media.appendChild(wish);
+    const off=Number(p.offer||0)>0&&Number(p.price||0)>0&&Number(p.offer)<Number(p.price);
+    if(off){const t=document.createElement('span');t.className='sx-off';t.textContent='-'+Math.round((1-p.offer/p.price)*100)+'%';media.appendChild(t)}
+    const body=document.createElement('div');body.className='sx-body';
+    body.innerHTML='<div class="sx-row"><h2 class="sx-name">'+esc(p.name||'RIVENZ Product')+'</h2><span class="sx-price">'+money(off?p.offer:p.price)+(off?'<s>'+money(p.price)+'</s>':'')+'</span></div><p class="sx-desc">'+esc(p.description||'A clean RIVENZ piece made for everyday wear.')+'</p>';
+    card.append(media,body);
+    const open=()=>openDetails(p);card.onclick=open;card.onkeydown=e=>{if(e.key==='Enter')open()};
     syncWish();
     return card;
   }
