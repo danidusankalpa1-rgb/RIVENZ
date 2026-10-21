@@ -1,5 +1,105 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Special event — RIVENZ Clothing</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="home.css"><link rel="stylesheet" href="user-nav.css">
-<style>body{background:#fbfbfa;color:#15171b}.se{max-width:700px;margin:0 auto;padding:90px 24px;text-align:center}.se h1{font-size:clamp(34px,6vw,56px);letter-spacing:-.05em;margin:0 0 12px}.se p{color:#747983}</style></head>
-<body class="page-ready"><main class="se"><h1>Special events.</h1><p>Seasonal and festival collections will appear here soon.</p></main><script type="module" src="user-nav.js"></script></body></html>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Unbounded:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="user-nav.css">
+<style>
+:root{--bg:#d8d8c8;--bg2:#c9c9b6;--ac:#8cc63f;--tx:#15171b;--bt:#15171b;--bx:#fff;--wide:'Unbounded','Inter',sans-serif;--ease:cubic-bezier(.22,1,.36,1)}
+*{box-sizing:border-box}
+body.se{margin:0;color:var(--tx);font-family:Inter,system-ui,sans-serif;background:var(--bg);-webkit-font-smoothing:antialiased;overflow-x:hidden;transition:background .8s var(--ease),color .6s}
+.se-stage{position:relative;min-height:calc(100vh - 64px);overflow:hidden;background:radial-gradient(120% 90% at 65% 40%,var(--bg2),var(--bg));transition:background .8s var(--ease)}
+.se-word{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);font-family:var(--wide);font-weight:700;font-size:clamp(120px,26vw,420px);letter-spacing:-.04em;color:var(--tx);opacity:.07;white-space:nowrap;pointer-events:none;user-select:none;text-transform:uppercase;animation:seWord 1.4s var(--ease) both}
+.se-in{position:relative;z-index:2;max-width:1320px;margin:0 auto;padding:56px 40px 150px;display:grid;grid-template-columns:1fr 1.2fr 1fr;align-items:center;gap:20px;min-height:calc(100vh - 64px)}
+.se-left h1{margin:0;font-family:var(--wide);font-weight:600;font-size:clamp(34px,5.4vw,78px);line-height:1.02;letter-spacing:-.03em;text-transform:uppercase}
+.se-kick{display:inline-block;margin-bottom:18px;font-size:11px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--ac);filter:brightness(.85)}
+.se-left p{margin:22px 0 0;max-width:300px;font-size:14px;line-height:1.7;opacity:.75}
+.se-mid{position:relative;display:grid;place-items:center;min-height:420px}
+.se-hero{position:relative;width:min(100%,380px);aspect-ratio:3/4;border-radius:28px;overflow:hidden;background:rgba(255,255,255,.4);box-shadow:0 40px 80px -20px rgba(0,0,0,.35);animation:seFloat 6s ease-in-out infinite;transition:transform .2s ease-out}
+.se-hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.08);transition:opacity .7s var(--ease),transform 1.1s var(--ease)}
+.se-hero img.on{opacity:1;transform:scale(1)}
+.se-right{text-align:right}
+.se-pn{font-family:var(--wide);font-weight:600;font-size:clamp(16px,1.9vw,24px);letter-spacing:-.01em;text-transform:uppercase;line-height:1.2}
+.se-pp{margin-top:10px;font-family:var(--wide);font-weight:700;font-size:clamp(20px,2.6vw,34px);color:var(--ac);filter:brightness(.8)}
+.se-pp s{font-size:.5em;opacity:.55;margin-left:8px;color:var(--tx);font-weight:500}
+.se-pd{margin:14px 0 0 auto;max-width:260px;font-size:13px;line-height:1.65;opacity:.72}
+.se-swap{animation:seSwap .7s var(--ease) both}
+.se-cta{display:inline-flex;align-items:center;gap:10px;margin-top:26px;height:54px;padding:0 30px;border-radius:999px;background:var(--bt);color:var(--bx);font-weight:700;font-size:14px;text-decoration:none;box-shadow:0 14px 30px -10px rgba(0,0,0,.4);transition:transform .25s var(--ease),filter .2s,background .6s}
+.se-cta:hover{transform:translateY(-3px) scale(1.03);filter:brightness(1.08)}
+.se-rail{position:absolute;z-index:3;left:0;right:0;bottom:26px;padding:0 40px;display:flex;gap:14px;justify-content:center;overflow-x:auto;scrollbar-width:none;scroll-snap-type:x mandatory}
+.se-rail::-webkit-scrollbar{display:none}
+.se-card{flex:0 0 250px;scroll-snap-align:center;display:flex;align-items:center;gap:12px;padding:10px 12px 10px 10px;border:0;border-radius:20px;background:rgba(255,255,255,.92);box-shadow:0 18px 40px -16px rgba(0,0,0,.35);cursor:pointer;text-align:left;font:inherit;color:#15171b;transition:transform .35s var(--ease),box-shadow .35s;animation:seUp .8s var(--ease) both}
+.se-card:hover{transform:translateY(-6px)}
+.se-card.on{outline:2px solid var(--ac);transform:translateY(-6px)}
+.se-card img{width:64px;height:64px;border-radius:14px;object-fit:cover;background:#eee;flex:none}
+.se-card b{display:block;font-size:11.5px;letter-spacing:.04em;text-transform:uppercase;line-height:1.3;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.se-card small{display:block;margin-top:4px;font-size:12px;opacity:.7}
+.se-plus{margin-left:auto;width:34px;height:34px;border-radius:50%;background:var(--bt);color:var(--bx);display:grid;place-items:center;flex:none;transition:transform .3s var(--ease)}
+.se-card:hover .se-plus{transform:rotate(90deg)}
+.se-plus svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.se-empty{max-width:560px;margin:0 auto;padding:120px 24px;text-align:center;grid-column:1/-1}
+.se-empty h1{font-family:var(--wide);font-size:clamp(28px,5vw,52px);text-transform:uppercase;margin:0 0 12px;letter-spacing:-.03em}
+.se-empty p{opacity:.7}
+.se-in>*{animation:seUp .9s var(--ease) both}.se-mid{animation-delay:.12s!important}.se-right{animation-delay:.24s!important}
+@keyframes seUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+@keyframes seWord{from{opacity:0;letter-spacing:.1em}to{opacity:.07}}
+@keyframes seFloat{0%,100%{translate:0 0}50%{translate:0 -14px}}
+@keyframes seSwap{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:none}}
+@media(max-width:900px){
+ .se-in{grid-template-columns:1fr;padding:36px 20px 170px;text-align:left;gap:26px}.se-right{text-align:left}.se-pd{margin-left:0}
+ .se-mid{min-height:0}.se-hero{width:min(78%,320px)}.se-left p{max-width:none}.se-rail{justify-content:flex-start;padding:0 20px;bottom:18px}.se-card{flex-basis:230px}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head>
+<body class="se page-ready">
+<div class="se-stage" id="seStage">
+  <div class="se-word" id="seWord">EVENT</div>
+  <div class="se-in" id="seIn"><div class="se-empty"><p>Loading…</p></div></div>
+  <div class="se-rail" id="seRail"></div>
+</div>
+<script src="file-store.js"></script>
+<script src="public-content.js"></script>
+<script>
+(function(){
+  const $=id=>document.getElementById(id),root=document.documentElement;
+  const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const money=v=>'Rs. '+Number(v||0).toLocaleString('en-LK');
+  const imgs=p=>{const a=Array.isArray(p?.images)?p.images.filter(x=>x&&x.url).map(x=>x.url):[];if(!a.length&&p?.image?.url)a.push(p.image.url);return a};
+  const unit=p=>{const o=Number(p.offer||0),n=Number(p.price||0);return o>0&&o<n?{now:o,old:n}:{now:n,old:0}};
+  const DEF={active:false,name:'Special Event',title:'Special event collection',subtitle:'Limited pieces for a limited time.',tag:'RIVENZ SPECIAL',bg:'#d8d8c8',bg2:'#c9c9b6',accent:'#8cc63f',text:'#15171b',button:'#15171b',buttonText:'#ffffff',heroImage:null,productIds:[]};
+  function theme(v){const s=root.style;s.setProperty('--bg',v.bg);s.setProperty('--bg2',v.bg2||v.bg);s.setProperty('--ac',v.accent);s.setProperty('--tx',v.text);s.setProperty('--bt',v.button);s.setProperty('--bx',v.buttonText);document.querySelector('meta[name=theme-color]')?.remove()}
+  let list=[],cur=0;
+  function show(i,anim){
+    const p=list[i];if(!p)return;cur=i;const u=unit(p),im=imgs(p);
+    const hero=$('seHero');if(hero){hero.querySelectorAll('img').forEach(x=>x.classList.remove('on'));let t=hero.querySelector('img[data-i="'+i+'"]');if(!t&&im[0]){t=new Image();t.dataset.i=i;t.alt=p.name||'';t.src=im[0];hero.appendChild(t)}if(t)requestAnimationFrame(()=>t.classList.add('on'))}
+    const box=$('seInfo');box.classList.remove('se-swap');void box.offsetWidth;box.classList.add('se-swap');
+    $('sePN').textContent=p.name||'RIVENZ product';$('sePP').innerHTML=money(u.now)+(u.old?'<s>'+money(u.old)+'</s>':'');$('sePD').textContent=p.description||'';
+    $('seGo').href='services.html?product='+encodeURIComponent(p.id);
+    document.querySelectorAll('.se-card').forEach((c,k)=>c.classList.toggle('on',k===i));
+  }
+  function render(v,products){
+    theme(v);$('seWord').textContent=v.name||'Event';document.title=(v.name||'Special event')+' — RIVENZ';
+    list=(v.productIds||[]).map(id=>products.find(p=>String(p.id)===String(id))).filter(Boolean);
+    const IN=$('seIn'),rail=$('seRail');
+    if(!v.active||!list.length){IN.innerHTML='<div class="se-empty"><h1>No special event right now</h1><p>Seasonal and festival collections will appear here. Check back soon.</p></div>';rail.innerHTML='';return}
+    IN.innerHTML='<div class="se-left"><span class="se-kick">'+esc(v.tag)+'</span><h1>'+esc(v.title)+'</h1><p>'+esc(v.subtitle)+'</p></div>'+
+      '<div class="se-mid"><div class="se-hero" id="seHero"></div></div>'+
+      '<div class="se-right"><div id="seInfo"><div class="se-pn" id="sePN"></div><div class="se-pp" id="sePP"></div><p class="se-pd" id="sePD"></p></div><a class="se-cta" id="seGo" href="services.html">Order now</a></div>';
+    rail.innerHTML=list.map((p,i)=>{const u=unit(p);return '<button type="button" class="se-card" data-i="'+i+'" style="animation-delay:'+(.3+i*.07)+'s"><img src="'+esc(imgs(p)[0]||'')+'" alt="" loading="lazy" decoding="async"><span><b>'+esc(p.name||'')+'</b><small>'+money(u.now)+'</small></span><span class="se-plus"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span></button>'}).join('');
+    rail.onclick=e=>{const c=e.target.closest('.se-card');if(c)show(+c.dataset.i)};
+    show(0);
+    const st=$('seStage'),h=()=>$('seHero');
+    st.onmousemove=e=>{const r=st.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;if(h())h().style.transform='perspective(900px) rotateY('+x*8+'deg) rotateX('+(-y*6)+'deg)'};
+    st.onmouseleave=()=>{if(h())h().style.transform=''};
+  }
+  (async()=>{
+    let v={...DEF},products=[];
+    try{const r=await window.graphicsPublicContent.catalog('special-event');if(Array.isArray(r)&&r[0])v={...DEF,...r[0]}}catch(e){}
+    try{const r=await window.graphicsPublicContent.catalog('products');products=Array.isArray(r)?r.filter(p=>p&&p.active!==false):[]}catch(e){}
+    render(v,products);
+  })();
+})();
+</script>
+<script type="module" src="cart-store.js"></script>
+<script type="module" src="account-guard.js"></script>
+<script type="module" src="user-nav.js"></script>
+</body></html>
