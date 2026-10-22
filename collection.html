@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Collection — RIVENZ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,600;0,700;0,800;1,800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+body.cl{margin:0;background:#111316;color:#fff;font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.cl-hero{position:relative;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;text-align:center;overflow:hidden;padding:150px 20px 56px;background:linear-gradient(160deg,#2b2f36,#0d0e10)}
+.cl-media{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+.cl-hero:after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(0,0,0,.18) 0%,rgba(0,0,0,.05) 40%,rgba(0,0,0,.55) 100%);opacity:var(--ov,1)}
+.cl-in{position:relative;z-index:2;width:min(1100px,100%)}
+.cl-in h1{margin:0;font-weight:800;font-style:italic;text-transform:uppercase;letter-spacing:-.045em;line-height:.9;font-size:clamp(46px,11vw,128px);text-shadow:0 6px 40px rgba(0,0,0,.35);animation:clUp .9s .1s cubic-bezier(.22,1,.36,1) both}
+.cl-in p{margin:18px 0 0;font-size:clamp(15px,2vw,20px);font-weight:500;opacity:.95;animation:clUp .9s .25s cubic-bezier(.22,1,.36,1) both}
+.cl-btns{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:30px auto 0;max-width:900px;animation:clUp .9s .4s cubic-bezier(.22,1,.36,1) both}
+.cl-btns a{display:flex;align-items:center;justify-content:center;height:56px;padding:0 14px;background:#000;color:#fff;text-decoration:none;font-size:12.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;border:1px solid #000;transition:background .25s,color .25s,transform .25s}
+.cl-btns a:hover{background:#fff;color:#000;transform:translateY(-2px)}
+.cl-toast{position:fixed;left:50%;bottom:30px;transform:translate(-50%,20px);background:#fff;color:#111;padding:12px 20px;border-radius:999px;font-size:13px;font-weight:700;opacity:0;pointer-events:none;transition:.3s;z-index:9999;box-shadow:0 14px 40px rgba(0,0,0,.35)}
+.cl-toast.on{opacity:1;transform:translate(-50%,0)}
+@keyframes clUp{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+@media(max-width:760px){.cl-hero{padding:120px 16px 40px}.cl-in h1{font-size:15.5vw}.cl-btns{grid-template-columns:1fr 1fr;max-width:380px;gap:10px}.cl-btns a{height:52px;font-size:11px;letter-spacing:.1em}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+<link rel="stylesheet" href="user-nav.css?v=14">
+</head>
+<body class="cl page-ready">
+<main class="cl-hero" id="hero">
+  <div class="cl-in">
+    <h1 id="clT">Be better<br>everyday</h1>
+    <p id="clS">Explore our Collection</p>
+    <nav class="cl-btns" aria-label="Collection categories">
+      <a href="#" data-soon id="b1">Shop Mens</a>
+      <a href="#" data-soon id="b2">Shop Women</a>
+      <a href="#" data-soon id="b3">Accessories</a>
+      <a href="#" data-soon id="b4">Shop Shoes</a>
+    </nav>
+  </div>
+</main>
+<div class="cl-toast" id="toast">This page is coming soon</div>
+<script src="public-content.js"></script>
+<script>
+(function(){
+  var $=function(i){return document.getElementById(i)};
+  var esc=function(s){return String(s||"").replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})};
+  document.querySelectorAll("[data-soon]").forEach(function(a){a.addEventListener("click",function(e){if(a.getAttribute("href")==="#"){e.preventDefault();var t=$("toast");t.classList.add("on");clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove("on")},1800)}})});
+  function apply(c){
+    if(!c)return;
+    if(c.title)$("clT").innerHTML=esc(c.title).replace(/\n/g,"<br>");
+    if(c.subtitle!==undefined)$("clS").textContent=c.subtitle;
+    ["b1","b2","b3","b4"].forEach(function(k,i){var l=c["label"+(i+1)];if(l)$(k).textContent=l});
+    if(c.overlay!=null&&c.overlay!=="")$("hero").style.setProperty("--ov",Math.max(0,Math.min(1.6,Number(c.overlay)/100*1)));
+    var m=c.media;if(m&&m.url){
+      var vid=m.type==="video"||/\.(mp4|webm|mov|m4v)(\?|$)/i.test(m.url)||/^video/.test(m.type||"");
+      var el=document.createElement(vid?"video":"img");el.className="cl-media";el.src=m.url;
+      if(vid){el.muted=true;el.loop=true;el.autoplay=true;el.playsInline=true;el.setAttribute("muted","");el.setAttribute("playsinline","");el.addEventListener("canplay",function(){el.play().catch(function(){})})}else{el.alt=""}
+      $("hero").prepend(el);
+    }
+  }
+  try{
+    var gp=window.graphicsPublicContent;
+    if(gp&&gp.catalog)gp.catalog("showcase").then(function(r){var it=(Array.isArray(r)?r:[]).find(function(x){return x&&x._key==="collection-page"});apply(it)}).catch(function(){});
+  }catch(e){}
+})();
+</script>
+<script type="module" src="user-nav.js?v=14"></script>
+</body>
+</html>

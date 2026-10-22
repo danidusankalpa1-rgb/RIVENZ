@@ -19,8 +19,8 @@ const P = {
 };
 const I = (k, c = "") => `<svg class="rvz-i ${c}" viewBox="0 0 24 24" aria-hidden="true">${P[k]}</svg>`;
 const file = (location.pathname.split("/").pop() || "index.html").toLowerCase();
-const ACTIVE = { "index.html": "home", "": "home", "services.html": "shop", "product-details.html": "shop", "portfolio.html": "collection", "weddings.html": "offers", "chat.html": "chat", "cart.html": "cart", "order.html": "cart", "order-confirmation.html": "cart", "special-event.html": "event", "profile.html": "profile", "dashboard.html": "order", "order-details.html": "order" }[file] || "";
-const MAIN = [["home", "Home", "index.html"], ["shop", "Shop", "services.html"], ["collection", "Collection", "portfolio.html"], ["offers", "Offers", "weddings.html"], ["event", "Special event", "special-event.html"]];
+const ACTIVE = { "index.html": "home", "": "home", "services.html": "collection", "product-details.html": "collection", "collection.html": "collection", "portfolio.html": "collection", "weddings.html": "offers", "chat.html": "chat", "cart.html": "cart", "order.html": "cart", "order-confirmation.html": "cart", "special-event.html": "event", "profile.html": "profile", "dashboard.html": "order", "order-details.html": "order" }[file] || "";
+const MAIN = [["home", "Home", "index.html"], ["collection", "Collection", "collection.html"], ["offers", "Offers", "weddings.html"], ["event", "Special event", "special-event.html"]];
 
 const h = document.createElement("header");
 h.className = "rvz-h";
@@ -31,7 +31,7 @@ function paint() {
   const li = !!user, on = (k) => (ACTIVE === k ? " on" : "");
   const initial = String(user?.displayName || user?.email || "U").trim().slice(0, 1).toUpperCase();
   const cartB = `<em class="rvz-b" data-cart${cartN ? "" : " hidden"}>${cartN}</em>`, chatB = `<em class="rvz-b" data-unread${unread ? "" : " hidden"}>${unread}</em>`;
-  const full = [...MAIN.slice(0, 4).map(([k, l, u]) => [k, l, u]), ["chat", "Chat", "chat.html", chatB], ["cart", "Cart", "cart.html", cartB], MAIN[4], ...(li ? [["profile", "My profile", "profile.html"], ["order", "My order", "dashboard.html"]] : [])];
+  const full = [...MAIN.slice(0, 3).map(([k, l, u]) => [k, l, u]), ["chat", "Chat", "chat.html", chatB], ["cart", "Cart", "cart.html", cartB], MAIN[3], ...(li ? [["profile", "My profile", "profile.html"], ["order", "My order", "dashboard.html"]] : [])];
   const dl = ([k, l, u, bd = ""]) => `<a class="rvz-dr${on(k)}" href="${u}"><span>${l}</span>${bd}</a>`;
   const row = ([k, l, u, b = ""]) => `<a class="rvz-row${on(k)}" href="${u}">${I(k === "profile" ? "user" : k)}<span>${l}</span>${b}</a>`;
   const isShop = file === "services.html", curCat = new URLSearchParams(location.search).get("category")||"all";
@@ -52,7 +52,7 @@ function paint() {
   <form class="rvz-search" id="rvzSearch" action="services.html" method="get" role="search"><div class="rvz-sw">${I("search")}<input name="q" type="search" placeholder="Search products by name" aria-label="Search products" autocomplete="off"><button type="submit">Search</button></div></form>
   <div class="rvz-w2">
     <div class="rvz-card rvz-acc-card" id="rvzAccCard"><a class="rvz-row${on("profile")}" href="profile.html">${I("user")}<span>My profile</span></a><a class="rvz-row${on("order")}" href="dashboard.html">${I("order")}<span>My order</span></a><div class="rvz-sep"></div><button type="button" class="rvz-row" data-out>${I("out")}<span>Log out</span></button></div>
-    <div class="rvz-card rvz-mob" id="rvzMob"><div class="rvz-dh"><img src="logo.png" alt="RIVENZ"><button type="button" class="rvz-dx" data-close aria-label="Close menu">${I("x")}</button></div><nav class="rvz-dn">${full.map((r) => dl(r) + (r[0] === "shop" ? `<div class="rvz-dsub">${CATS.map(([l, c]) => `<a href="services.html?category=${c}">${l}</a>`).join("")}</div>` : "")).join("")}${li ? `<button type="button" class="rvz-dr" data-out><span>Log out</span></button>` : `<a class="rvz-dr" href="auth.html?next=${encodeURIComponent(file)}"><span>Login</span></a>`}</nav></div>
+    <div class="rvz-card rvz-mob" id="rvzMob"><div class="rvz-dh"><img src="logo.png" alt="RIVENZ"><button type="button" class="rvz-dx" data-close aria-label="Close menu">${I("x")}</button></div><nav class="rvz-dn">${full.map((r) => dl(r)).join("")}${li ? `<button type="button" class="rvz-dr" data-out><span>Log out</span></button>` : `<a class="rvz-dr" href="auth.html?next=${encodeURIComponent(file)}"><span>Login</span></a>`}</nav></div>
     <div class="rvz-bd" id="rvzBd"></div>
   </div>`;
 }

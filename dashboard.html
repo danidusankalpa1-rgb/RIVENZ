@@ -33,8 +33,8 @@
     <button class="home-menu-toggle" type="button" aria-label="Open menu" aria-expanded="false">☰</button>
     <nav class="home-nav nav">
       <a href="index.html">Home</a>
-      <a href="services.html">Shop</a>
-      <a href="portfolio.html">Collections</a>
+      
+      <a href="collection.html">Collections</a>
       <a href="weddings.html">Offers</a>
       <a href="dashboard.html" class="nav-profile">My Orders</a>
       <a href="profile.html">My Profile</a>
@@ -83,7 +83,7 @@
 
     <section class="dash-card wide">
       <div class="card-head"><i class="ci"><svg class="ov-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3 5 14h6l-1 7 8-11h-6z"/></svg></i><div><span class="card-label">QUICK ACTIONS</span><h2>What would you like to do?</h2><p>Jump back into the RIVENZ shopping experience.</p></div></div>
-      <div class="quick"><a href="services.html"><svg class="ov-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h16l-1 12H5L4 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg> Shop products</a><a href="profile.html"><svg class="ov-i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg> Manage profile</a><a href="index.html"><svg class="ov-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7v9H4z"/><path d="M10 20v-6h4v6"/></svg> Back to home</a></div>
+      <div class="quick"><a href="collection.html"><svg class="ov-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h16l-1 12H5L4 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg> Shop products</a><a href="profile.html"><svg class="ov-i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg> Manage profile</a><a href="index.html"><svg class="ov-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7v9H4z"/><path d="M10 20v-6h4v6"/></svg> Back to home</a></div>
     </section>
   </div>
 </div>
@@ -165,7 +165,7 @@ async function render(user){
 function renderWishlist(){
   const box=document.getElementById("wishlistBox");if(!box)return;let list=[];try{list=JSON.parse(localStorage.getItem("rivenzWishlistV1")||"[]")}catch(e){}
   if(!Array.isArray(list)||!list.length){box.innerHTML='<div class="empty">Your wishlist is empty. Tap the heart on any product in the Shop to save it here.</div>';return;}
-  box.innerHTML='<div class="wishlist-grid">'+list.map(item=>{const price=Number(item.offer||0)>0?item.offer:item.price;const old=Number(item.offer||0)>0&&Number(item.price||0)>0?'<span style="color:#9a9da2;text-decoration:line-through;margin-left:5px">'+money(item.price)+'</span>':'';const image=item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="wishlist-placeholder">RIVENZ</div>';return '<div class="wishlist-item">'+image+'<div class="wishlist-info"><div class="wishlist-name">'+esc(item.name||"RIVENZ Product")+'</div><div class="wishlist-price"><strong>'+money(price)+'</strong>'+old+'</div><div class="wishlist-actions"><a href="services.html">Shop</a><button type="button" data-wish-remove="'+esc(item.id||'')+'">Remove</button></div></div></div>'}).join('')+'</div>';
+  box.innerHTML='<div class="wishlist-grid">'+list.map(item=>{const price=Number(item.offer||0)>0?item.offer:item.price;const old=Number(item.offer||0)>0&&Number(item.price||0)>0?'<span style="color:#9a9da2;text-decoration:line-through;margin-left:5px">'+money(item.price)+'</span>':'';const image=item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="wishlist-placeholder">RIVENZ</div>';return '<div class="wishlist-item">'+image+'<div class="wishlist-info"><div class="wishlist-name">'+esc(item.name||"RIVENZ Product")+'</div><div class="wishlist-price"><strong>'+money(price)+'</strong>'+old+'</div><div class="wishlist-actions"><button type="button" data-wish-remove="'+esc(item.id||'')+'">Remove</button></div></div></div>'}).join('')+'</div>';
   box.querySelectorAll('[data-wish-remove]').forEach(btn=>btn.addEventListener('click',()=>{const id=btn.getAttribute('data-wish-remove');list=list.filter(x=>String(x.id)!==String(id));localStorage.setItem('rivenzWishlistV1',JSON.stringify(list));renderWishlist();}));
 }
 let dashboardUser=null;let stopOrderWatch=null;let lastSeenNotificationKey=null;let notificationBaselineReady=false;
