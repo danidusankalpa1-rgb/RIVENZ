@@ -72,3 +72,20 @@
   .rvz-bd{display:block;position:fixed;inset:0;background:rgba(0,0,0,.45);opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s;z-index:1100}
   .rvz-bd.open{opacity:1;visibility:visible}
 }
+
+/* black bar (desktop + mobile), no search */
+.rvz-h{background:#111316;box-shadow:0 10px 30px -22px rgba(0,0,0,.6)}
+.rvz-h .rvz-tag{color:#fff}
+.rvz-logo img{filter:brightness(0) invert(1)}
+.rvz-h .rvz-c{color:#fff}.rvz-h .rvz-c:hover{background:#25282d}.rvz-h .rvz-c.on{background:#fff;color:#111316}
+.rvz-b{background:#fff;color:#111316}
+.rvz-av{background:#fff;color:#111316}
+.rvz-h .rvz-login{border-color:#fff;color:#fff}.rvz-h .rvz-login:hover{background:#fff;color:#111316}
+.rvz-navrow{border-top:1px solid #2a2d33}
+.rvz-h .rvz-a{color:#a9acb2}.rvz-h .rvz-a:hover,.rvz-h .rvz-a.on{color:#fff}.rvz-a:after{background:#fff}
+@media(max-width:900px){
+  .rvz-r>.rvz-acc,.rvz-r>.rvz-login{display:inline-grid}
+  .rvz-login{width:40px;height:40px;padding:0;margin:0;border:0;border-radius:50%;justify-content:center}
+  .rvz-login span{display:none}.rvz-login .rvz-i{width:21px;height:21px}
+  .rvz-card.rvz-acc-card{display:block;right:10px}
+}

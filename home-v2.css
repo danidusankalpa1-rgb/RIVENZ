@@ -112,3 +112,8 @@ body.hx{margin:0;background:var(--hx-bg);color:var(--hx-ink);font-family:Inter,u
 .hx-card{flex-basis:calc(25% - 10.5px)!important}
 @media(max-width:1000px){.hx-card{flex-basis:calc(33.333% - 9.5px)!important}}
 @media(max-width:760px){.hx-card{flex-basis:62%!important}.hx-rail-wrap{padding:0!important}}
+
+/* home: gap between hero and collection, single hero button */
+.hx-split{margin-top:24px}
+#hxB2{display:none!important}
+@media(max-width:760px){.hx-split{margin-top:16px}}

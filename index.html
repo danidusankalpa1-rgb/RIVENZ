@@ -23,16 +23,15 @@
       </div>
       <div class="hx-hero-cta">
         <a class="hx-btn dark" id="hxB1" href="collection.html">Shop Now</a>
-        <a class="hx-btn ghost" id="hxB2" href="collection.html">Explore Collection</a>
       </div>
     </div>
   </section>
 
   <section class="hx-split" id="collections">
-    <a class="hx-panel l" href="collection.html" id="hxPL"><div class="hx-panel-bg"></div>
-      <div class="hx-list"><span class="hx-lk" data-h="collection.html">Men's</span><span class="hx-lk" data-h="collection.html">Ladies</span><span class="hx-lk" data-h="collection.html">Unisex</span><span class="hx-lk" data-h="collection.html">Kids</span></div></a>
-    <a class="hx-panel r" href="collection.html" id="hxPR"><div class="hx-panel-bg"></div>
-      <div class="hx-list"><span class="hx-lk" data-h="collection.html">Accessories</span><span class="hx-lk" data-h="weddings.html">Offers</span><span class="hx-lk" data-h="special-event.html">Special events</span><span class="hx-lk" data-h="collection.html">New arrivals</span></div></a>
+    <a class="hx-panel l" href="collection-mens.html" id="hxPL"><div class="hx-panel-bg"></div>
+      <div class="hx-list"><span class="hx-lk" data-h="collection-mens.html">Men's</span><span class="hx-lk" data-h="collection-women.html">Women</span><span class="hx-lk" data-h="collection-shoes.html">Shoes</span></div></a>
+    <a class="hx-panel r" href="collection-accessories.html" id="hxPR"><div class="hx-panel-bg"></div>
+      <div class="hx-list"><span class="hx-lk" data-h="collection-accessories.html">Accessories</span><span class="hx-lk" data-h="weddings.html">Offers</span><span class="hx-lk" data-h="special-event.html">Special events</span><span class="hx-lk" data-h="collection.html">New arrivals</span></div></a>
     <div class="hx-mid"><h2>Collection</h2><span>RIVENZ</span><a class="hx-btn light" href="collection.html">View collections</a></div>
   </section>
 
@@ -97,7 +96,7 @@
     $('hxPill').textContent=v.heroPill||DEFAULT.heroPill;
     $('hxTitle').innerHTML=[v.heroLine1,v.heroLine2,v.heroLine3].filter(Boolean).map(esc).join('<br>');
     $('hxDesc').textContent=v.heroDescription||DEFAULT.heroDescription;
-    $('hxB1').textContent=v.primaryButton||DEFAULT.primaryButton;$('hxB2').textContent=v.secondaryButton||DEFAULT.secondaryButton;
+    $('hxB1').textContent=v.primaryButton||DEFAULT.primaryButton;
     $('hxPT').textContent=v.promoTitle||DEFAULT.promoTitle;$('hxPP').textContent=v.promoText||DEFAULT.promoText;
     $('hxCT').textContent=v.contactTitle||DEFAULT.contactTitle;
   }
@@ -112,7 +111,7 @@
     const cp=v.collectionProducts||{};const by=id=>products.find(p=>productId(p)===String(id));
     const cat=k=>products.find(x=>{const c=String(x.category||'').toLowerCase();return imageOf(x)&&(k==='accessories'?c.indexOf('accessories')===0:c===k)});
     const set=(id,p)=>{const s=imageOf(p);if(s)$(id).querySelector('.hx-panel-bg').style.backgroundImage='url("'+s.replace(/"/g,'%22')+'")'};
-    set('hxPL',by(cp.newDrop)||cat('mens')||cat('ladies'));set('hxPR',by(cp.essentials)||cat('accessories')||cat('kids'));
+    set('hxPL',by(cp.newDrop)||cat('mens')||cat('women')||cat('ladies'));set('hxPR',by(cp.essentials)||cat('accessories')||cat('kids'));
   }
   function renderArrivals(products){
     const box=$('homeServices');

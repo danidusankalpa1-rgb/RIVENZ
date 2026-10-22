@@ -34,13 +34,12 @@ function paint() {
   const full = [...MAIN.slice(0, 3).map(([k, l, u]) => [k, l, u]), ["chat", "Chat", "chat.html", chatB], ["cart", "Cart", "cart.html", cartB], MAIN[3], ...(li ? [["profile", "My profile", "profile.html"], ["order", "My order", "dashboard.html"]] : [])];
   const dl = ([k, l, u, bd = ""]) => `<a class="rvz-dr${on(k)}" href="${u}"><span>${l}</span>${bd}</a>`;
   const row = ([k, l, u, b = ""]) => `<a class="rvz-row${on(k)}" href="${u}">${I(k === "profile" ? "user" : k)}<span>${l}</span>${b}</a>`;
-  const isShop = file === "services.html", curCat = new URLSearchParams(location.search).get("category")||"all";
+  const isShop = false, curCat = new URLSearchParams(location.search).get("category")||"all";
   const CATS = [["Men's", "mens"], ["Ladies", "ladies"], ["Unisex", "unisex"], ["Kids", "kids"], ["Accessories", "accessories"]];
   h.innerHTML = `<div class="rvz-w">
     <span class="rvz-tag">#RIVENZFASHION</span>
     <a class="rvz-logo" href="index.html" aria-label="RIVENZ home"><img src="logo.png" alt="RIVENZ"></a>
     <div class="rvz-r">
-      <button type="button" class="rvz-c rvz-sbtn" id="rvzSBtn" aria-label="Search" aria-expanded="false">${I("search")}</button>
       <a class="rvz-c rvz-chat${on("chat")}" href="chat.html" aria-label="Chat">${I("chat")}${chatB}</a>
       <a class="rvz-c${on("cart")}" href="cart.html" aria-label="Cart">${I("cart")}${cartB}</a>
       ${li ? `<button type="button" class="rvz-c rvz-acc" id="rvzAcc" aria-label="Account" aria-expanded="false"><span class="rvz-av">${initial}</span></button>` : `<a class="rvz-login" href="auth.html?next=${encodeURIComponent(file)}">${I("user")}<span>Login</span></a>`}
@@ -49,7 +48,6 @@ function paint() {
   </div>
   <div class="rvz-navrow"><nav class="rvz-nav" aria-label="Main">${MAIN.map(([k, l, u]) => `<a class="rvz-a${on(k)}" href="${u}"><span>${l}</span></a>`).join("")}</nav></div>
   ${isShop ? `<div class="rvz-sub"><nav aria-label="Categories">${[["All", "all"], ...CATS.map(([l, c]) => [l, c])].map(([l, c]) => `<a class="${curCat === c ? "on" : ""}" href="services.html${c === "all" ? "" : "?category=" + c}">${l}</a>`).join("")}</nav></div>` : ""}
-  <form class="rvz-search" id="rvzSearch" action="services.html" method="get" role="search"><div class="rvz-sw">${I("search")}<input name="q" type="search" placeholder="Search products by name" aria-label="Search products" autocomplete="off"><button type="submit">Search</button></div></form>
   <div class="rvz-w2">
     <div class="rvz-card rvz-acc-card" id="rvzAccCard"><a class="rvz-row${on("profile")}" href="profile.html">${I("user")}<span>My profile</span></a><a class="rvz-row${on("order")}" href="dashboard.html">${I("order")}<span>My order</span></a><div class="rvz-sep"></div><button type="button" class="rvz-row" data-out>${I("out")}<span>Log out</span></button></div>
     <div class="rvz-card rvz-mob" id="rvzMob"><div class="rvz-dh"><img src="logo.png" alt="RIVENZ"><button type="button" class="rvz-dx" data-close aria-label="Close menu">${I("x")}</button></div><nav class="rvz-dn">${full.map((r) => dl(r)).join("")}${li ? `<button type="button" class="rvz-dr" data-out><span>Log out</span></button>` : `<a class="rvz-dr" href="auth.html?next=${encodeURIComponent(file)}"><span>Login</span></a>`}</nav></div>

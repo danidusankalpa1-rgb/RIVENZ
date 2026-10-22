@@ -167,6 +167,8 @@
   </style>
   <link rel="stylesheet" href="shop-v2.css?v=14">
 <link rel="stylesheet" href="user-nav.css?v=14">
+<script>if(!new URLSearchParams(location.search).get("product"))location.replace("collection.html")</script>
+<style>.services-intro,#shopFilters,#shopSubFilters,.services-bottom,#serviceGrid,#rivenzDetailLatest,.rivenz-detail-latest{display:none!important}</style>
 </head>
 <body class="page-ready">
 <header class="home-header">
@@ -176,7 +178,7 @@
     <nav class="home-nav nav">
       <a href="index.html">Home</a>
       <a class="active" href="services.html">Shop</a>
-      <a href="portfolio.html">Collections</a>
+      <a href="collection.html">Collections</a>
       <a href="weddings.html">Offers</a>
       <a href="index.html#contact">Contact</a>
       <a class="cart-nav-link" href="cart.html">Cart <span class="cart-count" id="cartCount">0</span></a>
@@ -299,6 +301,9 @@
     if(productId)url.searchParams.set('product',productId);else url.searchParams.delete('product');
     const fn=replace?'replaceState':'pushState';history[fn]({rivenzProduct:productId||null},'',url);
   }
+  function catKey(p){const c=String(p?.category||'').toLowerCase(),t=String(p?.productType||'').toLowerCase();if(c==='shoes'||t==='shoes')return'shoes';if(c.indexOf('accessories')===0||t==='accessories')return'accessories';if(c==='ladies'||c==='women')return'women';if(c==='mens')return'mens';return''}
+  function catPage(p){const k=catKey(p);return k?'collection-'+k+'.html':'collection.html'}
+  function catLabel(p){return({mens:"Men's",women:'Women',shoes:'Shoes',accessories:'Accessories'})[catKey(p)]||'RIVENZ'}
   function openProduct(p,push=true){
     if(!p)return;
     activeProductId=String(p.id||'');detailOpen=true;
@@ -307,6 +312,7 @@
     requestAnimationFrame(()=>{const page=document.getElementById('rivenzDetailPage');page?.scrollIntoView({block:'start',behavior:'smooth'});});
   }
   function closeProduct(useHistory=true){
+    location.href='collection.html';return;
     activeProductId='';detailOpen=false;
     if(useHistory)setDetailUrl('',true);
     document.querySelector('.services-intro')?.removeAttribute('hidden');document.getElementById('shopFilters')?.removeAttribute('hidden');document.getElementById('shopSubFilters')?.removeAttribute('hidden');grid.removeAttribute('hidden');document.querySelector('.services-bottom')?.removeAttribute('hidden');
@@ -325,7 +331,7 @@
     const sizeLabel={clothing:'Size','shoe-eu':'Shoe size · EU','shoe-uk':'Shoe size · UK','shoe-us':'Shoe size · US','one-size':'Size',custom:'Size'}[p.sizeType]||'Size';
     let current=0,chosenColor=colors[0]||'',chosenSize='',qty=1;
     const hasOff=Number(p.offer||0)>0&&Number(p.price||0)>0&&Number(p.offer)<Number(p.price);
-    page.innerHTML='<div class="rv2-crumbs"><button type="button" class="rivenz-detail-back" id="rivenzDetailBack">Shop</button><span>/</span><span>'+esc(p.category||'RIVENZ')+'</span><span>/</span><b>'+esc(p.name||'Product')+'</b><a class="rivenz-detail-cart" href="cart.html">Cart <span id="rivenzDetailCartCount"></span></a></div>'+
+    page.innerHTML='<div class="rv2-crumbs"><button type="button" class="rivenz-detail-back" id="rivenzDetailBack">Collection</button><span>/</span><a href="'+catPage(p)+'" style="color:inherit;text-decoration:none">'+esc(catLabel(p))+'</a><span>/</span><b>'+esc(p.name||'Product')+'</b><a class="rivenz-detail-cart" href="cart.html">Cart <span id="rivenzDetailCartCount"></span></a></div>'+
     '<div class="rivenz-detail-layout"><div class="rivenz-detail-info"><h1 class="rivenz-detail-title">'+esc(p.name||'RIVENZ Product')+'</h1>'+(p.sku?'<div class="rv2-sku">Item no. '+esc(p.sku)+'</div>':'')+'<div id="rivenzDetailOptions"></div>'+
     '<div class="rv2-price"><span class="rivenz-detail-price">'+money(price)+'</span>'+(hasOff?'<span class="rivenz-detail-old">'+money(p.price)+'</span><span class="rv2-off">\u2212'+Math.round((1-p.offer/p.price)*100)+'%</span>':'')+'</div>'+
     '<div class="rivenz-delivery-box"><svg class="rv2-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.6"/><circle cx="17" cy="17.5" r="1.6"/></svg>'+(delivery>0?'<span><strong>Delivery '+money(delivery)+'</strong> Islandwide</span>':'<span><strong class="rivenz-delivery-free">Free delivery</strong> Islandwide</span>')+'</div>'+
@@ -349,7 +355,7 @@
     function renderSizes(){const available=sizesFor(chosenColor);if(!available.includes(chosenSize))chosenSize=available[0]||'';sizeWrap.innerHTML='';sizesAll.forEach(sz=>{const b=document.createElement('button');b.type='button';b.className='rivenz-detail-size'+(sz===chosenSize?' selected':'');b.textContent=sz;b.disabled=!available.includes(sz);b.onclick=()=>{chosenSize=sz;qty=1;sizeWrap.querySelectorAll('button').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');updateActions()};sizeWrap.appendChild(b)});updateActions()}
     minus.onclick=()=>{if(qty>1){qty--;updateActions()}};plus.onclick=()=>{const currentStock=stockFor(chosenSize,chosenColor);if(qty<currentStock){qty++;updateActions()}};
     addBtn.onclick=async()=>{await waitForRivenzCartStore();await window.rivenzCartStore.ready;const currentStock=stockFor(chosenSize,chosenColor);if(!chosenSize||currentStock<1)return;let items=window.rivenzCartStore.getCart();const key=[p.id,chosenSize,chosenColor].join('|'),item=items.find(x=>x.key===key);if(item)item.quantity=Math.min(currentStock,Number(item.quantity||0)+qty);else items.push({key,productId:p.id,name:p.name||'RIVENZ Product',image:imgs[0]?.url||'',size:chosenSize,color:chosenColor,quantity:qty,price:Number(price||0),deliveryFee:delivery});window.rivenzCartStore.saveCart(items);updateRivenzCartCount();const lb=addBtn.querySelector('span');if(lb){lb.textContent='Added to cart';setTimeout(()=>lb.textContent='Add to cart',1300)}};
-    page.querySelector('#rivenzDetailBack').onclick=()=>{closeProduct(true)};
+    page.querySelector('#rivenzDetailBack').onclick=()=>{location.href=catPage(p)};
     const detailCart=page.querySelector('#rivenzDetailCartCount');if(detailCart){await waitForRivenzCartStore();await window.rivenzCartStore.ready;detailCart.textContent='('+window.rivenzCartStore.count()+')'}
     renderSizes();
     (function(){
@@ -412,7 +418,7 @@
   window.addEventListener('popstate',()=>{
     const id=new URL(location.href).searchParams.get('product')||'';
     if(id){activeProductId=id;detailOpen=true;render();requestAnimationFrame(()=>document.getElementById('rivenzDetailPage')?.scrollIntoView({block:'start',behavior:'smooth'}));}
-    else{activeProductId='';detailOpen=false;render();}
+    else{location.href='collection.html'}
   });
   async function loadAndOpen(){await load();}
   loadAndOpen();window.addEventListener('focus',()=>load(false));
