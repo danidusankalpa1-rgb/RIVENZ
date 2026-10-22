@@ -6,7 +6,7 @@
 <title>My Orders — RIVENZ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Unbounded:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="home.css">
 <style>
@@ -24,8 +24,9 @@
   .wishlist-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.wishlist-item{border:1px solid #ecece8;border-radius:16px;padding:10px;background:#fff;display:flex;gap:10px;align-items:center;min-width:0}.wishlist-item img,.wishlist-placeholder{width:58px;height:68px;border-radius:12px;object-fit:cover;background:#f1f1ee;flex:0 0 58px}.wishlist-placeholder{display:grid;place-items:center;font-size:8px;color:#9a9da2}.wishlist-info{min-width:0;flex:1}.wishlist-name{font-size:10px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.wishlist-price{font-size:10px;margin-top:5px}.wishlist-actions{display:flex;gap:6px;margin-top:8px}.wishlist-actions a,.wishlist-actions button{border:0;border-radius:9px;padding:7px 8px;font-size:8px;font-weight:800;text-decoration:none;cursor:pointer}.wishlist-actions a{background:#15171b;color:#fff}.wishlist-actions button{background:#f1f1ee;color:#17191c}@media(max-width:760px){.wishlist-grid{grid-template-columns:1fr 1fr}}@media(max-width:520px){.wishlist-grid{grid-template-columns:1fr}}
 </style>
 <link rel="stylesheet" href="user-nav.css">
+<link rel="stylesheet" href="orders-v2.css">
 </head>
-<body class="page-ready">
+<body class="page-ready ov-dash">
 <header class="home-header">
   <div class="home-nav-wrap">
     <a class="home-brand" href="index.html" aria-label="RIVENZ home"><img src="logo.png" alt="RIVENZ"></a>
@@ -44,55 +45,45 @@
 
 <main class="dashboard-page">
 <div class="dashboard">
-  <section class="dashboard-hero">
-    <div class="hero-copy">
-      <span class="eyebrow">RIVENZ · MY ORDERS</span>
-      <h1>Your orders.<br><span style="color:#9b9ea4">All in one place.</span></h1>
-      <p>Review your clothing orders, payment status and delivery progress. Open any order to track it from confirmation to delivery.</p>
-    </div>
-    <aside class="profile-card">
-      <small>ACCOUNT</small>
-      <strong id="profileName">Customer</strong>
-      <span class="profile-email" id="profileEmail">customer@email.com</span>
-      <div class="profile-actions"><a href="profile.html">My Profile</a><a class="primary" href="services.html">Shop Now</a></div>
-    </aside>
-  </section>
-
+  <div class="ov-top">
+    <div><h1>My orders</h1><p>Track your orders from confirmation to delivery.</p></div>
+    <div class="ov-acct"><span class="ov-av" id="ovAv"><svg class="ov-i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span><div><strong id="profileName">Customer</strong><small id="profileEmail">customer@email.com</small></div><a href="profile.html">My profile</a></div>
+  </div>
   <section class="dashboard-stats">
-    <div class="stat-card"><span>Total orders</span><strong id="totalCount">—</strong><small>Orders placed with RIVENZ</small></div>
-    <div class="stat-card"><span>Active orders</span><strong id="activeCount">—</strong><small>Orders still being processed</small></div>
-    <div class="stat-card"><span>Delivered</span><strong id="deliveredCount">—</strong><small>Successfully delivered orders</small></div>
+    <div class="stat-card"><i class="ci"><svg class="ov-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 7h12l-1 13H7L6 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg></i><div><span>Total orders</span><strong id="totalCount">—</strong></div></div>
+    <div class="stat-card"><i class="ci"><svg class="ov-i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></i><div><span>In progress</span><strong id="activeCount">—</strong></div></div>
+    <div class="stat-card"><i class="ci"><svg class="ov-i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg></i><div><span>Delivered</span><strong id="deliveredCount">—</strong></div></div>
   </section>
 
   <div class="dashboard-grid">
     <section class="dash-card wide">
-      <div class="card-head"><div><span class="card-label">ORDER HISTORY</span><h2>My Orders</h2><p>Your latest orders are shown first. Select an order to view its details and tracking.</p></div><a href="services.html" style="font-size:9px;font-weight:800;color:#111316;text-decoration:none">Continue Shopping →</a></div>
+      <div class="card-head"><i class="ci"><svg class="ov-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg></i><div><span class="card-label">ORDER HISTORY</span><h2>My Orders</h2><p>Your latest orders are shown first. Select an order to view its details and tracking.</p></div><a href="services.html" class="ov-link">Continue shopping <svg class="ov-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
       <div id="ordersList"><div class="empty">Loading your orders...</div></div>
     </section>
 
     <section class="dash-card">
-      <div class="card-head"><div><span class="card-label">LATEST PAYMENT</span><h2>Payment</h2><p>Your latest order payment overview.</p></div></div>
+      <div class="card-head"><i class="ci"><svg class="ov-i" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="3"/><path d="M3 10h18"/></svg></i><div><span class="card-label">LATEST PAYMENT</span><h2>Payment</h2><p>Your latest order payment overview.</p></div></div>
       <div id="paymentBox"><div class="empty">Loading payment information...</div></div>
     </section>
 
     <section class="dash-card">
-      <div class="card-head"><div><span class="card-label">LATEST ORDER</span><h2>Delivery</h2><p>The current delivery status of your newest order.</p></div></div>
+      <div class="card-head"><i class="ci"><svg class="ov-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.6"/><circle cx="17" cy="17.5" r="1.6"/></svg></i><div><span class="card-label">LATEST ORDER</span><h2>Delivery</h2><p>The current delivery status of your newest order.</p></div></div>
       <div id="deliveryBox"><div class="empty">No order information yet.</div></div>
     </section>
 
     <section class="dash-card wide">
-      <div class="card-head"><div><span class="card-label">UPDATES</span><h2>Notifications</h2><p>Order and payment updates from RIVENZ appear here.</p></div></div>
+      <div class="card-head"><i class="ci"><svg class="ov-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></i><div><span class="card-label">UPDATES</span><h2>Notifications</h2><p>Order and payment updates from RIVENZ appear here.</p></div></div>
       <div id="notificationsBox"><div class="empty">Loading notifications...</div></div>
     </section>
 
     <section class="dash-card wide">
-      <div class="card-head"><div><span class="card-label">SAVED PIECES</span><h2>My Wishlist</h2><p>Keep your favourite RIVENZ pieces here and add them to your cart when you are ready.</p></div><a href="services.html" style="font-size:9px;font-weight:800;color:#111316;text-decoration:none">Browse Shop →</a></div>
+      <div class="card-head"><i class="ci"><svg class="ov-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.7c0 5-8.8 11-8.8 11s-8.8-6-8.8-11a4.8 4.8 0 0 1 8.8-2.6 4.8 4.8 0 0 1 8.8 2.6Z"/></svg></i><div><span class="card-label">SAVED PIECES</span><h2>My Wishlist</h2><p>Keep your favourite RIVENZ pieces here and add them to your cart when you are ready.</p></div><a href="services.html" class="ov-link">Browse shop <svg class="ov-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
       <div id="wishlistBox"><div class="empty">Loading your wishlist...</div></div>
     </section>
 
     <section class="dash-card wide">
-      <div class="card-head"><div><span class="card-label">QUICK ACTIONS</span><h2>What would you like to do?</h2><p>Jump back into the RIVENZ shopping experience.</p></div></div>
-      <div class="quick"><a href="services.html">Shop Products →</a><a href="profile.html">Manage Profile →</a><a href="index.html">Back to Home →</a></div>
+      <div class="card-head"><i class="ci"><svg class="ov-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3 5 14h6l-1 7 8-11h-6z"/></svg></i><div><span class="card-label">QUICK ACTIONS</span><h2>What would you like to do?</h2><p>Jump back into the RIVENZ shopping experience.</p></div></div>
+      <div class="quick"><a href="services.html"><svg class="ov-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h16l-1 12H5L4 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg> Shop products</a><a href="profile.html"><svg class="ov-i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg> Manage profile</a><a href="index.html"><svg class="ov-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7v9H4z"/><path d="M10 20v-6h4v6"/></svg> Back to home</a></div>
     </section>
   </div>
 </div>
@@ -120,7 +111,7 @@ async function render(user){
   const savedName=localStorage.getItem("graphicsClientName")||"";
   const name=profile.name||user.displayName||savedName||"Customer";
   const email=profile.email||user.email||localStorage.getItem("graphicsClientEmail")||"";
-  document.getElementById("profileName").textContent=name;document.getElementById("profileEmail").textContent=email;
+  document.getElementById("profileName").textContent=name;const av=document.getElementById("ovAv");if(av)av.textContent=(name||"C").trim().charAt(0).toUpperCase();document.getElementById("profileEmail").textContent=email;
 
   const orders=(await getOrders(user)).slice().sort((a,b)=>{const da=new Date(a.createdAt||0).getTime(),db=new Date(b.createdAt||0).getTime();return db-da;});
   const active=orders.filter(o=>!(/deliver|complete|cancel|reject/i.test(String(o.status||""))));
@@ -133,7 +124,8 @@ async function render(user){
   if(!orders.length){list.innerHTML=`<div class="empty">No orders yet. Place your first RIVENZ order to see it here.</div>`;}
   else{
     list.innerHTML=orders.map(order=>{
-      const items=order.items||order.products||[];const first=items[0]||{};const count=items.reduce((sum,it)=>sum+Math.max(1,Number(it.quantity)||1),0);const names=items.length?items.map(it=>it.productName||it.name||it.title||"RIVENZ Product").slice(0,2).join(", "):"RIVENZ Order";const extra=items.length>2?` +${items.length-2} more`:"";const rank=progressRank(order.status,order.paymentStatus);const pct=Math.round((rank/6)*100);const status=order.status||"Awaiting Payment";const date=order.createdAt?new Date(order.createdAt).toLocaleDateString("en-LK",{day:"2-digit",month:"short",year:"numeric"}):"";const completed=/complete/i.test(String(order.status||""));return `<div class="order ${completed?"completed-order":""}"><div class="order-main"><div class="order-top"><span class="order-id">${esc(order.id||"Order")}</span><span class="order-date">${esc(date)}</span></div><div class="order-name">${esc(names+extra)}</div><div class="order-meta"><span>${count} item${count===1?"":"s"}</span><span>·</span><span>${esc(order.paymentMethod||"Payment pending")}</span></div><div class="order-progress"><i style="width:${pct}%"></i></div><span class="order-action">Open order to view details & tracking →</span></div><div class="order-side"><div class="order-total">${money(order.total)}</div><span class="status ${statusClass(status)}">${esc(status)}</span><br><a class="track-btn" href="order-details.html?id=${encodeURIComponent(order.id||"")}">View Order</a></div></div>`;}).join("");
+      const items=order.items||order.products||[];const first=items[0]||{};const count=items.reduce((sum,it)=>sum+Math.max(1,Number(it.quantity)||1),0);const names=items.length?items.map(it=>it.productName||it.name||it.title||"RIVENZ Product").slice(0,2).join(", "):"RIVENZ Order";const extra=items.length>2?` +${items.length-2} more`:"";const rank=progressRank(order.status,order.paymentStatus);const pct=Math.round((rank/6)*100);const status=order.status||"Awaiting Payment";const date=order.createdAt?new Date(order.createdAt).toLocaleDateString("en-LK",{day:"2-digit",month:"short",year:"numeric"}):"";const completed=/complete/i.test(String(order.status||""));const im=first.image||first.img||(first.images&&first.images[0]&&first.images[0].url)||"";const stepLbl=/cancel/i.test(status)?"Order cancelled":"Step "+Math.min(7,rank+1)+" of 7";const sk=/cancel/i.test(status)?"x":/deliver|complete/i.test(status)?"check":/ship/i.test(status)?"truck":/await|pending/i.test(status)?"clock":"box";const SV={x:'<circle cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/>',check:'<circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/>',truck:'<path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.6"/><circle cx="17" cy="17.5" r="1.6"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',box:'<path d="M3 8l9-5 9 5v8l-9 5-9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/>'};return `<a class="oc" href="order-details.html?id=${encodeURIComponent(order.id||"")}"><div class="oc-img">${im?`<img src="${esc(im)}" alt="" loading="lazy">`:'<svg class="ov-i" viewBox="0 0 24 24"><path d="M6 7h12l-1 13H7L6 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>'}</div><div class="oc-main"><div class="oc-top"><b>${esc(order.id||"Order")}</b><span>${esc(date)}</span></div><div class="oc-name">${esc(names+extra)}</div><div class="oc-meta">${count} item${count===1?"":"s"} · ${esc(order.paymentMethod||"Payment pending")}</div><div class="oc-prog"><i style="width:${pct}%"></i></div><div class="oc-step">${stepLbl}</div></div><div class="oc-side"><div class="oc-total">${money(order.total)}</div><span class="status ${statusClass(status)}"><svg class="ov-i" viewBox="0 0 24 24">${SV[sk]}</svg>${esc(status)}</span><span class="oc-go">Track order <svg class="ov-i" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div></a>`
+    }).join("");
   }
 
   const notificationsBox=document.getElementById("notificationsBox");
@@ -172,7 +164,7 @@ async function render(user){
 
 function renderWishlist(){
   const box=document.getElementById("wishlistBox");if(!box)return;let list=[];try{list=JSON.parse(localStorage.getItem("rivenzWishlistV1")||"[]")}catch(e){}
-  if(!Array.isArray(list)||!list.length){box.innerHTML='<div class="empty">Your wishlist is empty. Tap the ♡ on any product in the Shop to save it here.</div>';return;}
+  if(!Array.isArray(list)||!list.length){box.innerHTML='<div class="empty">Your wishlist is empty. Tap the heart on any product in the Shop to save it here.</div>';return;}
   box.innerHTML='<div class="wishlist-grid">'+list.map(item=>{const price=Number(item.offer||0)>0?item.offer:item.price;const old=Number(item.offer||0)>0&&Number(item.price||0)>0?'<span style="color:#9a9da2;text-decoration:line-through;margin-left:5px">'+money(item.price)+'</span>':'';const image=item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="wishlist-placeholder">RIVENZ</div>';return '<div class="wishlist-item">'+image+'<div class="wishlist-info"><div class="wishlist-name">'+esc(item.name||"RIVENZ Product")+'</div><div class="wishlist-price"><strong>'+money(price)+'</strong>'+old+'</div><div class="wishlist-actions"><a href="services.html">Shop</a><button type="button" data-wish-remove="'+esc(item.id||'')+'">Remove</button></div></div></div>'}).join('')+'</div>';
   box.querySelectorAll('[data-wish-remove]').forEach(btn=>btn.addEventListener('click',()=>{const id=btn.getAttribute('data-wish-remove');list=list.filter(x=>String(x.id)!==String(id));localStorage.setItem('rivenzWishlistV1',JSON.stringify(list));renderWishlist();}));
 }
