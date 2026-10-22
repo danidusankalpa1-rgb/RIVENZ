@@ -38,7 +38,7 @@ async function jsonRequest(path,options={},retry=true){
 }
 async function upload(file,type){
   if(!file) throw new Error('FILE_REQUIRED');
-  if(file.size>25*1024*1024) throw new Error('FILE_TOO_LARGE');
+  if(file.size>(/^video\//i.test(file.type||'')?100:25)*1024*1024) throw new Error('FILE_TOO_LARGE');
   const token=await getToken(true);
   const body=await file.arrayBuffer();
   return jsonRequest('/public/upload',{

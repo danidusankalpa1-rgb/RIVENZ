@@ -160,7 +160,7 @@ function allowedFolder(folder) {
 }
 
 function publicType(type) {
-  return new Set(["portfolio", "invitation", "invitation-v2", "showcase", "services", "products"]).has(type) ? type : "";
+  return new Set(["portfolio", "invitation", "invitation-v2", "showcase", "services", "products", "home-settings", "payment-settings", "special-event"]).has(type) ? type : "";
 }
 
 function publicCatalogKey(type) {
@@ -402,12 +402,21 @@ export default {
     if (request.method === "GET" && url.pathname === "/public/file") {
       const key = url.searchParams.get("key") || "";
       if (!key || key.includes("..") || !key.startsWith("public/")) return json({ ok: false, error: "Invalid public key" }, 400);
-      const object = await env.FILES.get(key);
+      const wantsRange = request.headers.has("Range");
+      const object = await env.FILES.get(key, wantsRange ? { range: request.headers } : undefined);
       if (!object) return json({ ok: false, error: "FILE_NOT_FOUND" }, 404);
       const headers = addCors(new Headers(), request);
       object.writeHttpMetadata(headers);
       headers.set("Cache-Control", "public, max-age=300");
       headers.set("ETag", object.httpEtag);
+      headers.set("Accept-Ranges", "bytes");
+      if (wantsRange && object.range) {
+        const start = object.range.offset ?? 0;
+        const end = object.range.length != null ? start + object.range.length - 1 : object.size - 1;
+        headers.set("Content-Range", "bytes " + start + "-" + end + "/" + object.size);
+        headers.set("Content-Length", String(end - start + 1));
+        return new Response(object.body, { status: 206, headers });
+      }
       return new Response(object.body, { status: 200, headers });
     }
 
@@ -428,7 +437,8 @@ export default {
       const type = publicType(request.headers.get("X-Public-Type"));
       if (!type) return json({ ok: false, error: "Invalid public type" }, 400);
       const size = Number(request.headers.get("X-File-Size") || request.headers.get("Content-Length") || 0);
-      if (size > 25 * 1024 * 1024) return json({ ok: false, error: "FILE_TOO_LARGE" }, 413);
+      const isVideo = /^video\//i.test(request.headers.get("X-File-Type") || "");
+      if (size > (isVideo ? 100 : 25) * 1024 * 1024) return json({ ok: false, error: "FILE_TOO_LARGE" }, 413);
       if (!request.body) return json({ ok: false, error: "FILE_REQUIRED" }, 400);
       const originalName = request.headers.get("X-File-Name") || "file";
       const key = publicFileKey(type, originalName);

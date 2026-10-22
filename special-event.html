@@ -93,7 +93,7 @@ body.se{margin:0;color:var(--tx);font-family:Inter,system-ui,sans-serif;backgrou
   }
   (async()=>{
     let v={...DEF},products=[];
-    try{const r=await window.graphicsPublicContent.catalog('special-event');if(Array.isArray(r)&&r[0])v={...DEF,...r[0]}}catch(e){}
+    try{const r=await window.graphicsPublicContent.catalog('showcase');const it=(Array.isArray(r)?r:[]).find(x=>x&&x._key==='special-event');if(it){const {_key,...rest}=it;v={...DEF,...rest}}}catch(e){}
     try{const r=await window.graphicsPublicContent.catalog('products');products=Array.isArray(r)?r.filter(p=>p&&p.active!==false):[]}catch(e){}
     render(v,products);
   })();
