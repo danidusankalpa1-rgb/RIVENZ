@@ -122,3 +122,13 @@
 .rv2-rail .sx-card{flex:0 0 calc(25% - 8px)!important;min-width:0;scroll-snap-align:start;content-visibility:visible!important}
 .rv2-rail .sx-img img{opacity:1!important}
 @media(max-width:700px){.rv2-rail .sx-card{flex-basis:62%!important}}
+
+/* ===== square boxed cards (final) ===== */
+.service-grid{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important;border-radius:0!important;gap:16px!important}
+.sx-card{border:1px solid #d9d9d3!important;background:#fff!important;border-radius:0!important;padding:0!important;overflow:hidden!important;transition:border-color .2s,box-shadow .25s!important}
+.sx-card:hover{border-color:#111316!important;box-shadow:0 16px 30px -22px rgba(0,0,0,.45)!important;transform:none!important}
+.sx-img{border-radius:0!important}
+.sx-body{padding:12px 12px 14px!important}
+.sx-desc{margin-top:8px!important}
+@media(max-width:700px){.service-grid{padding:0!important;border-radius:0!important;gap:10px!important}.sx-img{border-radius:0!important}.sx-body{padding:10px!important}}
+.rv2-rail .sx-card{border-radius:0!important}

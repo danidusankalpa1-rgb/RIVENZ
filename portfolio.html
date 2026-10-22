@@ -110,7 +110,7 @@
     @media(max-width:700px){.collection-grid{grid-template-columns:1fr}.collection-card{min-height:320px}.collection-bottom{align-items:flex-start;flex-direction:column}.collection-shop-button{margin-top:2px}}
   </style>
 
-<link rel="stylesheet" href="user-nav.css">
+<link rel="stylesheet" href="user-nav.css?v=14">
 </head>
 <body class="portfolio-page-body page-ready">
 <header class="home-header">
@@ -213,6 +213,6 @@ const homeToggle=document.querySelector('.home-menu-toggle'),homeNav=document.qu
 if(homeToggle&&homeNav){homeToggle.addEventListener('click',()=>{const open=homeNav.classList.toggle('open');homeToggle.setAttribute('aria-expanded',open)});homeNav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>homeNav.classList.remove('open')))}
 </script>
 <script type="module" src="account-guard.js"></script>
-<script type="module" src="user-nav.js"></script>
+<script type="module" src="user-nav.js?v=14"></script>
 </body>
 </html>
