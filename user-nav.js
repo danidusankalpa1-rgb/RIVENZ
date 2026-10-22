@@ -19,7 +19,7 @@ const P = {
 };
 const I = (k, c = "") => `<svg class="rvz-i ${c}" viewBox="0 0 24 24" aria-hidden="true">${P[k]}</svg>`;
 const file = (location.pathname.split("/").pop() || "index.html").toLowerCase();
-const ACTIVE = { "index.html": "home", "": "home", "services.html": "collection", "product-details.html": "collection", "collection.html": "collection", "portfolio.html": "collection", "weddings.html": "offers", "chat.html": "chat", "cart.html": "cart", "order.html": "cart", "order-confirmation.html": "cart", "special-event.html": "event", "profile.html": "profile", "dashboard.html": "order", "order-details.html": "order" }[file] || "";
+const ACTIVE = { "index.html": "home", "": "home", "services.html": "collection", "product-details.html": "collection", "collection.html": "collection", "collection-mens.html": "collection", "collection-women.html": "collection", "collection-shoes.html": "collection", "collection-accessories.html": "collection", "portfolio.html": "collection", "weddings.html": "offers", "chat.html": "chat", "cart.html": "cart", "order.html": "cart", "order-confirmation.html": "cart", "special-event.html": "event", "profile.html": "profile", "dashboard.html": "order", "order-details.html": "order" }[file] || "";
 const MAIN = [["home", "Home", "index.html"], ["collection", "Collection", "collection.html"], ["offers", "Offers", "weddings.html"], ["event", "Special event", "special-event.html"]];
 
 const h = document.createElement("header");
