@@ -132,3 +132,18 @@
 .sx-desc{margin-top:8px!important}
 @media(max-width:700px){.service-grid{padding:0!important;border-radius:0!important;gap:10px!important}.sx-img{border-radius:0!important}.sx-body{padding:10px!important}}
 .rv2-rail .sx-card{border-radius:0!important}
+
+/* shop: category pills live in the black strip on desktop */
+@media(min-width:901px){#shopFilters{display:none!important}}
+/* product page: nothing may overflow the screen */
+html,body{overflow-x:hidden}
+.rivenz-detail-page,.rivenz-detail-layout,.rivenz-detail-info,.rivenz-detail-gallery,.rivenz-detail-main{min-width:0!important;max-width:100%!important}
+.rivenz-detail-layout>*{min-width:0!important}
+.rivenz-detail-options{display:flex!important;flex-wrap:wrap!important;gap:8px!important}
+.rivenz-detail-size{min-width:52px}
+.rivenz-delivery-box{display:flex!important;flex-wrap:wrap;gap:10px;align-items:center;max-width:100%}
+.rivenz-delivery-box span{min-width:0}
+.rivenz-detail-actions{display:grid!important;grid-template-columns:1fr 1fr!important;gap:10px!important;max-width:100%}
+.rivenz-detail-actions>*{min-width:0!important;width:100%!important;justify-content:center}
+.rv2-price{flex-wrap:wrap}
+@media(max-width:520px){.rivenz-detail-actions{grid-template-columns:1fr!important}}

@@ -48,7 +48,27 @@
   .rvz-logo{grid-column:2;grid-row:1}.rvz-logo img{width:104px}
   .rvz-r{grid-column:3;grid-row:1}
   .rvz-menu .rvz-x{display:none}.rvz-menu.open .rvz-x{display:block}.rvz-menu.open .rvz-m{display:none}
-  .rvz-card.rvz-mob{display:block;left:10px;right:auto;top:0;transform-origin:top left;width:min(320px,calc(100vw - 20px));max-height:calc(100vh - 80px);overflow-y:auto}
+  .rvz-card.rvz-mob{display:flex}
   .rvz-card.rvz-acc-card{display:none}
   .rvz-search{padding:12px 12px}
+}
+
+.rvz-sub a.on{color:#fff;box-shadow:inset 0 -2px 0 #fff}
+.rvz-sub nav{height:44px}.rvz-sub{max-height:44px}
+/* mobile drawer */
+.rvz-bd{display:none}
+@media(max-width:900px){
+  .rvz-card.rvz-mob{position:fixed!important;left:0!important;right:auto!important;top:0!important;bottom:0;width:min(78vw,330px)!important;max-height:none!important;height:100dvh;border-radius:0 28px 28px 0!important;padding:0!important;flex-direction:column;transform:translateX(-102%)!important;opacity:1!important;visibility:hidden;transition:transform .32s cubic-bezier(.22,1,.36,1),visibility .32s;box-shadow:0 0 60px rgba(0,0,0,.25)!important;z-index:1200;overflow:hidden}
+  .rvz-card.rvz-mob.open{transform:none!important;visibility:visible}
+  .rvz-dh{display:flex;align-items:center;justify-content:center;position:relative;padding:34px 20px 20px}
+  .rvz-dh img{width:128px;height:auto}
+  .rvz-dx{position:absolute;right:16px;top:18px;width:38px;height:38px;border:0;background:#f3f3f0;border-radius:50%;display:grid;place-items:center;color:#111316;cursor:pointer;padding:0}
+  .rvz-dn{overflow-y:auto;padding:6px 26px 30px;display:flex;flex-direction:column;flex:1}
+  .rvz-dr{display:flex;align-items:center;justify-content:space-between;padding:15px 0;border:0;background:none;font:inherit;font-size:15px;font-weight:600;color:#3d4046;text-decoration:none;text-align:left;cursor:pointer;width:100%}
+  .rvz-dr.on{color:#111316;font-weight:800}
+  .rvz-dr .rvz-b{position:static}
+  .rvz-dsub{display:flex;flex-direction:column;padding:0 0 8px 14px;margin:-4px 0 6px;border-left:2px solid #ececE8}
+  .rvz-dsub a{padding:9px 12px;font-size:13px;font-weight:600;color:#7c8087;text-decoration:none}
+  .rvz-bd{display:block;position:fixed;inset:0;background:rgba(0,0,0,.45);opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s;z-index:1100}
+  .rvz-bd.open{opacity:1;visibility:visible}
 }
