@@ -25,3 +25,100 @@
     .sx-off{position:absolute;left:10px;top:10px;z-index:5;background:#111316;color:#fff;font-size:11px;font-weight:800;letter-spacing:.04em;padding:6px 10px;border-radius:999px}
     .empty-state{grid-column:1/-1}
     @media(max-width:700px){.service-grid{padding:14px 10px!important;border-radius:24px!important;gap:22px 8px!important}.sx-img{border-radius:16px!important}}
+
+/* ---- cards: reference style (pill, name left, price right, red offer) ---- */
+.sx-row{align-items:flex-start!important}
+.sx-price{display:flex!important;flex-direction:column;align-items:flex-end;gap:2px;font-size:13px;font-weight:600}
+.sx-price b{font-weight:700}.sx-price.is-offer b{color:#d0312d}
+.sx-price s{margin:0!important;font-size:11.5px;color:#9a9ca1;font-weight:500}
+.sx-off{background:#fff!important;color:#111316!important;font-size:12px!important;font-weight:800!important;padding:7px 12px!important;box-shadow:0 6px 16px -8px rgba(0,0,0,.35)}
+
+/* ---- product detail page ---- */
+#rivenzDetailPage{max-width:1180px!important;margin:0 auto!important;padding:6px 0 40px!important;background:transparent!important;border:0!important;box-shadow:none!important;border-radius:0!important}
+.rv2-i{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.rv2-crumbs{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12.5px;color:#9a9da3;margin-bottom:18px}
+.rv2-crumbs b{color:#111316;font-weight:600;max-width:46vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rv2-crumbs .rivenz-detail-back{background:none!important;border:0!important;padding:0!important;color:#9a9da3!important;font:inherit!important;cursor:pointer;box-shadow:none!important;min-height:0!important}
+.rv2-crumbs .rivenz-detail-back:hover{color:#111316!important}
+.rv2-crumbs .rivenz-detail-cart{margin-left:auto;color:#111316!important;font-weight:700;text-decoration:none;background:none!important;border:0!important;padding:0!important}
+#rivenzDetailPage .rivenz-detail-layout{display:grid!important;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr)!important;gap:34px!important;align-items:start;background:transparent!important;padding:0!important}
+#rivenzDetailPage .rivenz-detail-info{padding:0!important;background:transparent!important}
+#rivenzDetailPage .rivenz-detail-title{font-family:'Unbounded','Inter',sans-serif!important;font-weight:600!important;font-size:clamp(24px,3.4vw,42px)!important;line-height:1.08!important;letter-spacing:-.02em!important;text-transform:uppercase;margin:0 0 10px!important}
+.rv2-sku{font-size:12.5px;color:#9a9da3;margin-bottom:22px}
+#rivenzDetailPage .rivenz-detail-label{font-size:15px!important;font-weight:700!important;color:#111316!important;margin:20px 0 10px!important;letter-spacing:0!important;text-transform:none!important}
+.rv2-cn{font-weight:500;color:#6d7077;margin-left:8px;font-size:14px}
+#rivenzDetailPage .rivenz-detail-options{display:flex!important;flex-wrap:wrap;gap:10px!important}
+#rivenzDetailPage .rivenz-detail-color{width:40px!important;height:40px!important;padding:0!important;font-size:0!important;border-radius:10px!important;border:2px solid transparent!important;background:#fff!important;display:grid!important;place-items:center;box-shadow:0 0 0 1px #dcdbd5!important;cursor:pointer}
+#rivenzDetailPage .rivenz-detail-color .color-dot{width:28px!important;height:28px!important;border-radius:7px!important;display:block!important;margin:0!important}
+#rivenzDetailPage .rivenz-detail-color.selected{box-shadow:0 0 0 2px #111316!important}
+#rivenzDetailPage .rivenz-detail-size{min-width:52px;height:42px;padding:0 16px!important;border-radius:10px!important;border:1.5px solid #cfcfca!important;background:#fff!important;color:#111316!important;font-weight:700!important;font-size:13px!important;cursor:pointer;transition:all .2s}
+#rivenzDetailPage .rivenz-detail-size.selected{background:#111316!important;color:#fff!important;border-color:#111316!important}
+#rivenzDetailPage .rivenz-detail-size:disabled{opacity:.35;text-decoration:line-through;cursor:not-allowed}
+#rivenzDetailPage .rivenz-detail-stock{font-size:12.5px!important;color:#6d7077!important;margin-top:10px!important}
+#rivenzDetailPage .rivenz-detail-qty{display:inline-flex!important;align-items:center;gap:14px;margin:0!important}
+#rivenzDetailPage .rivenz-detail-qty button{width:34px;height:34px;border-radius:50%!important;border:1.5px solid #111316!important;background:#fff!important;color:#111316!important;font-size:18px;line-height:1;cursor:pointer;padding:0!important}
+#rivenzDetailPage .rivenz-detail-qty button:last-child{background:#111316!important;color:#fff!important}
+#rivenzDetailPage .rivenz-detail-qty button:disabled{opacity:.35;cursor:not-allowed}
+#rivenzDetailPage .rivenz-detail-qty span{font-weight:800;min-width:22px;text-align:center}
+.rv2-price{display:flex;align-items:center;gap:12px;margin:24px 0 6px;flex-wrap:wrap}
+#rivenzDetailPage .rivenz-detail-price{font-family:'Unbounded','Inter',sans-serif;font-size:clamp(22px,3vw,30px)!important;font-weight:600!important;letter-spacing:-.01em;color:#111316}
+#rivenzDetailPage .rivenz-detail-old{color:#9a9ca1!important;text-decoration:line-through;font-size:16px!important}
+.rv2-off{background:#d0312d;color:#fff;font-size:12px;font-weight:800;padding:5px 10px;border-radius:999px}
+#rivenzDetailPage .rivenz-delivery-box{display:flex!important;align-items:center;gap:12px;padding:12px 14px!important;border:1px solid #ecece8!important;border-radius:16px!important;background:#fff!important;margin:14px 0!important;font-size:13px;color:#6d7077}
+#rivenzDetailPage .rivenz-delivery-box strong{color:#111316!important;margin-right:4px}
+#rivenzDetailPage .rivenz-delivery-free{color:#1f8a5b!important}
+#rivenzDetailPage .rivenz-detail-actions{display:flex!important;gap:10px;flex-wrap:wrap;margin-top:8px}
+#rivenzDetailPage .rivenz-detail-add,#rivenzDetailPage .rivenz-detail-order{display:inline-flex!important;align-items:center;justify-content:center;gap:10px;height:54px;padding:0 28px!important;border-radius:999px!important;font-size:14px!important;font-weight:700!important;text-decoration:none;cursor:pointer;flex:1 1 180px;transition:transform .2s,filter .2s}
+#rivenzDetailPage .rivenz-detail-add{background:#111316!important;color:#fff!important;border:0!important}
+#rivenzDetailPage .rivenz-detail-order{background:#fff!important;color:#111316!important;border:1.5px solid #111316!important}
+#rivenzDetailPage .rivenz-detail-add:hover,#rivenzDetailPage .rivenz-detail-order:hover{transform:translateY(-2px)}
+#rivenzDetailPage .rivenz-detail-add:disabled,#rivenzDetailPage .rivenz-detail-order.disabled{opacity:.4;pointer-events:none}
+#rivenzDetailPage .rivenz-detail-hint{font-size:12px!important;color:#9a9da3!important;margin-top:12px}
+#rivenzDetailPage .rivenz-detail-gallery{padding:0!important;background:transparent!important}
+#rivenzDetailPage .rivenz-detail-main{position:relative;aspect-ratio:4/4.6!important;border-radius:0!important;background:#e9e8e4!important;overflow:hidden}
+#rivenzDetailPage .rivenz-detail-main img{width:100%;height:100%;object-fit:cover;display:block}
+.rv2-heart{position:absolute;right:16px;top:16px;z-index:4;width:42px;height:42px;border-radius:50%;border:0;background:rgba(255,255,255,.9);display:grid;place-items:center;cursor:pointer;color:#111316;transition:transform .2s}
+.rv2-heart:hover{transform:scale(1.08)}.rv2-heart.on{color:#d0312d}.rv2-heart.on svg{fill:currentColor}
+#rivenzDetailPage .rivenz-detail-arrow{position:absolute;top:50%;transform:translateY(-50%);width:42px!important;height:42px!important;border-radius:50%!important;border:0!important;background:rgba(255,255,255,.88)!important;color:#111316!important;display:grid!important;place-items:center;cursor:pointer;padding:0!important;font-size:0!important}
+#rivenzDetailPage .rivenz-detail-arrow.prev{left:14px}#rivenzDetailPage .rivenz-detail-arrow.next{right:14px}
+#rivenzDetailPage .rivenz-detail-thumbs{display:flex!important;gap:10px;margin-top:10px;overflow-x:auto;scrollbar-width:none}
+#rivenzDetailPage .rivenz-detail-thumb{flex:0 0 84px;height:100px;padding:0!important;border:2px solid transparent!important;background:#e9e8e4!important;border-radius:0!important;overflow:hidden;cursor:pointer;opacity:.7}
+#rivenzDetailPage .rivenz-detail-thumb.active{border-color:#111316!important;opacity:1}
+#rivenzDetailPage .rivenz-detail-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+#rivenzDetailPage .rivenz-detail-count{display:none!important}
+.rv2-about{margin-top:54px}
+.rv2-about h2,.rv2-relhead h2{margin:0 0 16px;font-family:'Unbounded','Inter',sans-serif;font-weight:600;font-size:clamp(18px,2.4vw,26px);letter-spacing:-.02em;text-transform:uppercase}
+.rv2-tabs{display:flex;gap:26px;border-bottom:1px solid #e6e5e0;margin-bottom:20px}
+.rv2-tabs button{background:none;border:0;padding:0 0 12px;font:inherit;font-size:14px;font-weight:600;color:#9a9da3;cursor:pointer;position:relative}
+.rv2-tabs button.on{color:#111316}.rv2-tabs button.on:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:#111316}
+.rv2-pane{max-width:720px;font-size:14px;line-height:1.75;color:#44474d;animation:rv2Fade .4s ease}
+.rv2-pane p{margin:0}.rv2-pane ul{list-style:none;padding:0;margin:0}.rv2-pane li{display:flex;justify-content:space-between;gap:16px;padding:11px 0;border-bottom:1px solid #eeeeea}.rv2-pane li span{color:#8b8e94}
+.rv2-pane ul.plain li{display:list-item;list-style:disc inside;border:0;padding:5px 0}
+@keyframes rv2Fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.rv2-rel{margin-top:60px}.rv2-relhead{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.rv2-relnav{display:flex;gap:8px;margin-bottom:16px}.rv2-relnav button{width:42px;height:42px;border-radius:50%;border:1.5px solid #111316;background:#fff;display:grid;place-items:center;cursor:pointer;color:#111316;padding:0}.rv2-relnav button:last-child{background:#111316;color:#fff}
+.rv2-rail{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}.rv2-rail::-webkit-scrollbar{display:none}
+.rv2-rail .sx-card{flex:0 0 calc(25% - 8px);scroll-snap-align:start}
+@media(max-width:900px){
+  #rivenzDetailPage .rivenz-detail-layout{grid-template-columns:1fr!important;gap:22px!important}
+  #rivenzDetailPage .rivenz-detail-gallery{order:-1}
+  .rv2-rail .sx-card{flex-basis:62%}
+  .rv2-about{margin-top:38px}
+}
+
+/* hidden must win (detail page open) */
+.sx-intro[hidden],.shop-filters[hidden],.service-grid[hidden],.services-bottom[hidden],#shopSubFilters[hidden]{display:none!important}
+/* reference-style cards: pill top-right, heart top-left, name + red price, old price below */
+.sx-off{left:auto!important;right:10px!important;background:#fff!important;color:#111316!important;box-shadow:0 6px 16px -8px rgba(0,0,0,.3)}
+.sx-card .rivenz-wishlist-btn{left:10px!important;right:auto!important}
+.sx-price{text-align:right}.sx-price.hot{color:#c0392b}
+.sx-price s{display:block;margin:2px 0 0!important;font-size:11px}
+.sx-row{align-items:flex-start!important}
+/* product page */
+.rivenz-detail-title{font-family:'Unbounded',Inter,sans-serif!important;text-transform:uppercase;letter-spacing:-.03em!important;font-weight:600!important}
+
+/* related rail on product page */
+.rv2-rail{display:flex!important;gap:10px!important;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding-bottom:6px}.rv2-rail::-webkit-scrollbar{display:none}
+.rv2-rail .sx-card{flex:0 0 calc(25% - 8px)!important;min-width:0;scroll-snap-align:start;content-visibility:visible!important}
+.rv2-rail .sx-img img{opacity:1!important}
+@media(max-width:700px){.rv2-rail .sx-card{flex-basis:62%!important}}

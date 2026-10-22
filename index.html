@@ -103,7 +103,7 @@
   }
   function applyBanner(v){
     const url=v.heroImage&&v.heroImage.url;if(!url)return;
-    $('heroBg').style.backgroundImage='url("'+String(url).replace(/"/g,'%22')+'")';$('heroCard').classList.add('has-img');
+    const hi=v.heroImage,vid=/^video/.test(hi.type||'')||/\.(mp4|webm|mov)(\?|$)/i.test(String(url));if(vid){const el=document.createElement('video');el.src=url;el.muted=true;el.loop=true;el.autoplay=true;el.playsInline=true;el.setAttribute('playsinline','');el.preload='auto';el.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover';$('heroBg').appendChild(el);el.play&&el.play().catch(()=>{})}else $('heroBg').style.backgroundImage='url("'+String(url).replace(/"/g,'%22')+'")';$('heroCard').classList.add('has-img');
   }
   function applyVisibility(v){
     [['#shop-preview',v.showShop],['#collections',v.showCollections],['#offers-preview',v.showPromo],['.process-section',v.showProcess],['#contact',v.showContact]].forEach(([s,on])=>{const el=document.querySelector(s);if(el)el.style.display=on===false?'none':''});
@@ -120,7 +120,7 @@
     const list=products.slice().sort((a,b)=>t(b)-t(a)).slice(0,10);
     if(!list.length){box.innerHTML='<div class="hx-empty">New pieces are coming soon.</div>';return}
     box.innerHTML=list.map(p=>{const im=imageOf(p),off=Number(p.offer||0)>0&&Number(p.offer)<Number(p.price||0);
-      return '<a class="hx-card" href="services.html?product='+encodeURIComponent(p.id)+'"><div class="hx-img">'+(im?'<img src="'+esc(im)+'" alt="'+esc(p.name||'')+'" loading="lazy" decoding="async">':'')+'</div><div class="hx-row"><span>'+esc(p.name||'RIVENZ product')+'</span><span>'+money(off?p.offer:p.price)+(off?'<s>'+money(p.price)+'</s>':'')+'</span></div></a>'}).join('');
+      return '<a class="hx-card" href="services.html?product='+encodeURIComponent(p.id)+'"><div class="hx-img">'+(im?'<img src="'+esc(im)+'" alt="'+esc(p.name||'')+'" loading="lazy" decoding="async">':'')+(off?'<i class="hx-off">\u2212'+Math.round((1-p.offer/p.price)*100)+'%</i>':'')+'</div><div class="hx-row"><span>'+esc(p.name||'RIVENZ product')+'</span><span class="'+(off?'hot':'')+'">'+money(off?p.offer:p.price)+(off?'<s>'+money(p.price)+'</s>':'')+'</span></div></a>'}).join('');
   }
   document.querySelectorAll('.hx-lk').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();location.href=el.dataset.h}));
   const rail=()=>$('homeServices'),step=()=>Math.max(200,rail().clientWidth*.8);

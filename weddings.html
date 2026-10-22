@@ -204,11 +204,11 @@
     if(ref){const img=document.createElement('img');img.alt=p.name||'RIVENZ product';img.loading='lazy';img.decoding='async';img.src=ref;media.appendChild(img)}
     media.appendChild(wish);
     const off=Number(p.offer||0)>0&&Number(p.price||0)>0&&Number(p.offer)<Number(p.price);
-    if(off){const t=document.createElement('span');t.className='sx-off';t.textContent='-'+Math.round((1-p.offer/p.price)*100)+'%';media.appendChild(t)}
+    if(off){const t=document.createElement('span');t.className='sx-off';t.textContent='−'+Math.round((1-p.offer/p.price)*100)+'%';media.appendChild(t)}
     const body=document.createElement('div');body.className='sx-body';
-    body.innerHTML='<div class="sx-row"><h2 class="sx-name">'+esc(p.name||'RIVENZ Product')+'</h2><span class="sx-price">'+money(off?p.offer:p.price)+(off?'<s>'+money(p.price)+'</s>':'')+'</span></div><p class="sx-desc">'+esc(p.description||'A clean RIVENZ piece made for everyday wear.')+'</p>';
+    body.innerHTML='<div class="sx-row"><h2 class="sx-name">'+esc(p.name||'RIVENZ Product')+'</h2><span class="sx-price'+(off?' is-offer':'')+'"><b>'+money(off?p.offer:p.price)+'</b>'+(off?'<s>'+money(p.price)+'</s>':'')+'</span></div><p class="sx-desc">'+esc(p.description||'A clean RIVENZ piece made for everyday wear.')+'</p>';
     card.append(media,body);
-    const open=()=>openDetails(p);card.onclick=open;card.onkeydown=e=>{if(e.key==='Enter')open()};
+    const open=()=>location.href='services.html?product='+encodeURIComponent(p.id);card.onclick=open;card.onkeydown=e=>{if(e.key==='Enter')open()};
     syncWish();
     return card;
   }

@@ -14,6 +14,7 @@ const P = {
   user: '<circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/>',
   order: '<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>',
   out: '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/>',
+  search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
   menu: '<path d="M4 9h16M4 15h16"/>', x: '<path d="M6 6l12 12M18 6 6 18"/>'
 };
 const I = (k, c = "") => `<svg class="rvz-i ${c}" viewBox="0 0 24 24" aria-hidden="true">${P[k]}</svg>`;
@@ -32,21 +33,28 @@ function paint() {
   const cartB = `<em class="rvz-b" data-cart${cartN ? "" : " hidden"}>${cartN}</em>`, chatB = `<em class="rvz-b" data-unread${unread ? "" : " hidden"}>${unread}</em>`;
   const full = [...MAIN.slice(0, 4).map(([k, l, u]) => [k, l, u]), ["chat", "Chat", "chat.html", chatB], ["cart", "Cart", "cart.html", cartB], MAIN[4], ...(li ? [["profile", "My profile", "profile.html"], ["order", "My order", "dashboard.html"]] : [])];
   const row = ([k, l, u, b = ""]) => `<a class="rvz-row${on(k)}" href="${u}">${I(k === "profile" ? "user" : k)}<span>${l}</span>${b}</a>`;
+  const CATS = [["Men's", "mens"], ["Ladies", "ladies"], ["Unisex", "unisex"], ["Kids", "kids"], ["Accessories", "accessories"]];
   h.innerHTML = `<div class="rvz-w">
+    <span class="rvz-tag">#RIVENZFASHION</span>
     <a class="rvz-logo" href="index.html" aria-label="RIVENZ home"><img src="logo.png" alt="RIVENZ"></a>
-    <nav class="rvz-nav" aria-label="Main">${MAIN.map(([k, l, u]) => `<a class="rvz-a${on(k)}" href="${u}">${I(k)}<span>${l}</span></a>`).join("")}</nav>
     <div class="rvz-r">
+      <button type="button" class="rvz-c rvz-sbtn" id="rvzSBtn" aria-label="Search" aria-expanded="false">${I("search")}</button>
       <a class="rvz-c rvz-chat${on("chat")}" href="chat.html" aria-label="Chat">${I("chat")}${chatB}</a>
       <a class="rvz-c${on("cart")}" href="cart.html" aria-label="Cart">${I("cart")}${cartB}</a>
       ${li ? `<button type="button" class="rvz-c rvz-acc" id="rvzAcc" aria-label="Account" aria-expanded="false"><span class="rvz-av">${initial}</span></button>` : `<a class="rvz-login" href="auth.html?next=${encodeURIComponent(file)}">${I("user")}<span>Login</span></a>`}
-      <button type="button" class="rvz-c rvz-menu" id="rvzMenu" aria-label="Open menu" aria-expanded="false"><span class="rvz-m">${I("menu")}</span><span class="rvz-x">${I("x")}</span></button>
     </div>
+    <button type="button" class="rvz-c rvz-menu" id="rvzMenu" aria-label="Open menu" aria-expanded="false"><span class="rvz-m">${I("menu")}</span><span class="rvz-x">${I("x")}</span></button>
+  </div>
+  <div class="rvz-navrow"><nav class="rvz-nav" aria-label="Main">${MAIN.map(([k, l, u]) => `<a class="rvz-a${on(k)}" href="${u}"><span>${l}</span></a>`).join("")}</nav></div>
+  <div class="rvz-sub"><nav aria-label="Categories">${CATS.map(([l, c]) => `<a href="services.html?category=${c}">${l}</a>`).join("")}</nav><span class="rvz-subr">${li ? `<a href="profile.html">My profile</a><a href="dashboard.html">My order</a>` : `<a href="auth.html?next=${encodeURIComponent(file)}">Login</a>`}</span></div>
+  <form class="rvz-search" id="rvzSearch" action="services.html" method="get" role="search"><div class="rvz-sw">${I("search")}<input name="q" type="search" placeholder="Search products by name" aria-label="Search products" autocomplete="off"><button type="submit">Search</button></div></form>
+  <div class="rvz-w2">
     <div class="rvz-card rvz-acc-card" id="rvzAccCard"><a class="rvz-row${on("profile")}" href="profile.html">${I("user")}<span>My profile</span></a><a class="rvz-row${on("order")}" href="dashboard.html">${I("order")}<span>My order</span></a><div class="rvz-sep"></div><button type="button" class="rvz-row" data-out>${I("out")}<span>Log out</span></button></div>
     <div class="rvz-card rvz-mob" id="rvzMob">${full.map(row).join("")}<div class="rvz-sep"></div>${li ? `<button type="button" class="rvz-row" data-out>${I("out")}<span>Log out</span></button>` : `<a class="rvz-row" href="auth.html?next=${encodeURIComponent(file)}">${I("user")}<span>Login</span></a>`}</div>
   </div>`;
 }
 function closeAll() {
-  h.querySelectorAll(".rvz-card").forEach((c) => c.classList.remove("open"));
+  h.querySelectorAll(".rvz-card,.rvz-search").forEach((c) => c.classList.remove("open"));
   h.querySelectorAll("#rvzMenu,#rvzAcc").forEach((b) => { b.classList.remove("open"); b.setAttribute("aria-expanded", "false"); });
 }
 function toggle(btn, card) {
@@ -55,6 +63,8 @@ function toggle(btn, card) {
 }
 h.addEventListener("click", async (e) => {
   const m = e.target.closest("#rvzMenu"), a = e.target.closest("#rvzAcc");
+  const sb = e.target.closest("#rvzSBtn");
+  if (sb) { e.stopPropagation(); const f = h.querySelector("#rvzSearch"), op = !f.classList.contains("open"); closeAll(); f.classList.toggle("open", op); sb.setAttribute("aria-expanded", String(op)); if (op) f.querySelector("input")?.focus(); return; }
   if (m) { e.stopPropagation(); return toggle(m, h.querySelector("#rvzMob")); }
   if (a) { e.stopPropagation(); return toggle(a, h.querySelector("#rvzAccCard")); }
   if (e.target.closest("[data-out]")) { try { await signOut(getAuth(app)); } catch (_) {} location.href = "index.html"; }
@@ -62,6 +72,8 @@ h.addEventListener("click", async (e) => {
 document.addEventListener("click", (e) => { if (!h.contains(e.target)) closeAll(); });
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeAll(); });
 window.addEventListener("resize", closeAll);
+const onScroll = () => h.classList.toggle("rvz-sm", window.scrollY > 70);
+window.addEventListener("scroll", onScroll, { passive: true }); onScroll();
 
 const setBadge = (sel, n) => h.querySelectorAll(sel).forEach((b) => { b.textContent = n > 99 ? "99+" : n; b.hidden = !n; });
 const readCart = () => { try { cartN = window.rivenzCartStore?.count?.() || 0; } catch (_) { cartN = 0; } setBadge("[data-cart]", cartN); };
