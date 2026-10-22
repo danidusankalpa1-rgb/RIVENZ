@@ -262,7 +262,7 @@
   function deliveryForProduct(p){
     const type=String(p?.deliveryType||'').toLowerCase();
     const fee=Math.max(0,Number(p?.deliveryFee)||0);
-    return type==='fee'&&fee>0?fee:0;
+    return (type==='paid'||type==='fee')&&fee>0?fee:0;
   }
   function latestProductExcept(excludeProduct){
     const excludeId=String(excludeProduct?.id||'').trim();
