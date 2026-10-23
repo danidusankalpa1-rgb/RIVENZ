@@ -23,8 +23,8 @@
 <style>
   .wishlist-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.wishlist-item{border:1px solid #ecece8;border-radius:16px;padding:10px;background:#fff;display:flex;gap:10px;align-items:center;min-width:0}.wishlist-item img,.wishlist-placeholder{width:58px;height:68px;border-radius:12px;object-fit:cover;background:#f1f1ee;flex:0 0 58px}.wishlist-placeholder{display:grid;place-items:center;font-size:8px;color:#9a9da2}.wishlist-info{min-width:0;flex:1}.wishlist-name{font-size:10px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.wishlist-price{font-size:10px;margin-top:5px}.wishlist-actions{display:flex;gap:6px;margin-top:8px}.wishlist-actions a,.wishlist-actions button{border:0;border-radius:9px;padding:7px 8px;font-size:8px;font-weight:800;text-decoration:none;cursor:pointer}.wishlist-actions a{background:#15171b;color:#fff}.wishlist-actions button{background:#f1f1ee;color:#17191c}@media(max-width:760px){.wishlist-grid{grid-template-columns:1fr 1fr}}@media(max-width:520px){.wishlist-grid{grid-template-columns:1fr}}
 </style>
-<link rel="stylesheet" href="user-nav.css?v=14">
-<link rel="stylesheet" href="orders-v2.css?v=14">
+<link rel="stylesheet" href="user-nav.css?v=16">
+<link rel="stylesheet" href="orders-v2.css?v=16">
 </head>
 <body class="page-ready ov-dash">
 <header class="home-header">
@@ -177,6 +177,6 @@ document.getElementById("dashboardLogout")?.addEventListener("click",async e=>{e
 onAuthStateChanged(auth,user=>{if(!user){if(stopOrderWatch)stopOrderWatch();location.replace("auth.html?next=dashboard.html");return;}dashboardUser=user;render(user);watchCustomerOrders(user);});
 </script>
 <script type="module" src="account-guard.js"></script>
-<script type="module" src="user-nav.js?v=14"></script>
+<script type="module" src="user-nav.js?v=16"></script>
 </body>
 </html>
