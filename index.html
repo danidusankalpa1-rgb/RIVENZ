@@ -27,13 +27,7 @@
     </div>
   </section>
 
-  <section class="hx-split" id="collections">
-    <a class="hx-panel l" href="collection-mens.html" id="hxPL"><div class="hx-panel-bg"></div>
-      <div class="hx-list"><span class="hx-lk" data-h="collection-mens.html">Men's</span><span class="hx-lk" data-h="collection-women.html">Women</span><span class="hx-lk" data-h="collection-shoes.html">Shoes</span></div></a>
-    <a class="hx-panel r" href="collection-accessories.html" id="hxPR"><div class="hx-panel-bg"></div>
-      <div class="hx-list"><span class="hx-lk" data-h="collection-accessories.html">Accessories</span><span class="hx-lk" data-h="weddings.html">Offers</span><span class="hx-lk" data-h="special-event.html">Special events</span><span class="hx-lk" data-h="collection.html">New arrivals</span></div></a>
-    <div class="hx-mid"><h2>Collection</h2><span>RIVENZ</span><a class="hx-btn light" href="collection.html">View collections</a></div>
-  </section>
+  <section class="hx-ads" id="collections" hidden></section>
 
   <section class="hx-sec" id="shop-preview">
     <div class="hx-head"><div><h2>New arrivals</h2><p>Fresh pieces, just landed.</p></div><a class="hx-btn ghost" href="collection.html">Shop all</a></div>
@@ -107,11 +101,24 @@
   function applyVisibility(v){
     [['#shop-preview',v.showShop],['#collections',v.showCollections],['#offers-preview',v.showPromo],['.process-section',v.showProcess],['#contact',v.showContact]].forEach(([s,on])=>{const el=document.querySelector(s);if(el)el.style.display=on===false?'none':''});
   }
-  function applyPanels(v,products){
-    const cp=v.collectionProducts||{};const by=id=>products.find(p=>productId(p)===String(id));
-    const cat=k=>[...products].reverse().find(x=>{const c=String(x.category||'').toLowerCase();return imageOf(x)&&(k==='accessories'?c.indexOf('accessories')===0:c===k)});
-    const set=(id,p)=>{const s=imageOf(p);if(s)$(id).querySelector('.hx-panel-bg').style.backgroundImage='url("'+s.replace(/"/g,'%22')+'")'};
-    set('hxPL',by(cp.newDrop)||cat('mens')||cat('women')||cat('ladies'));set('hxPR',by(cp.essentials)||cat('accessories')||cat('shoes'));
+  async function loadAds(){
+    const box=$('collections');if(!box)return;
+    try{
+      const r=await window.graphicsPublicContent.catalog('showcase');
+      const it=(Array.isArray(r)?r:[]).find(x=>x&&x._key==='home-ads');
+      const ads=(it&&Array.isArray(it.ads)?it.ads:[]).filter(a=>a&&(a.media?.url||a.title));
+      if(!ads.length){box.hidden=true;return}
+      box.innerHTML=ads.map((a,i)=>{
+        const m=a.media&&a.media.url?a.media:null,vid=m&&(m.type==='video'||/\.(mp4|webm|mov|m4v)(\?|$)/i.test(m.url));
+        const media=m?(vid?'<video class="hx-ad-m" src="'+esc(m.url)+'" muted loop autoplay playsinline></video>':'<img class="hx-ad-m" src="'+esc(m.url)+'" alt="" loading="lazy">'):'';
+        const tag=a.link?'a':'div';
+        return '<'+tag+' class="hx-ad" '+(a.link?'href="'+esc(a.link)+'"':'')+' style="transition-delay:'+(i?0:0)+'ms">'+media+'<div class="hx-ad-in">'+(a.title?'<h2>'+esc(a.title).replace(/\n/g,'<br>')+'</h2>':'')+(a.description?'<p>'+esc(a.description)+'</p>':'')+(a.link&&a.button?'<span class="hx-btn light">'+esc(a.button)+'</span>':'')+'</div></'+tag+'>';
+      }).join('');
+      box.hidden=false;
+      box.querySelectorAll('video').forEach(v=>{v.muted=true;v.play().catch(()=>{})});
+      const io='IntersectionObserver'in window?new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12}):null;
+      box.querySelectorAll('.hx-ad').forEach(el=>io?io.observe(el):el.classList.add('in'));
+    }catch(e){box.hidden=true}
   }
   function renderArrivals(products){
     const box=$('homeServices');
@@ -126,7 +133,7 @@
   $('hxPrev').onclick=()=>rail().scrollBy({left:-step(),behavior:'smooth'});$('hxNext').onclick=()=>rail().scrollBy({left:step(),behavior:'smooth'});
   (async()=>{
     const v=await loadSettings();applyText(v);applyBanner(v);applyVisibility(v);
-    const products=await loadProducts();applyPanels(v,products);renderArrivals(products);
+    const products=await loadProducts();renderArrivals(products);loadAds();
   })();
 })();
 </script>

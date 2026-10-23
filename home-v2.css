@@ -117,3 +117,19 @@ body.hx{margin:0;background:var(--hx-bg);color:var(--hx-ink);font-family:Inter,u
 .hx-split{margin-top:24px}
 #hxB2{display:none!important}
 @media(max-width:760px){.hx-split{margin-top:16px}}
+
+/* home ads (managed in admin) */
+.hx-ads{width:min(1280px,calc(100% - 32px));margin:28px auto 8px;display:grid;gap:18px}
+.hx-ads[hidden]{display:none}
+.hx-ad{position:relative;display:flex;align-items:flex-end;min-height:min(72vh,560px);border-radius:28px;overflow:hidden;background:linear-gradient(160deg,#3a3c41,#1d1e21);color:#fff;opacity:0;transform:translateY(34px);transition:opacity .8s cubic-bezier(.22,1,.36,1),transform .8s cubic-bezier(.22,1,.36,1)}
+.hx-ad.in{opacity:1;transform:none}
+.hx .hx-ad,.hx a.hx-ad{color:#fff}
+.hx-ad-m{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1.2s cubic-bezier(.22,1,.36,1)}
+a.hx-ad:hover .hx-ad-m{transform:scale(1.04)}
+.hx-ad:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.05) 30%,rgba(0,0,0,.62))}
+.hx-ad-in{position:relative;z-index:2;padding:clamp(22px,4vw,52px);max-width:680px}
+.hx-ad-in h2{margin:0;font-family:var(--hx-wide);font-weight:700;text-transform:uppercase;letter-spacing:-.03em;line-height:1;font-size:clamp(26px,5vw,56px)}
+.hx-ad-in p{margin:14px 0 0;font-size:clamp(14px,1.6vw,16px);line-height:1.65;opacity:.94;max-width:520px}
+.hx-ad-in .hx-btn{margin-top:22px;display:inline-flex}
+@media(max-width:760px){.hx-ads{width:calc(100% - 24px);gap:12px;margin-top:18px}.hx-ad{min-height:62vh;border-radius:22px}}
+@media(prefers-reduced-motion:reduce){.hx-ad{opacity:1;transform:none;transition:none}}
