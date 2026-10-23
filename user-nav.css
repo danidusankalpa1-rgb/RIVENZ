@@ -89,3 +89,23 @@
   .rvz-login span{display:none}.rvz-login .rvz-i{width:21px;height:21px}
   .rvz-card.rvz-acc-card{display:block;right:10px}
 }
+
+/* transparent header over hero (Home, Collection) -> solid black after scroll */
+.rvz-h{transition:background-color .3s ease,box-shadow .3s ease}
+.rvz-h.rvz-fix{position:fixed;left:0;right:0;top:0}
+.rvz-h.rvz-over{background:linear-gradient(180deg,rgba(0,0,0,.55),rgba(0,0,0,0));box-shadow:none}
+.rvz-h.rvz-over .rvz-navrow{border-top-color:rgba(255,255,255,.18)}
+
+/* mobile drawer: square, solid black, light on the GPU */
+@media(max-width:900px){
+  .rvz-card.rvz-mob{border-radius:0!important;box-shadow:none!important;background:#111316!important;will-change:transform;contain:layout paint;transition:transform .28s cubic-bezier(.22,1,.36,1),visibility 0s linear .28s!important;backface-visibility:hidden}
+  .rvz-card.rvz-mob.open{transition:transform .28s cubic-bezier(.22,1,.36,1),visibility 0s!important}
+  .rvz-dh img{filter:brightness(0) invert(1)}
+  .rvz-dx{background:#25282d!important;color:#fff!important;border-radius:0!important}
+  .rvz-dr{color:#c9cbd0!important;border-bottom:1px solid #23262b!important;border-radius:0}
+  .rvz-dr.on,.rvz-dr:active{color:#fff!important}
+  .rvz-dsub{border-left-color:#33363c}.rvz-dsub a{color:#a9acb2}
+  .rvz-bd{transition:opacity .28s,visibility 0s linear .28s!important;background:rgba(0,0,0,.6)!important}
+  .rvz-bd.open{transition:opacity .28s,visibility 0s!important}
+  .rvz-h .rvz-menu .rvz-i{width:22px;height:22px}
+}

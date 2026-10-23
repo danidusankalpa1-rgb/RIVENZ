@@ -54,7 +54,7 @@ function paint() {
     <div class="rvz-bd" id="rvzBd"></div>
   </div>`;
 }
-function lock() { const o = !!h.querySelector("#rvzMob.open"); h.querySelector("#rvzBd")?.classList.toggle("open", o); document.documentElement.style.overflow = o ? "hidden" : ""; }
+function lock() { setTimeout(() => window.dispatchEvent(new Event("scroll")), 0); const o = !!h.querySelector("#rvzMob.open"); h.querySelector("#rvzBd")?.classList.toggle("open", o); document.documentElement.style.overflow = o ? "hidden" : ""; }
 function closeAll() {
   h.querySelectorAll(".rvz-card,.rvz-search").forEach((c) => c.classList.remove("open"));
   h.querySelectorAll("#rvzMenu,#rvzAcc").forEach((b) => { b.classList.remove("open"); b.setAttribute("aria-expanded", "false"); });
@@ -76,8 +76,9 @@ h.addEventListener("click", async (e) => {
 });
 document.addEventListener("click", (e) => { if (!h.contains(e.target)) closeAll(); });
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeAll(); });
-window.addEventListener("resize", closeAll);
-const onScroll = () => h.classList.toggle("rvz-sm", window.scrollY > 70);
+let lastW = innerWidth; window.addEventListener("resize", () => { if (innerWidth !== lastW) { lastW = innerWidth; closeAll(); } });
+const OVER = file === "index.html" || file === "collection.html" || file === ""; if (OVER) h.classList.add("rvz-fix");
+const onScroll = () => { h.classList.toggle("rvz-sm", window.scrollY > 70); h.classList.toggle("rvz-over", OVER && window.scrollY < 24 && !h.querySelector(".rvz-card.open")); };
 window.addEventListener("scroll", onScroll, { passive: true }); onScroll();
 
 const setBadge = (sel, n) => h.querySelectorAll(sel).forEach((b) => { b.textContent = n > 99 ? "99+" : n; b.hidden = !n; });
@@ -92,3 +93,4 @@ onAuthStateChanged(getAuth(app), (u) => {
   paint(); readCart();
   if (u) stopChat = onSnapshot(doc(db, "chats", u.uid), (s) => { unread = Number(s.data()?.unreadUser) > 0 ? Number(s.data().unreadUser) : 0; setBadge("[data-unread]", unread); }, () => {});
 });
+import("./live-chat.js?v=1").catch((e) => console.warn("live chat", e));
