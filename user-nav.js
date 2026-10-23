@@ -94,3 +94,4 @@ onAuthStateChanged(getAuth(app), (u) => {
   if (u) stopChat = onSnapshot(doc(db, "chats", u.uid), (s) => { unread = Number(s.data()?.unreadUser) > 0 ? Number(s.data().unreadUser) : 0; setBadge("[data-unread]", unread); }, () => {});
 });
 import("./live-chat.js?v=16").catch((e) => console.warn("live chat", e));
+import("./login-modal.js?v=16").catch((e) => console.warn("login popup", e));
