@@ -62,7 +62,7 @@ root.innerHTML = `<section class="lm" role="dialog" aria-modal="true" aria-label
   <button type="button" class="lm-link" data-m="login">Back to sign in</button>
 </form>
 </section>`;
-document.body.appendChild(root);
+document.documentElement.appendChild(root);
 const $ = (id) => document.getElementById(id);
 const COPY = { login: ["Welcome back", "Sign in to track orders, chat with us and check out faster."], register: ["Join RIVENZ", "Create your account in a minute."], forgot: ["Reset your password", "Enter your email and we will send you a link to choose a new password."] };
 

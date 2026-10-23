@@ -20,7 +20,7 @@ body.cp{margin:0;background:#fff;color:#111316;font-family:Inter,system-ui,sans-
 .cp-info h2{margin:0;font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cp-pr{margin-top:6px;font-size:13.5px;font-weight:700}.cp-pr.hot{color:#d3202a}.cp-pr s{color:#9a9da1;font-weight:500;margin-left:8px;font-size:12px}
 .cp-empty{grid-column:1/-1;text-align:center;padding:70px 10px;color:#7c8087;border:1px dashed #d9d9d3}
-.cp-skel .cp-img{animation:cpPulse 1.2s infinite alternate}
+.cp-skel .cp-img{position:relative}
 @keyframes cpUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
 @keyframes cpPulse{to{opacity:.5}}
 @media(max-width:1000px){.cp-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}

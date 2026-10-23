@@ -8,7 +8,7 @@
   '@keyframes rvzpI{0%{transform:translateX(-110%)}100%{transform:translateX(280%)}}@media(prefers-reduced-motion:reduce){.rvzp.ind .rvzp-tr i{animation:none}}';
   document.head.appendChild(css);
   var el=document.createElement('div');el.className='rvzp';el.setAttribute('role','status');el.innerHTML='<div class="rvzp-row"><span id="rvzpL"></span><b id="rvzpP"></b></div><div class="rvzp-tr"><i id="rvzpF"></i></div>';
-  function mount(){if(!document.body)return setTimeout(mount,20);document.body.appendChild(el)}mount();
+  document.documentElement.appendChild(el);
   var pend=0,hideT=null,mode='';
   function show(cls,label,pct){clearTimeout(hideT);el.className='rvzp on '+cls;document.getElementById('rvzpL').textContent=label;document.getElementById('rvzpP').textContent=pct==null?'':pct+'%';document.getElementById('rvzpF').style.width=(pct==null?40:pct)+'%'}
   function hide(d){hideT=setTimeout(function(){if(!pend&&mode!=='up')el.classList.remove('on')},d||0)}
@@ -31,6 +31,41 @@
     });
   }
   window.rvzProgress={start:start,end:end,xhr:xhr,setUpload:setUp,finish:finish};
+})();
+
+
+/* RIVENZ loading look: soft wave loader, shimmer skeletons, spinner on busy buttons, no blue tap highlight */
+(function(){
+  if(window.__rvzLd)return;window.__rvzLd=1;
+  var c=document.createElement('style');
+  c.textContent='*{-webkit-tap-highlight-color:transparent}a,button,summary,label,select,[role=button],input[type=checkbox],input[type=radio],input[type=file]{outline:none;-webkit-user-select:none;user-select:none}a:focus,button:focus,summary:focus,div:focus,section:focus,article:focus,span:focus{outline:none}input:focus,textarea:focus,select:focus{outline:none}::selection{background:rgba(120,124,132,.28)}'+
+  '.rvz-ld{display:inline-flex;align-items:center;justify-content:center;gap:5px;height:18px;vertical-align:middle;opacity:.8}.rvz-ld i{display:block;width:5px;height:5px;border-radius:50%;background:currentColor;animation:rvzLd 1s ease-in-out infinite}.rvz-ld i:nth-child(2){animation-delay:.14s}.rvz-ld i:nth-child(3){animation-delay:.28s}'+
+  '.rvz-ld.big{display:flex;height:60px;gap:7px;width:100%;color:#8a8d93}.rvz-ld.big i{width:9px;height:9px}'+
+  '@keyframes rvzLd{0%,70%,100%{transform:translateY(0) scale(.7);opacity:.35}35%{transform:translateY(-6px) scale(1);opacity:1}}'+
+  '.rvz-sk{position:relative;overflow:hidden;background:#ececE8}.rvz-sk:after,.cp-skel .cp-img:after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 20%,rgba(255,255,255,.65) 50%,transparent 80%);transform:translateX(-100%);animation:rvzSk 1.3s ease-in-out infinite}@keyframes rvzSk{to{transform:translateX(100%)}}'+
+  '@media(prefers-reduced-motion:reduce){.rvz-ld i,.rvz-sk:after{animation:none}}';
+  document.head.appendChild(c);
+  var DOTS='<i></i><i></i><i></i>';
+  var RE_BLOCK=/^(please wait|loading|fetching|checking)\b[^\n]{0,40}$/i, RE_BTN=/^(saving|creating|signing in|sending|confirming|submitting|uploading|processing|placing|loading|updating|deleting|removing|adding|approving|logging in)\b[^\n]{0,30}(\.\.\.|…)$/i;
+  function fix(n){
+    if(!n||n.nodeType!==1||n.closest&&n.closest('.rvz-ld'))return;
+    var list=[n];if(n.querySelectorAll)list=list.concat([].slice.call(n.querySelectorAll('*')));
+    for(var k=0;k<list.length;k++){
+      var e=list[k];if(e.children&&e.children.length)continue;
+      var t=(e.textContent||'').trim();if(!t||t.length>60)continue;
+      if(e.tagName==='BUTTON'||e.tagName==='A'||e.getAttribute&&e.getAttribute('role')==='button'){
+        if(RE_BTN.test(t)){e.innerHTML='<span class="rvz-ld">'+DOTS+'</span>'}
+      }else if(RE_BLOCK.test(t)&&!/^(script|style|option|title)$/i.test(e.tagName)){
+        e.innerHTML='<span class="rvz-ld big">'+DOTS+'</span>';
+      }
+    }
+  }
+  var q=[],sched=false;
+  function flush(){sched=false;var a=q;q=[];a.forEach(function(x){try{fix(x)}catch(e){}})}
+  function push(x){q.push(x);if(!sched){sched=true;(window.requestAnimationFrame||setTimeout)(flush)}}
+  new MutationObserver(function(ms){ms.forEach(function(m){if(m.type==='childList')m.addedNodes.forEach(function(x){if(x.nodeType===1)push(x);else if(x.nodeType===3&&x.parentElement)push(x.parentElement)});else if(m.type==='characterData'&&m.target.parentElement)push(m.target.parentElement)})}).observe(document.documentElement,{childList:true,subtree:true,characterData:true});
+  function first(){if(document.body)push(document.body)}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',first);else first();
 })();
 
 const API = window.GRAPHICS_FILE_API || 'https://graphics-file-api.danidusankalpa56.workers.dev';
@@ -57,8 +92,7 @@ async function getToken(force=false){
 }
 function safeName(name){return String(name||'file').replace(/[^a-zA-Z0-9._-]/g,'_').slice(0,180)||'file';}
 async function jsonRequest(path,options={},retry=true){
-  const P=window.rvzProgress,show=P&&/type=products/.test(path);if(show)P.start('Loading products');
-  let r;try{r=await fetch(API+path,{...options,cache:'no-store'})}finally{if(show)P.end()}
+  let r=await fetch(API+path,{...options,cache:'no-store'});
   let d=null; try{d=await r.json()}catch(e){}
   if(!r.ok || d?.ok===false){
     const message=d?.error||`Request failed (HTTP ${r.status})`;

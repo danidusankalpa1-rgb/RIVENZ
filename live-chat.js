@@ -17,24 +17,24 @@ function init() {
 
   const css = document.createElement("style");
   css.textContent = `
-.lc-fab{position:fixed;right:18px;bottom:18px;z-index:1200;display:inline-flex;align-items:center;gap:10px;height:52px;padding:0 22px;border:0;border-radius:999px;background:#2a2c30;color:#fff;font:600 15px Inter,system-ui,sans-serif;cursor:pointer;box-shadow:0 14px 34px -10px rgba(0,0,0,.55);transition:transform .25s cubic-bezier(.22,1,.36,1),opacity .2s}
+.lc-fab{position:fixed;right:18px;bottom:18px;z-index:1200;display:inline-flex;align-items:center;gap:10px;height:52px;padding:0 22px;border:0;border-radius:999px;background:rgba(24,26,30,.5);-webkit-backdrop-filter:blur(18px) saturate(1.6);backdrop-filter:blur(18px) saturate(1.6);border:1px solid rgba(255,255,255,.3);color:#fff;font:600 15px Inter,system-ui,sans-serif;cursor:pointer;box-shadow:0 14px 34px -10px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.3);transition:transform .3s cubic-bezier(.22,1,.36,1),opacity .25s}.lc-fab.away{transform:translateY(90px);opacity:0;pointer-events:none}
 .lc-fab:hover{transform:translateY(-2px)}.lc-fab.hide{opacity:0;pointer-events:none;transform:scale(.9)}
 .lc-i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
 .lc-badge{position:absolute;top:-4px;right:-2px;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:#e5322d;color:#fff;font-size:11px;font-weight:800;display:grid;place-items:center}
 .lc-badge[hidden]{display:none}
-.lc-bd{position:fixed;inset:0;z-index:1290;background:rgba(0,0,0,.4);opacity:0;visibility:hidden;transition:.25s}
-.lc-p{position:fixed;z-index:1300;right:18px;bottom:18px;width:390px;height:min(640px,calc(100dvh - 36px));display:flex;flex-direction:column;background:linear-gradient(180deg,#fff,#f3f3f1);border-radius:30px;box-shadow:0 40px 90px -20px rgba(0,0,0,.45),0 0 0 1px rgba(0,0,0,.05);font-family:Inter,system-ui,sans-serif;color:#111316;opacity:0;visibility:hidden;transform:translateY(24px) scale(.97);transform-origin:bottom right;transition:opacity .25s,transform .35s cubic-bezier(.22,1,.36,1),visibility .25s;overflow:hidden}
+.lc-bd{position:fixed;inset:0;z-index:1290;background:rgba(0,0,0,.35);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);opacity:0;visibility:hidden;transition:.25s}
+.lc-p{position:fixed;z-index:1300;right:18px;bottom:18px;width:390px;height:min(640px,calc(100dvh - 36px));display:flex;flex-direction:column;background:linear-gradient(180deg,rgba(255,255,255,.84),rgba(244,244,242,.76));-webkit-backdrop-filter:blur(44px) saturate(1.8);backdrop-filter:blur(44px) saturate(1.8);border:1px solid rgba(255,255,255,.65);border-radius:30px;box-shadow:0 40px 90px -20px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.8);font-family:Inter,system-ui,sans-serif;color:#111316;opacity:0;visibility:hidden;transform:translateY(24px) scale(.97);transform-origin:bottom right;transition:opacity .25s,transform .35s cubic-bezier(.22,1,.36,1),visibility .25s;overflow:hidden}
 .lc-p.open{opacity:1;visibility:visible;transform:none}
 .lc-h{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:18px 18px 8px}
 .lc-chip{display:inline-flex;align-items:center;gap:8px;height:42px;padding:0 20px;border-radius:999px;background:#2a2c30;color:#fff;font-weight:700;font-size:14px;text-decoration:none;border:0;cursor:default}
 a.lc-chip{cursor:pointer}
-.lc-x{width:42px;height:42px;border-radius:50%;border:1px solid #e6e6e2;background:#fff;display:grid;place-items:center;cursor:pointer;color:#111316;padding:0}
+.lc-x{width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,255,255,.8);background:rgba(255,255,255,.6);display:grid;place-items:center;cursor:pointer;color:#111316;padding:0}
 .lc-m{flex:1;overflow-y:auto;padding:6px 20px 8px;display:flex;flex-direction:column;gap:10px;min-height:0}
 .lc-hello{margin:auto 0;padding:18px 4px 10px}
 .lc-hello h3{margin:0 0 10px;font-size:26px;color:#8e9095;font-weight:700}.lc-hello p{margin:0;font-size:15px;line-height:1.55;font-weight:500}
 .lc-b{max-width:84%;display:flex;flex-direction:column;gap:3px}.lc-b.user{align-self:flex-end;align-items:flex-end}.lc-b.admin{align-self:flex-start}
 .lc-bub{padding:11px 15px;border-radius:20px;font-size:14px;line-height:1.5;white-space:pre-wrap;word-break:break-word}
-.lc-b.user .lc-bub{background:#111316;color:#fff;border-bottom-right-radius:6px}.lc-b.admin .lc-bub{background:#fff;border:1px solid #e9e9e4;border-bottom-left-radius:6px}
+.lc-b.user .lc-bub{background:#111316;color:#fff;border-bottom-right-radius:6px}.lc-b.admin .lc-bub{background:rgba(255,255,255,.72);border:1px solid rgba(255,255,255,.8);border-bottom-left-radius:6px}
 .lc-b small{font-size:10.5px;color:#9a9da1;display:flex;align-items:center;gap:6px}
 .lc-del{border:0;background:none;color:#9a9da1;cursor:pointer;padding:0;display:grid}.lc-del .lc-i{width:13px;height:13px}
 .lc-ref{display:flex;align-items:center;gap:10px;padding:8px;margin:-4px -6px 8px;border-radius:14px;background:rgba(127,127,127,.14);color:inherit;text-decoration:none;font-size:12px}
@@ -42,11 +42,11 @@ a.lc-chip{cursor:pointer}
 .lc-ref b{display:block;font-size:12.5px}
 .lc-foot{padding:6px 18px 0;font-size:11px;color:#9a9da1;line-height:1.5;text-align:left}
 .lc-qs{display:flex;gap:8px;overflow-x:auto;padding:10px 18px 4px;scrollbar-width:none}.lc-qs::-webkit-scrollbar{display:none}
-.lc-q{flex:none;border:1px solid #e3e3df;background:#fff;border-radius:999px;padding:10px 16px;font:600 13.5px inherit;cursor:pointer;color:#111316;font-family:inherit}
+.lc-q{flex:none;border:1px solid rgba(255,255,255,.8);background:rgba(255,255,255,.6);border-radius:999px;padding:10px 16px;font:600 13.5px inherit;cursor:pointer;color:#111316;font-family:inherit}
 .lc-pick{padding:6px 18px 0}.lc-pick[hidden]{display:none}
 .lc-pc{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #e9e9e4;border-radius:16px;padding:8px 10px;font-size:12px}.lc-pc b{display:block;font-size:12.5px}.lc-pc>div{flex:1;min-width:0}
 .lc-pc button{border:0;background:#f3f3f0;border-radius:50%;width:26px;height:26px;display:grid;place-items:center;cursor:pointer;padding:0}.lc-pc button .lc-i{width:13px;height:13px}
-.lc-in{display:flex;align-items:flex-end;gap:8px;margin:10px 14px 14px;padding:6px;border:1.8px solid #2a2c30;border-radius:28px;background:#fff}
+.lc-in{display:flex;align-items:flex-end;gap:8px;margin:10px 14px 14px;padding:6px;border:1px solid rgba(255,255,255,.8);border-radius:28px;background:rgba(255,255,255,.62);box-shadow:0 6px 20px -10px rgba(0,0,0,.25)}
 .lc-in textarea{flex:1;border:0;outline:0;resize:none;font:500 15px Inter,system-ui,sans-serif;padding:11px 6px 11px 12px;max-height:110px;background:transparent;min-width:0}
 .lc-round{width:42px;height:42px;border-radius:50%;border:0;background:#f1f1ee;display:grid;place-items:center;cursor:pointer;flex:none;color:#111316;padding:0}
 .lc-round.go{background:#111316;color:#fff}.lc-round:disabled{opacity:.5}
@@ -62,7 +62,7 @@ a.lc-chip{cursor:pointer}
 @media(max-width:600px){
   .lc-p{right:0;left:0;bottom:0;width:100%;height:84dvh;border-radius:30px 30px 0 0;transform:translateY(100%)}
   .lc-p.open{transform:none}.lc-bd.open{opacity:1;visibility:visible}
-  .lc-fab{right:14px;bottom:14px;height:48px;padding:0 18px;font-size:14px}
+  .lc-fab{right:14px;bottom:calc(14px + env(safe-area-inset-bottom));height:52px;width:52px;padding:0;justify-content:center}.lc-fab span:not(.lc-badge){display:none}
 }
 @media(min-width:601px){.lc-bd{display:none}}
 @media(prefers-reduced-motion:reduce){.lc-p,.lc-fab{transition:none}}`;
@@ -80,7 +80,7 @@ a.lc-chip{cursor:pointer}
   <div class="lc-in" id="lcIn"><button type="button" class="lc-round" id="lcPlus" aria-label="Attach product or order">${IC('<path d="M12 5v14M5 12h14"/>')}</button><textarea id="lcT" rows="1" placeholder="Ask anything..." aria-label="Message"></textarea><button type="button" class="lc-round go" id="lcSend" aria-label="Send">${IC('<path d="M12 19V5M6 11l6-6 6 6"/>')}</button></div>
   <div class="lc-sh" id="lcSh"><div class="lc-sc"><div class="lc-tabs"><button type="button" class="lc-tab on" data-t="product">Products</button><button type="button" class="lc-tab" data-t="order">My orders</button><button type="button" class="lc-x" id="lcShX" style="width:38px;height:38px" aria-label="Close">${IC('<path d="M6 6l12 12M18 6 6 18"/>')}</button></div><input id="lcSQ" placeholder="Search"><div class="lc-list" id="lcL"></div></div></div>
 </section>`;
-  document.body.appendChild(root);
+  document.documentElement.appendChild(root);
   const $ = (i) => document.getElementById(i);
   let user = null, profile = {}, msgs = [], picked = null, tab = "product", products = null, orders = null, isOpen = false, unsub = null;
 
@@ -150,6 +150,8 @@ a.lc-chip{cursor:pointer}
     } catch (e) { console.warn(e); list.innerHTML = '<div class="lc-empty">Could not load the list.</div>'; }
   }
 
+  let lastY = scrollY;
+  addEventListener("scroll", () => { const y = scrollY; $("lcFab").classList.toggle("away", y > lastY + 6 && y > 120 && !isOpen); if (y < lastY - 6 || y < 120) $("lcFab").classList.remove("away"); lastY = y; }, { passive: true });
   $("lcFab").onclick = open; $("lcX").onclick = close; $("lcBd").onclick = close;
   document.addEventListener("keydown", (e) => { if (e.key === "Escape" && isOpen) close(); });
   // every "Chat" link in the site opens the live chat instead of a new page
