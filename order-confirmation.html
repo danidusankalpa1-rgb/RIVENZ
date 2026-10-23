@@ -72,6 +72,7 @@ body.oc{margin:0;background:#f6f6f3;color:var(--ink);font-family:Inter,system-ui
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.oc-tick .circ,.oc-tick .chk{stroke-dashoffset:0}}
 </style>
 <link rel="stylesheet" href="user-nav.css?v=16">
+<script src="public-content.js?v=16"></script>
 </head>
 <body class="oc page-ready">
 <main class="oc-wrap">
@@ -129,14 +130,14 @@ const lineOf=it=>{const q=Math.max(1,Number(it.quantity)||1);const unit=Number(i
 function mode(o){const pm=String(o.paymentMethod||""),ps=String(o.paymentStatus||"");if(/cash/i.test(pm))return"cod";if(/submitted|review/i.test(ps)||(o.paymentProof||o.paymentProofRef))return"proof";if(/paid|confirmed/i.test(ps))return"paid";return"wait"}
 function paint(o){
   const m=mode(o);
-  const T={cod:["Order placed","Your Cash on Delivery order is confirmed. Please keep the full amount ready when it arrives.","Pay on delivery","Cash on Delivery: pay the full amount to the courier when your order is delivered."],
+  const T={cod:["Order placed","Your Cash on Delivery order has been placed. RIVENZ will confirm it shortly. Please keep the full amount ready for delivery.","Pay on delivery","Cash on Delivery: pay the full amount to the courier when your order is delivered."],
     proof:["Receipt received","Thank you. RIVENZ will check your payment receipt and confirm your order shortly.","Under review","Your payment receipt was submitted. We will confirm the payment after review."],
     paid:["Order confirmed","Thank you. Your payment is confirmed and your order is being prepared.","Paid","Payment received in full."],
     wait:["Order placed","Thank you. Your order has been received and is waiting for payment confirmation.","Pending","Complete the payment using the selected method. RIVENZ confirms your order after payment."]}[m];
   $("hT").textContent=T[0];$("hP").textContent=T[1];$("pS").textContent=T[2];$("pD").textContent=T[3];
   const good=m==="paid"||m==="cod";$("pS").className="oc-pill"+(good?"":" wait");$("tick").className="oc-tick"+(good||m==="proof"?"":" wait");
   $("pM").textContent=(o.paymentMethod||"Payment method")+" · full amount";
-  const S=[["Order placed","We received your order.","done"],["Payment","Method: "+(o.paymentMethod||"-"),good?"done":"now"],["Confirmation","RIVENZ confirms and prepares your pieces.",good?"now":""],["Delivery","Packed, shipped and delivered to you.",""]];
+  const S=[["Order placed","We received your order.","done"],["Payment","Method: "+(o.paymentMethod||"-"),m==="cod"?"now":good?"done":"now"],["Confirmation","RIVENZ confirms and prepares your pieces.",m==="paid"?"now":""],["Delivery","Packed, shipped and delivered to you.",""]];
   const ic=['<path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/>','<rect x="3" y="6" width="18" height="13" rx="3"/><path d="M3 10h18"/>','<path d="m6 12 4 4 8-8"/>','<path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/>'];
   $("steps").innerHTML=S.map(([a,b,c],i)=>`<div class="oc-st ${c}"><i><svg class="oc-i" viewBox="0 0 24 24">${c==="done"?'<path d="m6 12 4 4 8-8"/>':ic[i]}</svg></i><div><b>${a}</b><span>${esc(b)}</span></div></div>`).join("");
 }

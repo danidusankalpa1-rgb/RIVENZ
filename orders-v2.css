@@ -104,3 +104,6 @@
 .ov-det .progress-meta,.ov-det .progress+div{font-size:12px!important;color:var(--mut)}
 .ov-det .row strong{font-size:13.5px}.ov-det .row:last-child strong{font-size:17px}
 @media(max-width:700px){.ov-dash .card-head{flex-wrap:wrap}.ov-dash .card-head .ov-link{flex-basis:100%;justify-content:flex-end}.ov-dash .stat-card span{font-size:11px}}
+
+.ov-det .step.fail .dot{background:#fdecea!important;color:#d3202a!important;box-shadow:inset 0 0 0 1.5px #f3b8b3}
+.ov-det .step.fail .step-title{color:#d3202a}
