@@ -109,9 +109,9 @@
   }
   function applyPanels(v,products){
     const cp=v.collectionProducts||{};const by=id=>products.find(p=>productId(p)===String(id));
-    const cat=k=>products.find(x=>{const c=String(x.category||'').toLowerCase();return imageOf(x)&&(k==='accessories'?c.indexOf('accessories')===0:c===k)});
+    const cat=k=>[...products].reverse().find(x=>{const c=String(x.category||'').toLowerCase();return imageOf(x)&&(k==='accessories'?c.indexOf('accessories')===0:c===k)});
     const set=(id,p)=>{const s=imageOf(p);if(s)$(id).querySelector('.hx-panel-bg').style.backgroundImage='url("'+s.replace(/"/g,'%22')+'")'};
-    set('hxPL',by(cp.newDrop)||cat('mens')||cat('women')||cat('ladies'));set('hxPR',by(cp.essentials)||cat('accessories')||cat('kids'));
+    set('hxPL',by(cp.newDrop)||cat('mens')||cat('women')||cat('ladies'));set('hxPR',by(cp.essentials)||cat('accessories')||cat('shoes'));
   }
   function renderArrivals(products){
     const box=$('homeServices');

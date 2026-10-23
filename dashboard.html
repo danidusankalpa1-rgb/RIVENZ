@@ -96,6 +96,7 @@ import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/fi
 import { collection, doc, getDoc, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
 import { app, db } from "./firebase-config.js";
 import "./order-flow.js";
+import "./cart-store.js";
 
 const auth=getAuth(app);
 const nav=document.querySelector(".home-nav");
@@ -163,14 +164,14 @@ async function render(user){
 }
 
 function renderWishlist(){
-  const box=document.getElementById("wishlistBox");if(!box)return;let list=[];try{list=JSON.parse(localStorage.getItem("rivenzWishlistV1")||"[]")}catch(e){}
+  const box=document.getElementById("wishlistBox");if(!box)return;let list=[];try{list=JSON.parse(localStorage.getItem((()=>{try{return 'rivenzWishlistV1:'+(window.rivenzCartStore&&window.rivenzCartStore.uid||'guest')}catch(e){return 'rivenzWishlistV1:guest'}})())||"[]")}catch(e){}
   if(!Array.isArray(list)||!list.length){box.innerHTML='<div class="empty">Your wishlist is empty. Tap the heart on any product in the Shop to save it here.</div>';return;}
   box.innerHTML='<div class="wishlist-grid">'+list.map(item=>{const price=Number(item.offer||0)>0?item.offer:item.price;const old=Number(item.offer||0)>0&&Number(item.price||0)>0?'<span style="color:#9a9da2;text-decoration:line-through;margin-left:5px">'+money(item.price)+'</span>':'';const image=item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="wishlist-placeholder">RIVENZ</div>';return '<div class="wishlist-item">'+image+'<div class="wishlist-info"><div class="wishlist-name">'+esc(item.name||"RIVENZ Product")+'</div><div class="wishlist-price"><strong>'+money(price)+'</strong>'+old+'</div><div class="wishlist-actions"><button type="button" data-wish-remove="'+esc(item.id||'')+'">Remove</button></div></div></div>'}).join('')+'</div>';
-  box.querySelectorAll('[data-wish-remove]').forEach(btn=>btn.addEventListener('click',()=>{const id=btn.getAttribute('data-wish-remove');list=list.filter(x=>String(x.id)!==String(id));localStorage.setItem('rivenzWishlistV1',JSON.stringify(list));renderWishlist();}));
+  box.querySelectorAll('[data-wish-remove]').forEach(btn=>btn.addEventListener('click',()=>{const id=btn.getAttribute('data-wish-remove');list=list.filter(x=>String(x.id)!==String(id));localStorage.setItem((()=>{try{return 'rivenzWishlistV1:'+(window.rivenzCartStore&&window.rivenzCartStore.uid||'guest')}catch(e){return 'rivenzWishlistV1:guest'}})(),JSON.stringify(list));renderWishlist();}));
 }
 let dashboardUser=null;let stopOrderWatch=null;let lastSeenNotificationKey=null;let notificationBaselineReady=false;
 function watchCustomerOrders(user){if(stopOrderWatch)stopOrderWatch();try{stopOrderWatch=onSnapshot(query(collection(db,"orders"),where("uid","==",user.uid)),()=>render(user),err=>console.warn("Customer order listener unavailable:",err));}catch(e){console.warn("Customer order listener unavailable:",e)}}
-renderWishlist();window.addEventListener('storage',renderWishlist);window.addEventListener('rivenz:wishlist-change',renderWishlist);
+window.addEventListener('rivenz-cart-session-changed',renderWishlist);renderWishlist();window.addEventListener('storage',renderWishlist);window.addEventListener('rivenz:wishlist-change',renderWishlist);
 
 document.getElementById("dashboardLogout")?.addEventListener("click",async e=>{e.preventDefault();try{await signOut(auth);}catch(error){console.error("Logout failed:",error);}location.href="index.html";});
 onAuthStateChanged(auth,user=>{if(!user){if(stopOrderWatch)stopOrderWatch();location.replace("auth.html?next=dashboard.html");return;}dashboardUser=user;render(user);watchCustomerOrders(user);});
