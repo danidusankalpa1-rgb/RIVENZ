@@ -64,6 +64,30 @@
   function flush(){sched=false;var a=q;q=[];a.forEach(function(x){try{fix(x)}catch(e){}})}
   function push(x){q.push(x);if(!sched){sched=true;(window.requestAnimationFrame||setTimeout)(flush)}}
   new MutationObserver(function(ms){ms.forEach(function(m){if(m.type==='childList')m.addedNodes.forEach(function(x){if(x.nodeType===1)push(x);else if(x.nodeType===3&&x.parentElement)push(x.parentElement)});else if(m.type==='characterData'&&m.target.parentElement)push(m.target.parentElement)})}).observe(document.documentElement,{childList:true,subtree:true,characterData:true});
+
+  /* products that no longer exist in the shop: show "No longer available" instead of their image */
+  var catP=null;
+  function goneBoxes(){
+    var els=[].slice.call(document.querySelectorAll('[data-pid]:not([data-gone-done])')).filter(function(e){return e.getAttribute('data-pid')});
+    if(!els.length)return;
+    if(!catP)catP=Promise.resolve(window.graphicsPublicContent&&window.graphicsPublicContent.catalog?window.graphicsPublicContent.catalog('products'):[]).then(function(r){return Array.isArray(r)?r:[]}).catch(function(){return[]});
+    catP.then(function(list){
+      if(!list.length)return;
+      els.forEach(function(e){
+        e.setAttribute('data-gone-done','1');
+        var id=e.getAttribute('data-pid');
+        var p=list.find(function(x){return x&&String(x.id)===id});
+        if(p&&p.active!==false)return;
+        var img=e.tagName==='IMG'?e:e.querySelector('img'),box=document.createElement('div');
+        box.className='rvz-gone-box';box.textContent='No longer available';
+        if(img){var w=img.offsetWidth,h=img.offsetHeight;if(w&&h){box.style.width=w+'px';box.style.height=h+'px'}img.replaceWith(box)}else e.appendChild(box);
+      });
+    });
+  }
+  var gT=null;function gSched(){clearTimeout(gT);gT=setTimeout(goneBoxes,250)}
+  new MutationObserver(gSched).observe(document.documentElement,{childList:true,subtree:true});
+  window.addEventListener('load',gSched);
+  var gc=document.createElement('style');gc.textContent='.rvz-gone-box{display:flex;align-items:center;justify-content:center;text-align:center;background:#ececE8;color:#7c8087;font:700 10px/1.3 Inter,system-ui,sans-serif;padding:6px;border-radius:inherit;min-width:48px;min-height:48px;width:100%;height:100%}';document.head.appendChild(gc);
   function first(){if(document.body)push(document.body)}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',first);else first();
 })();

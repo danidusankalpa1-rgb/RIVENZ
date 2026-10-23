@@ -110,7 +110,7 @@ a.lc-chip{cursor:pointer}
   function open() {
     isOpen = true; $("lcP").classList.add("open"); $("lcP").setAttribute("aria-hidden", "false"); $("lcBd").classList.add("open"); $("lcFab").classList.add("hide");
     if (window.innerWidth <= 600) document.documentElement.style.overflow = "hidden";
-    badge(0); paint(); markSeen(); setTimeout(() => user && $("lcT").focus(), 300);
+    badge(0); paint(); markSeen();
   }
   function close() { isOpen = false; $("lcP").classList.remove("open"); $("lcP").setAttribute("aria-hidden", "true"); $("lcBd").classList.remove("open"); $("lcFab").classList.remove("hide"); document.documentElement.style.overflow = ""; }
   let unseenDocs = [];
@@ -130,7 +130,7 @@ a.lc-chip{cursor:pointer}
       await addDoc(collection(db, "chats", user.uid, "messages"), data);
       await setDoc(doc(db, "chats", user.uid), { uid: user.uid, name: profile.name || user.displayName || "", email: profile.email || user.email || "", lastMessage: text || (ref?.type === "order" ? "Order " + ref.id : ref?.name || "Shared an item"), lastAt: serverTimestamp(), lastSender: "user", unreadAdmin: increment(1) }, { merge: true });
     } catch (e) { console.error(e); t.value = text; picked = ref; paintPick(); alert("Could not send your message. Please try again."); }
-    $("lcSend").disabled = false; t.focus();
+    $("lcSend").disabled = false;
   }
   const pimg = (p) => p.images?.[0]?.url || p.image?.url || (typeof p.image === "string" ? p.image : "");
   async function loadSheet() {
@@ -140,12 +140,12 @@ a.lc-chip{cursor:pointer}
         if (!products) products = await window.graphicsPublicContent.catalog("products");
         const rows = products.filter((p) => p.active !== false && (!q || String(p.name || "").toLowerCase().includes(q)));
         list.innerHTML = rows.length ? rows.map((p, i) => `<button type="button" class="lc-it" data-p="${i}"><span class="lc-ri">${pimg(p) ? `<img src="${esc(pimg(p))}" alt="">` : IC(BAGP)}</span><span><b>${esc(p.name)}</b>${money(p.offer || p.price)}</span></button>`).join("") : '<div class="lc-empty">No products found.</div>';
-        list.querySelectorAll("[data-p]").forEach((b) => b.onclick = () => { const p = rows[b.dataset.p]; picked = { type: "product", id: String(p.id), name: p.name, price: p.offer || p.price || 0, image: pimg(p) }; $("lcSh").classList.remove("open"); paintPick(); $("lcT").focus(); });
+        list.querySelectorAll("[data-p]").forEach((b) => b.onclick = () => { const p = rows[b.dataset.p]; picked = { type: "product", id: String(p.id), name: p.name, price: p.offer || p.price || 0, image: pimg(p) }; $("lcSh").classList.remove("open"); paintPick(); });
       } else {
         if (!orders) { const f = window.graphicsOrderFlow; if (!f) { await import("./order-flow.js"); } await window.graphicsOrderFlow.ready; orders = await window.graphicsOrderFlow.orders(); }
         const rows = orders.filter((o) => !q || String(o.id).toLowerCase().includes(q));
         list.innerHTML = rows.length ? rows.map((o, i) => `<button type="button" class="lc-it" data-o="${i}"><span class="lc-ri">${IC(BAGP)}</span><span><b>${esc(o.id)}</b>${esc(o.status || "")} · ${money(o.total)}</span></button>`).join("") : '<div class="lc-empty">You have no orders yet.</div>';
-        list.querySelectorAll("[data-o]").forEach((b) => b.onclick = () => { const o = rows[b.dataset.o]; picked = { type: "order", id: o.id, status: o.status || "", total: Number(o.total || 0) }; $("lcSh").classList.remove("open"); paintPick(); $("lcT").focus(); });
+        list.querySelectorAll("[data-o]").forEach((b) => b.onclick = () => { const o = rows[b.dataset.o]; picked = { type: "order", id: o.id, status: o.status || "", total: Number(o.total || 0) }; $("lcSh").classList.remove("open"); paintPick(); });
       }
     } catch (e) { console.warn(e); list.innerHTML = '<div class="lc-empty">Could not load the list.</div>'; }
   }
@@ -159,7 +159,7 @@ a.lc-chip{cursor:pointer}
   $("lcSend").onclick = send;
   $("lcT").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } });
   $("lcT").addEventListener("input", (e) => { e.target.style.height = "auto"; e.target.style.height = Math.min(110, e.target.scrollHeight) + "px"; });
-  $("lcQs").onclick = (e) => { const b = e.target.closest("[data-q]"); if (b) { $("lcT").value = b.dataset.q; $("lcT").focus(); } };
+  $("lcQs").onclick = (e) => { const b = e.target.closest("[data-q]"); if (b) { $("lcT").value = b.dataset.q; } };
   $("lcPlus").onclick = () => { $("lcSh").classList.add("open"); $("lcSQ").value = ""; loadSheet(); };
   $("lcShX").onclick = () => $("lcSh").classList.remove("open");
   $("lcSQ").oninput = loadSheet;

@@ -2,6 +2,7 @@
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
 import { doc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
 import { app, db } from "./firebase-config.js";
+import "./cart-store.js";
 
 const P = {
   home: '<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
@@ -84,6 +85,8 @@ window.addEventListener("scroll", onScroll, { passive: true }); onScroll();
 const setBadge = (sel, n) => h.querySelectorAll(sel).forEach((b) => { b.textContent = n > 99 ? "99+" : n; b.hidden = !n; });
 const readCart = () => { try { cartN = window.rivenzCartStore?.count?.() || 0; } catch (_) { cartN = 0; } setBadge("[data-cart]", cartN); };
 window.addEventListener("rivenz-cart-updated", readCart);
+window.addEventListener("rivenz-cart-session-changed", () => setTimeout(readCart, 0));
+window.addEventListener("storage", readCart);
 window.addEventListener("rivenz-cart-store-ready", () => window.rivenzCartStore?.ready?.then(readCart));
 
 paint(); readCart();
@@ -95,3 +98,5 @@ onAuthStateChanged(getAuth(app), (u) => {
 });
 import("./live-chat.js?v=16").catch((e) => console.warn("live chat", e));
 import("./login-modal.js?v=16").catch((e) => console.warn("login popup", e));
+
+if (!window.__rvzLd) { const sc = document.createElement("script"); sc.src = "public-content.js?v=16"; document.head.appendChild(sc); }

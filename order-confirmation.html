@@ -126,7 +126,7 @@ const when=o=>{const v=o.createdAt;const d=v?.toDate?v.toDate():new Date(v||Date
 const fmt=d=>d.toLocaleString("en-LK",{day:"2-digit",month:"short",year:"numeric",hour:"numeric",minute:"2-digit"});
 const CHK='<svg class="oc-i" viewBox="0 0 24 24"><path d="m6 12 4 4 8-8"/></svg>';
 let order=null,lines=[];
-const lineOf=it=>{const q=Math.max(1,Number(it.quantity)||1);const unit=Number(it.unitPrice??it.price??0);return{name:it.productName||it.name||it.title||"RIVENZ Product",meta:[it.size,it.color].filter(Boolean).join(" · "),qty:q,total:Number(it.lineTotal??unit*q),image:it.image||""}};
+const lineOf=it=>{const q=Math.max(1,Number(it.quantity)||1);const unit=Number(it.unitPrice??it.price??0);return{pid:it.productId||"",name:it.productName||it.name||it.title||"RIVENZ Product",meta:[it.size,it.color].filter(Boolean).join(" · "),qty:q,total:Number(it.lineTotal??unit*q),image:it.image||""}};
 function mode(o){const pm=String(o.paymentMethod||""),ps=String(o.paymentStatus||"");if(/cash/i.test(pm))return"cod";if(/submitted|review/i.test(ps)||(o.paymentProof||o.paymentProofRef))return"proof";if(/paid|confirmed/i.test(ps))return"paid";return"wait"}
 function paint(o){
   const m=mode(o);
@@ -187,7 +187,7 @@ async function load(){
   lines=(order.items||order.products||[]).map(lineOf);
   $("subtotal").textContent=money(order.subtotal??order.total);$("total").textContent=money(order.total);
   $("delivery").textContent=order.deliveryFee==null?"To be confirmed":(Number(order.deliveryFee)?money(order.deliveryFee):"Free");
-  $("items").innerHTML=lines.map(l=>`<div class="oc-item">${l.image?`<img src="${esc(l.image)}" alt="">`:'<div class="ph"></div>'}<div><b>${esc(l.name)}</b><small>${esc(l.meta)}${l.meta?" · ":""}Qty ${l.qty}</small></div><strong>${money(l.total)}</strong></div>`).join("");
+  $("items").innerHTML=lines.map(l=>`<div class="oc-item" data-pid="${esc(l.pid)}">${l.image?`<img src="${esc(l.image)}" alt="">`:'<div class="ph"></div>'}<div><b>${esc(l.name)}</b><small>${esc(l.meta)}${l.meta?" · ":""}Qty ${l.qty}</small></div><strong>${money(l.total)}</strong></div>`).join("");
   paint(order);$("rc").innerHTML=receiptHTML(order);
 }
 $("rcToggle").addEventListener("click",e=>{const b=e.currentTarget,box=$("rcBox"),o=!box.classList.contains("open");box.classList.toggle("open",o);b.classList.toggle("open",o);b.setAttribute("aria-expanded",String(o))});

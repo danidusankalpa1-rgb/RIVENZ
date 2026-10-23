@@ -79,7 +79,6 @@ function open(opts = {}) {
   if (opts.next !== undefined) nextUrl = opts.next || "";
   mode(opts.mode || "login");
   root.classList.add("open"); document.documentElement.style.overflow = "hidden";
-  setTimeout(() => (($("lmLogin").hidden ? $("lmReg").hidden ? $("lmFE") : $("lmRN") : $("lmLE")) || {}).focus?.(), 300);
 }
 function close() { root.classList.remove("open"); document.documentElement.style.overflow = ""; }
 function done() {
