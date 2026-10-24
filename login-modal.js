@@ -1,5 +1,5 @@
 // RIVENZ — glass login popup (replaces the old login page). Opens on the current page.
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, sendPasswordResetEmail, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, sendPasswordResetEmail, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
 import { doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
 import { app, db } from "./firebase-config.js";
 
@@ -11,6 +11,7 @@ const EYE = '<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle
 
 const css = document.createElement("style");
 css.textContent = `.lm-bd,.lm-bd *,.lm-bd *:before,.lm-bd *:after{box-sizing:border-box}
+.lm-or{display:flex;align-items:center;gap:12px;margin:16px 0 12px;color:rgba(255,255,255,.55);font-size:12px}.lm-or:before,.lm-or:after{content:"";flex:1;height:1px;background:rgba(255,255,255,.18)}.lm-gb{width:100%;height:50px;border-radius:999px;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.1);color:#fff;font:700 14px Inter,system-ui,sans-serif;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer}.lm-gb:disabled{opacity:.6}
 
 .lm-bd{position:fixed;inset:0;z-index:2000;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(8,9,11,.5);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s;font-family:Inter,system-ui,sans-serif}
 .lm-bd.open{opacity:1;visibility:visible}
@@ -57,6 +58,7 @@ root.innerHTML = `<section class="lm" role="dialog" aria-modal="true" aria-label
   <div class="lm-f"><input id="lmRP" type="password" placeholder="Password (min 6 characters)" autocomplete="new-password"><button type="button" class="eye" data-eye="lmRP" aria-label="Show password">${IC(EYE)}</button></div>
   <button class="lm-go" type="submit">Create account</button>
 </form>
+<div id="lmGoogle"><div class="lm-or"><span>or</span></div><button type="button" class="lm-gb" id="lmGBtn"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="#EA4335" d="M12 10.2v3.9h5.5c-.24 1.4-1.7 4.1-5.5 4.1a6.2 6.2 0 0 1 0-12.4c1.97 0 3.3.84 4.05 1.56l2.76-2.66A9.9 9.9 0 0 0 12 2a10 10 0 1 0 0 20c5.77 0 9.6-4.05 9.6-9.76 0-.65-.07-1.15-.16-1.64z"/></svg>Continue with Google</button></div>
 <form id="lmForgot" novalidate hidden>
   <div class="lm-f"><input id="lmFE" type="email" placeholder="Your account email" autocomplete="email" inputmode="email"></div>
   <button class="lm-go" type="submit">Send reset link</button>
@@ -70,7 +72,7 @@ const COPY = { login: ["Welcome back", "Sign in to track orders, chat with us an
 function msg(type, text) { const m = $("lmMsg"); m.className = "lm-msg" + (text ? " " + type : ""); m.textContent = text || ""; }
 function mode(m) {
   msg("", "");
-  $("lmLogin").hidden = m !== "login"; $("lmReg").hidden = m !== "register"; $("lmForgot").hidden = m !== "forgot";
+  $("lmLogin").hidden = m !== "login"; $("lmReg").hidden = m !== "register"; $("lmForgot").hidden = m !== "forgot"; $("lmGoogle").hidden = m === "forgot";
   $("lmTabs").style.display = m === "forgot" ? "none" : "";
   $("lmTabs").querySelectorAll("button").forEach((b) => b.classList.toggle("on", b.dataset.m === m));
   $("lmT").textContent = COPY[m][0]; $("lmS").textContent = COPY[m][1];
@@ -91,7 +93,7 @@ const errText = (e) => ({
   "auth/invalid-credential": "Incorrect email or password.", "auth/wrong-password": "Incorrect email or password.", "auth/user-not-found": "No account found with this email.",
   "auth/invalid-email": "Please enter a valid email address.", "auth/too-many-requests": "Too many attempts. Please wait a moment and try again.",
   "auth/email-already-in-use": "An account already exists with this email. Please sign in.", "auth/weak-password": "Password is too weak. Use at least 6 characters.",
-  "auth/network-request-failed": "No internet connection. Please try again.", "auth/user-disabled": "This account has been disabled. Please contact RIVENZ."
+  "auth/network-request-failed": "No internet connection. Please try again.", "auth/operation-not-allowed": "Email sign-in is not enabled. Please contact RIVENZ.", "auth/quota-exceeded": "Too many emails sent today. Please try again later.", "auth/user-disabled": "This account has been disabled. Please contact RIVENZ."
 }[e?.code] || "Something went wrong. Please try again.");
 async function busy(btn, label, fn) { const t = btn.textContent; btn.disabled = true; btn.textContent = label; try { await fn(); } finally { btn.disabled = false; btn.textContent = t; } }
 
@@ -129,11 +131,25 @@ $("lmReg").addEventListener("submit", async (e) => {
     } catch (er) { console.warn(er); msg("err", errText(er)); }
   });
 });
+$("lmGBtn").addEventListener("click", async (e) => {
+  const b = e.currentTarget; b.disabled = true;
+  try {
+    const u = (await signInWithPopup(auth, new GoogleAuthProvider())).user;
+    try { const ref = doc(db, "clients", u.uid); const s = await getDoc(ref); if (!s.exists()) await setDoc(ref, { uid: u.uid, name: u.displayName || "", phone: "", email: u.email || "", createdAt: serverTimestamp(), accountStatus: "active" }, { merge: true }); } catch (_) {}
+    try { localStorage.setItem("graphicsClientEmail", u.email || ""); if (u.displayName) localStorage.setItem("graphicsClientName", u.displayName); } catch (_) {}
+    done();
+  } catch (er) {
+    console.warn(er);
+    if (["auth/popup-closed-by-user", "auth/cancelled-popup-request"].includes(er?.code)) { /* closed */ }
+    else msg("err", er?.code === "auth/unauthorized-domain" ? "This website is not authorized for Google sign-in yet." : er?.code === "auth/operation-not-allowed" ? "Google sign-in is not enabled yet." : er?.code === "auth/popup-blocked" ? "Please allow pop-ups and try again." : errText(er));
+  }
+  b.disabled = false;
+});
 $("lmForgot").addEventListener("submit", async (e) => {
   e.preventDefault(); const email = $("lmFE").value.trim().toLowerCase() || $("lmLE").value.trim().toLowerCase();
   if (!email) return msg("err", "Enter the email address of your account.");
   await busy(e.target.querySelector(".lm-go"), "Sending...", async () => {
-    try { await sendPasswordResetEmail(auth, email, { url: location.origin + "/index.html?login=1" }); msg("ok", "Reset link sent. Please check your email inbox (and spam folder)."); }
+    try { try { await sendPasswordResetEmail(auth, email, { url: location.origin + "/index.html?login=1" }); } catch (e1) { if (/continue-uri/.test(e1?.code || "")) await sendPasswordResetEmail(auth, email); else throw e1; } msg("ok", "Reset link sent. Please check your email inbox (and spam folder)."); }
     catch (er) { console.warn(er); msg("err", er?.code === "auth/user-not-found" ? "No account found with this email." : errText(er)); }
   });
 });
