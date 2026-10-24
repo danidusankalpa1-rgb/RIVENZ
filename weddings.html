@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Unbounded:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="home.css">
-  <script src="ui-messages.js?v=23"></script>
+  <script src="ui-messages.js?v=24"></script>
   <style>
     :root{--svc-ink:#15171b;--svc-muted:#747983;--svc-line:#e9eaed;--svc-soft:#f6f7f8}
     body{background:#fbfbfa;color:var(--svc-ink)}
@@ -140,8 +140,8 @@
     .shop-filters,.shop-subfilters{display:none!important}
   .offers-only-note{font-size:10px;color:#777c84;margin:0 0 18px}
 </style>
-<link rel="stylesheet" href="shop-v2.css?v=23">
-<link rel="stylesheet" href="user-nav.css?v=23">
+<link rel="stylesheet" href="shop-v2.css?v=24">
+<link rel="stylesheet" href="user-nav.css?v=24">
 </head>
 <body class="page-ready">
 <header class="home-header">
@@ -178,8 +178,8 @@
 </main>
 
 <footer><img src="logo.png" alt="RIVENZ logo"><span>© 2026 RIVENZ. All rights reserved.</span></footer>
-<script src="file-store.js?v=23"></script>
-<script src="public-content.js?v=23"></script>
+<script src="file-store.js?v=24"></script>
+<script src="public-content.js?v=24"></script>
 <script src="card-extras.js?v=1"></script>
 <script>graphicsFileStore.migrateOrders();</script>
 <script>
@@ -274,8 +274,8 @@ updateRivenzCartCount();window.addEventListener('storage',updateRivenzCartCount)
 const homeToggle=document.querySelector('.home-menu-toggle'),homeNav=document.querySelector('.home-nav');
 if(homeToggle&&homeNav){homeToggle.addEventListener('click',()=>{const open=homeNav.classList.toggle('open');homeToggle.setAttribute('aria-expanded',open)});homeNav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>homeNav.classList.remove('open')))}
 </script>
-<script type="module" src="cart-store.js?v=23"></script>
-<script type="module" src="account-guard.js?v=23"></script>
-<script type="module" src="user-nav.js?v=23"></script>
+<script type="module" src="cart-store.js?v=24"></script>
+<script type="module" src="account-guard.js?v=24"></script>
+<script type="module" src="user-nav.js?v=24"></script>
 </body>
 </html>

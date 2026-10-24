@@ -31,9 +31,13 @@ body.ord-pg{background:#fff;color:#111827;font-family:Inter,system-ui,sans-serif
 .oc2-ln{display:flex;gap:14px;font-size:13px;font-weight:500}.oc2-ln a{color:#4f46e5;text-decoration:none}.oc2-ln a:hover{text-decoration:underline}
 .ord-empty{text-align:center;color:#8b909a;padding:60px 10px;border:1px dashed #d9dbe1;border-radius:14px;font-size:14px}
 @media(max-width:700px){.oc2-h{grid-template-columns:1fr 1fr;gap:14px}.oc2-r{grid-column:1/-1;text-align:left;order:-1}.oc2-btns{justify-content:flex-start}.ord-tabs button{padding:9px 12px;font-size:13px}.oc2-im{width:68px;height:68px}}
+.wl2{margin-top:44px}.wl2 h2{font-size:18px;font-weight:700;margin:0 0 16px}.wl2 .empty{color:#8b909a;font-size:14px;border:1px dashed #d9dbe1;border-radius:14px;padding:34px 16px;text-align:center}
+.wishlist-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.wishlist-item{border:1px solid #e5e7eb;border-radius:14px;padding:12px;background:#fff;display:flex;gap:12px;align-items:center;min-width:0}.wishlist-item img,.wishlist-placeholder{width:64px;height:76px;border-radius:10px;object-fit:cover;background:#f3f4f6;flex:0 0 64px}.wishlist-placeholder{display:grid;place-items:center;font-size:9px;color:#9aa0aa}.wishlist-info{min-width:0;flex:1}.wishlist-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.wishlist-price{font-size:12.5px;margin-top:5px}.wishlist-actions{display:flex;gap:8px;margin-top:9px}.wishlist-actions a,.wishlist-actions button{border:1px solid #d9dbe1;border-radius:8px;padding:6px 12px;font:500 12px Inter,sans-serif;text-decoration:none;cursor:pointer;background:#fff;color:#111827}.wishlist-actions a{background:#4f46e5;border-color:#4f46e5;color:#fff}
+@media(max-width:760px){.wishlist-grid{grid-template-columns:1fr 1fr}}@media(max-width:520px){.wishlist-grid{grid-template-columns:1fr}}
 </style>
-<link rel="stylesheet" href="user-nav.css?v=23">
-<script src="public-content.js?v=23"></script>
+<link rel="stylesheet" href="user-nav.css?v=24">
+<script src="public-content.js?v=24"></script>
+<style>body.ord-pg{font-family:Inter,ui-sans-serif,system-ui,sans-serif}.ord-wrap h1{font-family:Unbounded,Inter,sans-serif!important;text-transform:uppercase;letter-spacing:-.02em;font-weight:600!important;font-size:clamp(22px,3.4vw,32px)!important}.wl2 h2{font-family:Unbounded,Inter,sans-serif!important;text-transform:uppercase;letter-spacing:-.02em;font-weight:600;font-size:16px}.oc2-st{font-family:Inter,sans-serif}</style>
 </head>
 <body class="page-ready ord-pg">
 <header class="home-header">
@@ -54,10 +58,11 @@ body.ord-pg{background:#fff;color:#111827;font-family:Inter,system-ui,sans-serif
 <main class="ord-wrap">
   <h1>Your Orders</h1>
   <div class="ord-bar">
-    <div class="ord-tabs" id="ordTabs"><button class="on" data-f="all">Orders</button><button data-f="notshipped">Not Yet Shipped</button><button data-f="delivered">Delivered</button><button data-f="cancelled">Cancelled Orders</button></div>
+    <div class="ord-tabs" id="ordTabs"><button class="on" data-f="all">Orders</button><button data-f="notshipped">Not Yet Shipped</button><button data-f="delivered">Delivered</button><button data-f="cancelled">Cancelled Orders</button><button data-f="wish">Wishlist</button></div>
     <select class="ord-sel" id="ordPeriod"><option value="0">All time</option><option value="30">Past 30 days</option><option value="180">Past 6 months</option><option value="365">Past 1 year</option></select>
   </div>
   <div id="ordersList"><div class="ord-empty">Loading your orders...</div></div>
+  <section class="wl2"><h2>My Wishlist</h2><div id="wishlistBox"><div class="empty">Loading your wishlist...</div></div></section>
 </main>
 
 
@@ -104,13 +109,20 @@ async function render(user){
   ALL=(await getOrders(user)).filter(o=>!hid.has(String(o.id))&&!o.customerHidden).sort((a,b)=>new Date(b.createdAt||0)-new Date(a.createdAt||0));
   paint();
 }
-document.getElementById("ordTabs").addEventListener("click",e=>{const b=e.target.closest("button[data-f]");if(!b)return;FILTER=b.dataset.f;document.querySelectorAll("#ordTabs button").forEach(x=>x.classList.toggle("on",x===b));paint()});
+function renderWishlist(){
+  const box=document.getElementById("wishlistBox");if(!box)return;let list=[];try{list=JSON.parse(localStorage.getItem((()=>{try{return 'rivenzWishlistV1:'+(window.rivenzCartStore&&window.rivenzCartStore.uid||'guest')}catch(e){return 'rivenzWishlistV1:guest'}})())||"[]")}catch(e){}
+  if(!Array.isArray(list)||!list.length){box.innerHTML='<div class="empty">Your wishlist is empty. Tap the heart on any product in the Shop to save it here.</div>';return;}
+  box.innerHTML='<div class="wishlist-grid">'+list.map(item=>{const price=Number(item.offer||0)>0?item.offer:item.price;const old=Number(item.offer||0)>0&&Number(item.price||0)>0?'<span style="color:#9a9da2;text-decoration:line-through;margin-left:5px">'+money(item.price)+'</span>':'';const image=item.image?'<img src="'+esc(item.image)+'" alt="">':'<div class="wishlist-placeholder">RIVENZ</div>';return '<div class="wishlist-item">'+image+'<div class="wishlist-info"><div class="wishlist-name">'+esc(item.name||"RIVENZ Product")+'</div><div class="wishlist-price"><strong>'+money(price)+'</strong>'+old+'</div><div class="wishlist-actions"><a href="'+(item.id?'services.html?product='+encodeURIComponent(item.id):'collection.html')+'">View</a><button type="button" data-wish-remove="'+esc(item.id||'')+'">Remove</button></div></div></div>'}).join('')+'</div>';
+  box.querySelectorAll('[data-wish-remove]').forEach(btn=>btn.addEventListener('click',()=>{const id=btn.getAttribute('data-wish-remove');list=list.filter(x=>String(x.id)!==String(id));localStorage.setItem((()=>{try{return 'rivenzWishlistV1:'+(window.rivenzCartStore&&window.rivenzCartStore.uid||'guest')}catch(e){return 'rivenzWishlistV1:guest'}})(),JSON.stringify(list));renderWishlist();}));
+}
+window.addEventListener('rivenz-cart-session-changed',renderWishlist);renderWishlist();window.addEventListener('storage',renderWishlist);window.addEventListener('rivenz:wishlist-change',renderWishlist);
+document.getElementById("ordTabs").addEventListener("click",e=>{const b=e.target.closest("button[data-f]");if(!b)return;if(b.dataset.f==="wish"){document.querySelector(".wl2").scrollIntoView({behavior:"smooth",block:"start"});return}FILTER=b.dataset.f;document.querySelectorAll("#ordTabs button").forEach(x=>x.classList.toggle("on",x===b));paint()});
 document.getElementById("ordPeriod").addEventListener("change",paint);
 function watchCustomerOrders(user){if(stopOrderWatch)stopOrderWatch();try{stopOrderWatch=onSnapshot(query(collection(db,"orders"),where("uid","==",user.uid)),()=>render(user),err=>console.warn("Order watch unavailable:",err))}catch(e){}}
 document.getElementById("dashboardLogout")?.addEventListener("click",async e=>{e.preventDefault();try{await signOut(auth);}catch(error){console.error("Logout failed:",error);}location.href="index.html";});
 onAuthStateChanged(auth,user=>{if(!user){if(stopOrderWatch)stopOrderWatch();location.replace("auth.html?next=dashboard.html");return;}dashboardUser=user;render(user);watchCustomerOrders(user);});
 </script>
-<script type="module" src="account-guard.js?v=23"></script>
-<script type="module" src="user-nav.js?v=23"></script>
+<script type="module" src="account-guard.js?v=24"></script>
+<script type="module" src="user-nav.js?v=24"></script>
 </body>
 </html>
