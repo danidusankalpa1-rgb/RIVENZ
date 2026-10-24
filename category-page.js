@@ -13,6 +13,7 @@
     if(cat==="women")return c==="women"||c==="ladies";
     return c==="mens";
   }
+  function vid(p){var a=Array.isArray(p.videos)?p.videos:[];var f=a.find(function(x){return x&&x.url});return f?f.url:''}
   function img(p){var a=Array.isArray(p.images)?p.images:[];var f=a.find(function(x){return x&&x.url});return f?f.url:(p.image&&p.image.url)||""}
   var HEX={black:'#111111',white:'#ffffff',red:'#e53935',blue:'#2563eb',navy:'#172554',green:'#16a34a',yellow:'#facc15',orange:'#f97316',pink:'#ec4899',purple:'#8b5cf6',grey:'#9ca3af',gray:'#9ca3af',brown:'#8b5e3c',beige:'#d8c3a5',cream:'#f5f0df',maroon:'#7f1d1d'};
   function sw(p){var cols=Array.isArray(p.colors)?p.colors:[],m=p.stockByColorSize||{},meta=p.colorMeta||{};
@@ -20,7 +21,7 @@
     return out.length?'<div class="cp-sw">'+out.slice(0,8).map(function(c){var r=m[c],gone=r&&typeof r==='object'&&!Object.keys(r).some(function(k){return Number(r[k])>0});var h=String(meta[c]||'').trim();if(!/^#[0-9a-f]{6}$/i.test(h))h=HEX[String(c).trim().toLowerCase()]||'#d9d9d4';return '<i'+(gone?' class="x"':'')+' title="'+esc(c)+(gone?' (sold out)':'')+'" style="background:'+h+'"></i>'}).join('')+(out.length>8?'<b>+'+(out.length-8)+'</b>':'')+'</div>':'';}
   function card(p,i){
     var off=Number(p.offer||0)>0&&Number(p.price||0)>0&&Number(p.offer)<Number(p.price),im=img(p);
-    return '<a class="cp-card" style="animation-delay:'+Math.min(i,10)*50+'ms" href="services.html?product='+encodeURIComponent(p.id)+'"><div class="cp-img">'+(im?'<img loading="lazy" alt="'+esc(p.name)+'" src="'+esc(im)+'">':'')+(/^(new|special|limited)$/i.test(p.tag||'')?'<span class="cp-tag t-'+String(p.tag).toLowerCase()+'">'+esc(p.tag)+'</span>':'')+(off?'<span class="cp-off">-'+Math.round((1-p.offer/p.price)*100)+'%</span>':'')+'</div><div class="cp-info"><h2>'+esc(p.name||"RIVENZ Product")+'</h2><div class="cp-pr'+(off?' hot':'')+'">'+money(off?p.offer:p.price)+(off?'<s>'+money(p.price)+'</s>':'')+'</div>'+sw(p)+'</div></a>';
+    return '<a class="cp-card" style="animation-delay:'+Math.min(i,10)*50+'ms" href="services.html?product='+encodeURIComponent(p.id)+'"><div class="cp-img">'+(vid(p)?'<video src="'+esc(vid(p))+'" muted loop autoplay playsinline preload="metadata" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"></video>':im?'<img loading="lazy" alt="'+esc(p.name)+'" src="'+esc(im)+'">':'')+(/^(new|special|limited)$/i.test(p.tag||'')?'<span class="cp-tag t-'+String(p.tag).toLowerCase()+'">'+esc(p.tag)+'</span>':'')+(off?'<span class="cp-off">-'+Math.round((1-p.offer/p.price)*100)+'%</span>':'')+'</div><div class="cp-info"><h2>'+esc(p.name||"RIVENZ Product")+'</h2><div class="cp-pr'+(off?' hot':'')+'">'+money(off?p.offer:p.price)+(off?'<s>'+money(p.price)+'</s>':'')+'</div>'+sw(p)+'</div></a>';
   }
   function hero(c){
     if(!c)return;
