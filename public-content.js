@@ -142,11 +142,17 @@ async function upload(file,type){
   if(!res.ok||res.data?.ok===false) throw new Error(res.data?.error||('Upload failed (HTTP '+res.status+')'));
   return res.data||{};
 }
+const CAT_TTL=/admin/i.test(location.pathname)?0:20000, catMem={};
 async function rawCatalog(type){
-  const d=await jsonRequest('/public/catalog?type='+encodeURIComponent(String(type||'portfolio')));
-  return Array.isArray(d.items)?d.items:[];
+  const k=String(type||'portfolio'), m=catMem[k], now=Date.now();
+  if(m&&(m.p||now-m.t<CAT_TTL)) return JSON.parse(JSON.stringify(await m.v));
+  const v=jsonRequest('/public/catalog?type='+encodeURIComponent(k)).then(function(d){return Array.isArray(d.items)?d.items:[]});
+  catMem[k]={v:v,t:now,p:true};
+  try{const r=await v;catMem[k]={v:Promise.resolve(r),t:Date.now(),p:false};return JSON.parse(JSON.stringify(r))}
+  catch(e){delete catMem[k];throw e}
 }
 async function rawSave(type,items){
+  delete catMem[String(type||'portfolio')];
   const token=await getToken(true);
   const d=await jsonRequest('/public/catalog',{
     method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({type:String(type||'portfolio'),items:Array.isArray(items)?items:[]})

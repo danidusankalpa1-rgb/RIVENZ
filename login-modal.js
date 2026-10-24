@@ -11,7 +11,7 @@ const EYE = '<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle
 
 const css = document.createElement("style");
 css.textContent = `.lm-bd,.lm-bd *,.lm-bd *:before,.lm-bd *:after{box-sizing:border-box}
-.lm-or{display:flex;align-items:center;gap:12px;margin:16px 0 12px;color:rgba(255,255,255,.55);font-size:12px}.lm-or:before,.lm-or:after{content:"";flex:1;height:1px;background:rgba(255,255,255,.18)}.lm-gb{width:100%;height:50px;border-radius:999px;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.1);color:#fff;font:700 14px Inter,system-ui,sans-serif;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer}.lm-gb:disabled{opacity:.6}
+.lm-in{animation:lmIn .34s cubic-bezier(.22,1,.36,1) both}@keyframes lmIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}.lm{overflow:hidden auto}.lm-or{display:flex;align-items:center;gap:12px;margin:16px 0 12px;color:rgba(255,255,255,.55);font-size:12px}.lm-or:before,.lm-or:after{content:"";flex:1;height:1px;background:rgba(255,255,255,.18)}.lm-gb{width:100%;height:50px;border-radius:999px;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.1);color:#fff;font:700 14px Inter,system-ui,sans-serif;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer}.lm-gb:disabled{opacity:.6}
 
 .lm-bd{position:fixed;inset:0;z-index:2000;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(8,9,11,.5);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s;font-family:Inter,system-ui,sans-serif}
 .lm-bd.open{opacity:1;visibility:visible}
@@ -70,12 +70,26 @@ const $ = (id) => document.getElementById(id);
 const COPY = { login: ["Welcome back", "Sign in to track orders, chat with us and check out faster."], register: ["Join RIVENZ", "Create your account in a minute."], forgot: ["Reset your password", "Enter your email and we will send you a link to choose a new password."] };
 
 function msg(type, text) { const m = $("lmMsg"); m.className = "lm-msg" + (text ? " " + type : ""); m.textContent = text || ""; }
+let curMode = "";
 function mode(m) {
+  const lm = root.querySelector(".lm"), animate = root.classList.contains("open") && curMode && curMode !== m;
+  const h0 = animate ? lm.offsetHeight : 0;
   msg("", "");
   $("lmLogin").hidden = m !== "login"; $("lmReg").hidden = m !== "register"; $("lmForgot").hidden = m !== "forgot"; $("lmGoogle").hidden = m === "forgot";
   $("lmTabs").style.display = m === "forgot" ? "none" : "";
   $("lmTabs").querySelectorAll("button").forEach((b) => b.classList.toggle("on", b.dataset.m === m));
   $("lmT").textContent = COPY[m][0]; $("lmS").textContent = COPY[m][1];
+  if (animate) {
+    const f = $(m === "login" ? "lmLogin" : m === "register" ? "lmReg" : "lmForgot");
+    [f, $("lmHead")].forEach((el) => { el.classList.remove("lm-in"); void el.offsetWidth; el.classList.add("lm-in"); });
+    lm.style.height = "auto"; const h1 = lm.offsetHeight;
+    if (h0 && h1 !== h0) {
+      lm.style.height = h0 + "px"; void lm.offsetHeight;
+      lm.style.transition = "height .32s cubic-bezier(.22,1,.36,1), transform .35s cubic-bezier(.22,1,.36,1)"; lm.style.height = h1 + "px";
+      clearTimeout(lm._t); lm._t = setTimeout(() => { lm.style.height = ""; lm.style.transition = ""; }, 360);
+    } else lm.style.height = "";
+  }
+  curMode = m;
 }
 function open(opts = {}) {
   if (auth.currentUser) return;

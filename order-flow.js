@@ -170,11 +170,12 @@ async function get(orderId){
 
 async function orders(){
   const user=auth.currentUser; if(!user) return [];
-  const remoteById=new Map();
+  const remoteById=new Map(); let remoteOk=false;
   try{
     // Query by UID first so customer reads comply with owner-scoped Firestore rules.
     const snap=await withTimeout(getDocs(query(collection(db,"orders"),where("uid","==",user.uid))),15000,"Firebase customer orders request");
     snap.docs.forEach(d=>remoteById.set(d.id,{id:d.id,...d.data()}));
+    remoteOk=true;
   }catch(e){
     console.warn("Firebase orders read failed:",e);
   }
@@ -191,7 +192,7 @@ async function orders(){
   }
   const local=read(KEY,[]).filter(o=>belongsToUser(o,user));
   for(const order of local){
-    if(!remoteById.has(order.id)) remoteById.set(order.id,order);
+    if(!remoteById.has(order.id)){ if(!remoteOk) remoteById.set(order.id,order); }
     else remoteById.set(order.id,{...order,...remoteById.get(order.id)});
   }
   const stamp=v=>v?.toMillis?v.toMillis():v instanceof Date?v.getTime():typeof v==="number"?v:Date.parse(String(v||""))||0;
