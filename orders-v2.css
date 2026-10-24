@@ -107,3 +107,6 @@
 
 .ov-det .step.fail .dot{background:#fdecea!important;color:#d3202a!important;box-shadow:inset 0 0 0 1.5px #f3b8b3}
 .ov-det .step.fail .step-title{color:#d3202a}
+
+.ov-det .step.cod .dot{background:#fff!important;color:#8a8d93!important;box-shadow:inset 0 0 0 1.5px #c9ccd1;border:1.5px dashed #c9ccd1}
+.ov-det .step.cod .step-title{color:#6b6f76}.ov-det .step.cod .step-title:after{content:'Pay on delivery';margin-left:8px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:#f1f1ee;color:#6b6f76;padding:3px 8px;border-radius:999px;vertical-align:middle}

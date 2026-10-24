@@ -116,3 +116,4 @@
 .rvz-acc-card .rvz-row{color:#d2d4d9}
 .rvz-acc-card .rvz-row:hover,.rvz-acc-card .rvz-row.on{background:rgba(255,255,255,.1);color:#fff}
 .rvz-acc-card .rvz-sep{background:rgba(255,255,255,.12)}
+html body{overflow-x:clip!important;overflow-y:visible!important}

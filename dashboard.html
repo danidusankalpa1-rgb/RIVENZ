@@ -18,14 +18,14 @@
 .order.completed-order{padding:9px 12px;border:1px solid #e3f0e7;border-radius:13px;background:#f8fcf9}.order.completed-order .order-name{font-size:11px}.order.completed-order .order-progress{display:none}.order.completed-order .order-action{margin-top:4px}
 .site-header{height:74px;padding:0 28px;background:#fff;border-bottom:1px solid #e9e9e4;box-shadow:0 8px 25px rgba(17,19,22,.035);backdrop-filter:blur(14px);position:sticky;top:0;z-index:50}.site-header .brand{display:flex;align-items:center}.site-header .brand img{max-height:29px;width:auto}.site-header .nav{gap:6px;align-items:center}.site-header .nav a{padding:9px 11px;border-radius:10px;color:#686c72;font-size:10px;font-weight:700;text-decoration:none}.site-header .nav a:hover{background:#f2f2ef;color:#111316}.site-header .nav .nav-profile{background:#111316;color:#fff}.site-header .nav .nav-logout{background:#111316;color:#fff;padding-inline:14px}.site-header .menu-toggle{border:0;background:#111316;color:#fff;border-radius:10px;width:38px;height:34px}
 @media(max-width:900px){.dashboard-hero{align-items:stretch}.dashboard-grid{grid-template-columns:1fr}.dashboard-stats{grid-template-columns:repeat(3,1fr)}.profile-card{min-width:220px}}@media(max-width:680px){.dashboard-page{padding:26px 14px 60px}.dashboard-hero{display:block}.profile-card{margin-top:18px}.dashboard-stats{grid-template-columns:1fr}.dash-card{padding:19px;border-radius:20px}.dashboard-footer{display:block}.dashboard-footer span{display:block;margin-top:5px}.order{align-items:flex-start}.order-side{text-align:right}.order-total{font-size:12px}.site-header{height:64px;padding:0 16px}.site-header .nav{background:#fff;border:1px solid #e7e7e2;box-shadow:0 16px 35px rgba(17,19,22,.1);border-radius:16px;padding:8px}.site-header .nav.open{top:58px}.site-header .nav a{padding:11px 12px}}
-</style>
+.oc-rm{margin-top:8px;border:1px solid #e5e5e1;background:#fff;color:#8a2a20;border-radius:999px;padding:6px 12px;font:700 11px Inter,sans-serif;cursor:pointer}.oc-rm:hover{background:#fdf1f0}</style>
 
 <style>
   .wishlist-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.wishlist-item{border:1px solid #ecece8;border-radius:16px;padding:10px;background:#fff;display:flex;gap:10px;align-items:center;min-width:0}.wishlist-item img,.wishlist-placeholder{width:58px;height:68px;border-radius:12px;object-fit:cover;background:#f1f1ee;flex:0 0 58px}.wishlist-placeholder{display:grid;place-items:center;font-size:8px;color:#9a9da2}.wishlist-info{min-width:0;flex:1}.wishlist-name{font-size:10px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.wishlist-price{font-size:10px;margin-top:5px}.wishlist-actions{display:flex;gap:6px;margin-top:8px}.wishlist-actions a,.wishlist-actions button{border:0;border-radius:9px;padding:7px 8px;font-size:8px;font-weight:800;text-decoration:none;cursor:pointer}.wishlist-actions a{background:#15171b;color:#fff}.wishlist-actions button{background:#f1f1ee;color:#17191c}@media(max-width:760px){.wishlist-grid{grid-template-columns:1fr 1fr}}@media(max-width:520px){.wishlist-grid{grid-template-columns:1fr}}
 </style>
-<link rel="stylesheet" href="user-nav.css?v=17">
-<link rel="stylesheet" href="orders-v2.css?v=17">
-<script src="public-content.js?v=17"></script>
+<link rel="stylesheet" href="user-nav.css?v=18">
+<link rel="stylesheet" href="orders-v2.css?v=18">
+<script src="public-content.js?v=18"></script>
 </head>
 <body class="page-ready ov-dash">
 <header class="home-header">
@@ -94,7 +94,7 @@
 
 <script type="module">
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
-import { collection, doc, getDoc, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+import { collection, doc, getDoc, onSnapshot, query, where, updateDoc } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
 import { app, db } from "./firebase-config.js";
 import "./order-flow.js";
 import "./cart-store.js";
@@ -107,6 +107,9 @@ const esc=value=>String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;
 const money=value=>`Rs. ${Number(value||0).toLocaleString()}`;
 function statusClass(status){const s=String(status||"");if(/cancel/i.test(s))return "cancel";if(/deliver|complete/i.test(s))return "green";if(/await|pending/i.test(s))return "pending";return "";}
 function progressRank(status,paymentStatus){const s=String(status||"").toLowerCase();if(/deliver|complete/.test(s))return 6;if(/ship/.test(s))return 5;if(/pack/.test(s))return 4;if(/process/.test(s))return 3;if(/order confirmed/.test(s))return 2;if(/payment confirmed/.test(s)||paymentStatus==="Paid"||paymentStatus==="Paid on Delivery")return 1;return 0;}
+const hiddenKey=u=>"rvzHiddenOrders:"+u.uid;
+function hiddenSet(u){try{return new Set(JSON.parse(localStorage.getItem(hiddenKey(u))||"[]").map(String))}catch(e){return new Set()}}
+document.addEventListener("click",async e=>{const b=e.target.closest("[data-rm]");if(!b)return;e.preventDefault();e.stopPropagation();const u=dashboardUser;if(!u||!confirm("Remove this order from your list?"))return;const id=b.dataset.rm;const h=hiddenSet(u);h.add(id);try{localStorage.setItem(hiddenKey(u),JSON.stringify([...h]))}catch(_){}try{await updateDoc(doc(db,"orders",id),{customerHidden:true})}catch(_){}render(u)},true);
 async function getOrders(user){try{const all=await graphicsOrderFlow.orders();return all.filter(order=>String(order.uid||"")===String(user.uid)||( !order.uid && String(order.email||"").toLowerCase()===String(user.email||"").toLowerCase()));}catch(error){console.error("Could not load orders:",error);return [];}}
 async function render(user){
   let profile={};try{const snap=await getDoc(doc(db,"clients",user.uid));if(snap.exists())profile=snap.data()||{};}catch(error){console.warn("Profile loading failed:",error);}
@@ -115,7 +118,7 @@ async function render(user){
   const email=profile.email||user.email||localStorage.getItem("graphicsClientEmail")||"";
   document.getElementById("profileName").textContent=name;const av=document.getElementById("ovAv");if(av)av.textContent=(name||"C").trim().charAt(0).toUpperCase();document.getElementById("profileEmail").textContent=email;
 
-  const orders=(await getOrders(user)).slice().sort((a,b)=>{const da=new Date(a.createdAt||0).getTime(),db=new Date(b.createdAt||0).getTime();return db-da;});
+  const hid=hiddenSet(user);const orders=(await getOrders(user)).filter(o=>!hid.has(String(o.id))&&!o.customerHidden).slice().sort((a,b)=>{const da=new Date(a.createdAt||0).getTime(),db=new Date(b.createdAt||0).getTime();return db-da;});
   const active=orders.filter(o=>!(/deliver|complete|cancel|reject/i.test(String(o.status||""))));
   const delivered=orders.filter(o=>/deliver|complete/i.test(String(o.status||"")));
   document.getElementById("totalCount").textContent=String(orders.length);
@@ -126,7 +129,7 @@ async function render(user){
   if(!orders.length){list.innerHTML=`<div class="empty">No orders yet. Place your first RIVENZ order to see it here.</div>`;}
   else{
     list.innerHTML=orders.map(order=>{
-      const items=order.items||order.products||[];const first=items[0]||{};const count=items.reduce((sum,it)=>sum+Math.max(1,Number(it.quantity)||1),0);const names=items.length?items.map(it=>it.productName||it.name||it.title||"RIVENZ Product").slice(0,2).join(", "):"RIVENZ Order";const extra=items.length>2?` +${items.length-2} more`:"";const rank=progressRank(order.status,order.paymentStatus);const pct=Math.round((rank/6)*100);const status=order.status||"Awaiting Payment";const date=order.createdAt?new Date(order.createdAt).toLocaleDateString("en-LK",{day:"2-digit",month:"short",year:"numeric"}):"";const completed=/complete/i.test(String(order.status||""));const im=first.image||first.img||(first.images&&first.images[0]&&first.images[0].url)||"";const stepLbl=/cancel/i.test(status)?"Order cancelled":"Step "+Math.min(7,rank+1)+" of 7";const sk=/cancel/i.test(status)?"x":/deliver|complete/i.test(status)?"check":/ship/i.test(status)?"truck":/await|pending/i.test(status)?"clock":"box";const SV={x:'<circle cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/>',check:'<circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/>',truck:'<path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.6"/><circle cx="17" cy="17.5" r="1.6"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',box:'<path d="M3 8l9-5 9 5v8l-9 5-9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/>'};return `<a class="oc" href="order-details.html?id=${encodeURIComponent(order.id||"")}"><div class="oc-img" data-pid="${esc(first.productId||"")}">${im?`<img src="${esc(im)}" alt="" loading="lazy">`:'<svg class="ov-i" viewBox="0 0 24 24"><path d="M6 7h12l-1 13H7L6 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>'}</div><div class="oc-main"><div class="oc-top"><b>${esc(order.id||"Order")}</b><span>${esc(date)}</span></div><div class="oc-name">${esc(names+extra)}</div><div class="oc-meta">${count} item${count===1?"":"s"} · ${esc(order.paymentMethod||"Payment pending")}</div><div class="oc-prog"><i style="width:${pct}%"></i></div><div class="oc-step">${stepLbl}</div></div><div class="oc-side"><div class="oc-total">${money(order.total)}</div><span class="status ${statusClass(status)}"><svg class="ov-i" viewBox="0 0 24 24">${SV[sk]}</svg>${esc(status)}</span><span class="oc-go">Track order <svg class="ov-i" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div></a>`
+      const items=order.items||order.products||[];const first=items[0]||{};const count=items.reduce((sum,it)=>sum+Math.max(1,Number(it.quantity)||1),0);const names=items.length?items.map(it=>it.productName||it.name||it.title||"RIVENZ Product").slice(0,2).join(", "):"RIVENZ Order";const extra=items.length>2?` +${items.length-2} more`:"";const rank=progressRank(order.status,order.paymentStatus);const pct=Math.round((rank/6)*100);const status=order.status||"Awaiting Payment";const date=order.createdAt?new Date(order.createdAt).toLocaleDateString("en-LK",{day:"2-digit",month:"short",year:"numeric"}):"";const completed=/complete/i.test(String(order.status||""));const im=first.image||first.img||(first.images&&first.images[0]&&first.images[0].url)||"";const stepLbl=/cancel/i.test(status)?"Order cancelled":"Step "+Math.min(7,rank+1)+" of 7";const sk=/cancel/i.test(status)?"x":/deliver|complete/i.test(status)?"check":/ship/i.test(status)?"truck":/await|pending/i.test(status)?"clock":"box";const SV={x:'<circle cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/>',check:'<circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/>',truck:'<path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.6"/><circle cx="17" cy="17.5" r="1.6"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',box:'<path d="M3 8l9-5 9 5v8l-9 5-9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/>'};return `<a class="oc" href="order-details.html?id=${encodeURIComponent(order.id||"")}"><div class="oc-img" data-pid="${esc(first.productId||"")}">${im?`<img src="${esc(im)}" alt="" loading="lazy">`:'<svg class="ov-i" viewBox="0 0 24 24"><path d="M6 7h12l-1 13H7L6 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>'}</div><div class="oc-main"><div class="oc-top"><b>${esc(order.id||"Order")}</b><span>${esc(date)}</span></div><div class="oc-name">${esc(names+extra)}</div><div class="oc-meta">${count} item${count===1?"":"s"} · ${esc(order.paymentMethod||"Payment pending")}</div><div class="oc-prog"><i style="width:${pct}%"></i></div><div class="oc-step">${stepLbl}</div></div><div class="oc-side"><div class="oc-total">${money(order.total)}</div><span class="status ${statusClass(status)}"><svg class="ov-i" viewBox="0 0 24 24">${SV[sk]}</svg>${esc(status)}</span><span class="oc-go">Track order <svg class="ov-i" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>${/complete|cancel/i.test(String(order.status||""))?`<button type="button" class="oc-rm" data-rm="${esc(order.id||"")}">Remove</button>`:""}</div></a>`
     }).join("");
   }
 
@@ -177,7 +180,7 @@ window.addEventListener('rivenz-cart-session-changed',renderWishlist);renderWish
 document.getElementById("dashboardLogout")?.addEventListener("click",async e=>{e.preventDefault();try{await signOut(auth);}catch(error){console.error("Logout failed:",error);}location.href="index.html";});
 onAuthStateChanged(auth,user=>{if(!user){if(stopOrderWatch)stopOrderWatch();location.replace("auth.html?next=dashboard.html");return;}dashboardUser=user;render(user);watchCustomerOrders(user);});
 </script>
-<script type="module" src="account-guard.js?v=17"></script>
-<script type="module" src="user-nav.js?v=17"></script>
+<script type="module" src="account-guard.js?v=18"></script>
+<script type="module" src="user-nav.js?v=18"></script>
 </body>
 </html>
