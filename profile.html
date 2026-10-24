@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My Profile | RIVENZ</title>
 <link rel="stylesheet" href="style.css">
-<script src="ui-messages.js?v=21"></script>
+<script src="ui-messages.js?v=22"></script>
 <style>
 :root{--profile-line:rgba(15,18,22,.09);--profile-soft:#777d86;--profile-ink:#111318;--profile-accent:#111318}
 .profile-page{max-width:1120px;margin:34px auto 90px;padding:0 18px}
@@ -32,8 +32,8 @@ body{background:#fbfbfa;color:#15171b}
 @media(max-width:800px){.nav{top:78px;background:#fff;border-bottom:1px solid #e9eaed;color:#666b73}.nav a{color:#666b73}.nav a.active{color:#fff;background:#15171b}}
 
 </style>
-<link rel="stylesheet" href="user-nav.css?v=21">
-<script src="public-content.js?v=21"></script>
+<link rel="stylesheet" href="user-nav.css?v=22">
+<script src="public-content.js?v=22"></script>
 </head>
 <body class="page-ready">
 <header class="site-header">
@@ -50,7 +50,7 @@ body{background:#fbfbfa;color:#15171b}
 <div class="profile-layout">
 <div>
 <section class="profile-card"><div class="profile-card-head"><h2>Personal Details</h2><span class="live-pill">● Live sync</span></div><div class="profile-grid"><div class="profile-field"><label>FULL NAME</label><input id="name" autocomplete="name"></div><div class="profile-field"><label>PHONE NUMBER</label><input id="phone" autocomplete="tel"></div><div class="profile-field full"><label>EMAIL · ACCOUNT LOGIN</label><input id="email" class="readonly" readonly></div></div><div class="actions"><button class="primary" id="save" type="button">Save Profile</button><a href="dashboard.html">My Orders</a></div><div id="status" class="status-line">Loading your profile...</div></section>
-<section class="profile-card" style="margin-top:16px"><div class="profile-card-head"><h2>Recent Orders</h2><span id="orderCount" class="live-pill">0 orders</span></div><div id="ordersList" class="order-list"><div class="notice">Loading orders...</div></div></section>
+<section class="profile-card" hidden style="display:none"><div class="profile-card-head"><h2>Recent Orders</h2><span id="orderCount" class="live-pill">0 orders</span></div><div id="ordersList" class="order-list"><div class="notice">Loading orders...</div></div></section>
 </div>
 <aside>
 <section class="profile-card"><h2>Account Overview</h2><div class="stat-grid"><div class="stat"><small>ORDERS</small><strong id="statOrders">0</strong><span>Total orders</span></div><div class="stat"><small>ACTIVE</small><strong id="statActive">0</strong><span>In progress</span></div><div class="stat"><small>PAID</small><strong id="statPaid">Rs. 0</strong><span>Total paid</span></div><div class="stat"><small>ITEMS</small><strong id="statItems">0</strong><span>Items ordered</span></div></div></section>
@@ -89,7 +89,7 @@ saveBtn.addEventListener("click",async()=>{if(!user||saving)return;const name=na
 $("logout").addEventListener("click",async e=>{e.preventDefault();try{await signOut(auth)}finally{location.href="auth.html"}});$("toggle")?.addEventListener("click",()=>$("nav").classList.toggle("open"));
 onAuthStateChanged(auth,u=>{if(stopClient)stopClient();if(stopOrders)stopOrders();if(!u){location.replace("auth.html?next=profile.html");return}user=u;stopClient=onSnapshot(doc(db,"clients",u.uid),snap=>renderProfile(snap.exists()?snap.data():{name:u.displayName||"",email:u.email||"",phone:""}),err=>{console.error(err);setStatus("Profile could not be loaded. Check Firebase access.","err")});subscribeOrders();});
 </script>
-<script type="module" src="account-guard.js?v=21"></script>
-<script type="module" src="user-nav.js?v=21"></script>
+<script type="module" src="account-guard.js?v=22"></script>
+<script type="module" src="user-nav.js?v=22"></script>
 </body>
 </html>

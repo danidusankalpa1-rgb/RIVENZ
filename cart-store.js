@@ -23,9 +23,15 @@ function emitUpdate() {
   window.dispatchEvent(new CustomEvent("rivenz-cart-updated"));
 }
 function getCart() {
-  return safeRead(activeKey());
+  return currentUser?.uid ? safeRead(activeKey()) : [];
+}
+function requireLogin() {
+  if (currentUser?.uid) return true;
+  try { window.rvzLogin?.open({ next: location.pathname.split("/").pop() + location.search }); } catch (_) {}
+  return false;
 }
 function saveCart(items) {
+  if (!currentUser?.uid) return;
   const safeItems = Array.isArray(items) ? items : [];
   localStorage.setItem(activeKey(), JSON.stringify(safeItems));
   emitUpdate();
@@ -34,15 +40,7 @@ function count() {
   return getCart().reduce((sum, item) => sum + Math.max(0, Number(item?.quantity) || 0), 0);
 }
 
-// Keep legacy shared-cart data available as a guest cart instead of assigning it
-// to an arbitrary account (which could expose one customer's cart to another).
-try {
-  const legacy = localStorage.getItem(LEGACY_KEY);
-  if (legacy !== null) {
-    if (localStorage.getItem(GUEST_KEY) === null) localStorage.setItem(GUEST_KEY, legacy);
-    localStorage.removeItem(LEGACY_KEY);
-  }
-} catch (_) {}
+try { localStorage.removeItem(LEGACY_KEY); localStorage.removeItem(GUEST_KEY); } catch (_) {}
 
 onAuthStateChanged(auth, user => {
   currentUser = user || null;
@@ -51,5 +49,5 @@ onAuthStateChanged(auth, user => {
   emitUpdate();
 });
 
-window.rivenzCartStore = { ready, getCart, saveCart, count, get uid() { return currentUser?.uid || null; } };
+window.rivenzCartStore = { ready, getCart, saveCart, count, requireLogin, get uid() { return currentUser?.uid || null; } };
 window.dispatchEvent(new Event("rivenz-cart-store-ready"));

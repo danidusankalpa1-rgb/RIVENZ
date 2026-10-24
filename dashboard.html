@@ -18,14 +18,14 @@
 .order.completed-order{padding:9px 12px;border:1px solid #e3f0e7;border-radius:13px;background:#f8fcf9}.order.completed-order .order-name{font-size:11px}.order.completed-order .order-progress{display:none}.order.completed-order .order-action{margin-top:4px}
 .site-header{height:74px;padding:0 28px;background:#fff;border-bottom:1px solid #e9e9e4;box-shadow:0 8px 25px rgba(17,19,22,.035);backdrop-filter:blur(14px);position:sticky;top:0;z-index:50}.site-header .brand{display:flex;align-items:center}.site-header .brand img{max-height:29px;width:auto}.site-header .nav{gap:6px;align-items:center}.site-header .nav a{padding:9px 11px;border-radius:10px;color:#686c72;font-size:10px;font-weight:700;text-decoration:none}.site-header .nav a:hover{background:#f2f2ef;color:#111316}.site-header .nav .nav-profile{background:#111316;color:#fff}.site-header .nav .nav-logout{background:#111316;color:#fff;padding-inline:14px}.site-header .menu-toggle{border:0;background:#111316;color:#fff;border-radius:10px;width:38px;height:34px}
 @media(max-width:900px){.dashboard-hero{align-items:stretch}.dashboard-grid{grid-template-columns:1fr}.dashboard-stats{grid-template-columns:repeat(3,1fr)}.profile-card{min-width:220px}}@media(max-width:680px){.dashboard-page{padding:26px 14px 60px}.dashboard-hero{display:block}.profile-card{margin-top:18px}.dashboard-stats{grid-template-columns:1fr}.dash-card{padding:19px;border-radius:20px}.dashboard-footer{display:block}.dashboard-footer span{display:block;margin-top:5px}.order{align-items:flex-start}.order-side{text-align:right}.order-total{font-size:12px}.site-header{height:64px;padding:0 16px}.site-header .nav{background:#fff;border:1px solid #e7e7e2;box-shadow:0 16px 35px rgba(17,19,22,.1);border-radius:16px;padding:8px}.site-header .nav.open{top:58px}.site-header .nav a{padding:11px 12px}}
-.oc-rm{margin-top:8px;border:1px solid #e5e5e1;background:#fff;color:#8a2a20;border-radius:999px;padding:6px 12px;font:700 11px Inter,sans-serif;cursor:pointer}.oc-rm:hover{background:#fdf1f0}.oc-locked{cursor:default;opacity:.92}</style>
+.oc-rm{margin-top:8px;border:1px solid #e5e5e1;background:#fff;color:#8a2a20;border-radius:999px;padding:6px 12px;font:700 11px Inter,sans-serif;cursor:pointer}.oc-rm:hover{background:#fdf1f0}.oc-locked{cursor:default;opacity:.92}.notification-item.is-new{background:#f6f6f3;border-left:3px solid #111316}.notification-item.is-new .notification-message{font-weight:700}.notification-item.is-old{opacity:.6}.notification-item.is-old .notification-dot{background:#c9ccd1!important}.nt-new{font-size:9px;letter-spacing:.1em;background:#111316;color:#fff;padding:2px 7px;border-radius:999px}.notification-meta span:not(.nt-new){color:#8a8d93}</style>
 
 <style>
   .wishlist-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.wishlist-item{border:1px solid #ecece8;border-radius:16px;padding:10px;background:#fff;display:flex;gap:10px;align-items:center;min-width:0}.wishlist-item img,.wishlist-placeholder{width:58px;height:68px;border-radius:12px;object-fit:cover;background:#f1f1ee;flex:0 0 58px}.wishlist-placeholder{display:grid;place-items:center;font-size:8px;color:#9a9da2}.wishlist-info{min-width:0;flex:1}.wishlist-name{font-size:10px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.wishlist-price{font-size:10px;margin-top:5px}.wishlist-actions{display:flex;gap:6px;margin-top:8px}.wishlist-actions a,.wishlist-actions button{border:0;border-radius:9px;padding:7px 8px;font-size:8px;font-weight:800;text-decoration:none;cursor:pointer}.wishlist-actions a{background:#15171b;color:#fff}.wishlist-actions button{background:#f1f1ee;color:#17191c}@media(max-width:760px){.wishlist-grid{grid-template-columns:1fr 1fr}}@media(max-width:520px){.wishlist-grid{grid-template-columns:1fr}}
 </style>
-<link rel="stylesheet" href="user-nav.css?v=21">
-<link rel="stylesheet" href="orders-v2.css?v=21">
-<script src="public-content.js?v=21"></script>
+<link rel="stylesheet" href="user-nav.css?v=22">
+<link rel="stylesheet" href="orders-v2.css?v=22">
+<script src="public-content.js?v=22"></script>
 </head>
 <body class="page-ready ov-dash">
 <header class="home-header">
@@ -145,11 +145,20 @@ async function render(user){
     const {mergeNotes,watchChat}=await import('./chat-notes.js');
     const paint=()=>{const updates=mergeNotes();
     if(!updates.length) notificationsBox.innerHTML=`<div class="empty">No notifications yet. Order updates will appear here automatically.</div>`;
-    else notificationsBox.innerHTML='<div class="notification-list">'+updates.map(n=>{
-      const date=n.createdAt?.toDate?n.createdAt.toDate().toLocaleString("en-LK",{day:"2-digit",month:"short",year:"numeric",hour:"numeric",minute:"2-digit"}):(n.time||"");
-      const orderId=String(n.orderId||"");
-      return `<div class="notification-item"><span class="notification-dot"></span><div><div class="notification-message">${esc(n.message||"RIVENZ order update")}</div><div class="notification-meta"><span>${esc(date)}</span>${orderId?`<span>·</span><a href="order-details.html?id=${encodeURIComponent(orderId)}">${esc(orderId)}</a>`:""}${n.chat?'<span>·</span><a href="chat.html">Open chat</a>':""}</div></div></div>`;
-    }).join('')+'</div>';
+    else{
+      const nst=n=>{const v=n.createdAt;return v?.toMillis?v.toMillis():(v?Date.parse(String(v)):0)||Date.parse(String(n.time||""))||0};
+      const seenKey="rvzNotesSeen:"+user.uid;let seen=0;try{seen=Number(localStorage.getItem(seenKey)||0)}catch(_){}
+      if(!seen)seen=Date.now()-86400000;
+      const list=updates.map(n=>({n,t:nst(n)})).sort((a,b)=>b.t-a.t).slice(0,5);
+      notificationsBox.innerHTML='<div class="notification-list">'+list.map(({n,t})=>{
+        const isNew=t>seen;
+        const date=n.createdAt?.toDate?n.createdAt.toDate().toLocaleString("en-LK",{day:"2-digit",month:"short",year:"numeric",hour:"numeric",minute:"2-digit"}):(n.time||"");
+        const orderId=String(n.orderId||"");const ord=orders.find(x=>String(x.id)===orderId);const open=ord&&!/complete|cancel/i.test(String(ord.status||""));
+        const ref=n.chat?'<a href="chat.html">Open chat</a>':orderId?(open?`<a href="order-details.html?id=${encodeURIComponent(orderId)}">${esc(orderId)}</a>`:`<span>${esc(orderId)}</span>`):"";
+        return `<div class="notification-item${isNew?" is-new":" is-old"}"><span class="notification-dot"></span><div><div class="notification-message">${esc(n.message||"RIVENZ order update")}</div><div class="notification-meta">${isNew?'<b class="nt-new">NEW</b><span>·</span>':""}<span>${esc(date)}</span>${ref?`<span>·</span>${ref}`:""}</div></div></div>`;
+      }).join('')+'</div>';
+      const top=list.length?list[0].t:0;clearTimeout(window.__nsT);window.__nsT=setTimeout(()=>{try{if(top)localStorage.setItem(seenKey,String(top))}catch(_){}},4000);
+    }
     };
     window.__paintNotes=paint;paint();watchChat(user);
   }catch(error){
@@ -180,7 +189,7 @@ window.addEventListener('rivenz-cart-session-changed',renderWishlist);renderWish
 document.getElementById("dashboardLogout")?.addEventListener("click",async e=>{e.preventDefault();try{await signOut(auth);}catch(error){console.error("Logout failed:",error);}location.href="index.html";});
 onAuthStateChanged(auth,user=>{if(!user){if(stopOrderWatch)stopOrderWatch();location.replace("auth.html?next=dashboard.html");return;}dashboardUser=user;render(user);watchCustomerOrders(user);});
 </script>
-<script type="module" src="account-guard.js?v=21"></script>
-<script type="module" src="user-nav.js?v=21"></script>
+<script type="module" src="account-guard.js?v=22"></script>
+<script type="module" src="user-nav.js?v=22"></script>
 </body>
 </html>

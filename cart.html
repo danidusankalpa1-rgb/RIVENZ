@@ -25,7 +25,7 @@
     @media(max-width:800px){.cart-layout{grid-template-columns:1fr}.cart-summary{position:static}.cart-head{align-items:flex-start;flex-direction:column}.cart-page{padding:42px 16px 55px}}
     @media(max-width:520px){.cart-item{grid-template-columns:72px minmax(0,1fr);gap:12px}.cart-image{width:72px;height:92px}.cart-controls{grid-column:2;align-items:flex-start;flex-direction:row;justify-content:space-between}.cart-name{font-size:16px}.cart-price{font-size:14px}}
   </style>
-<link rel="stylesheet" href="user-nav.css?v=21">
+<link rel="stylesheet" href="user-nav.css?v=22">
 </head>
 <body class="page-ready">
 <header class="home-header">
@@ -62,7 +62,7 @@
     </aside>
   </section>
 </main>
-<script src="public-content.js?v=21"></script>
+<script src="public-content.js?v=22"></script>
 <script type="module">
 import "./cart-store.js";
 (function(){
@@ -87,7 +87,7 @@ import "./cart-store.js";
   const toggle=document.querySelector('.home-menu-toggle'),nav=document.querySelector('.home-nav');if(toggle&&nav){toggle.addEventListener('click',()=>{const open=nav.classList.toggle('open');toggle.setAttribute('aria-expanded',open)});nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>nav.classList.remove('open')))}
 })();
 </script>
-<script type="module" src="account-guard.js?v=21"></script>
-<script type="module" src="user-nav.js?v=21"></script>
+<script type="module" src="account-guard.js?v=22"></script>
+<script type="module" src="user-nav.js?v=22"></script>
 </body>
 </html>
