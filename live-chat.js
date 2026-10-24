@@ -16,7 +16,8 @@ function init() {
   const TRASH = '<path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 11v6M14 11v6"/>';
 
   const css = document.createElement("style");
-  css.textContent = `
+  css.textContent = `[class*="lc-"],[class*="lc-"] *,[class*="lc-"] *:before,[class*="lc-"] *:after{box-sizing:border-box}
+
 .lc-fab{position:fixed;right:18px;bottom:18px;z-index:1200;display:inline-flex;align-items:center;gap:10px;height:52px;padding:0 22px;border:0;border-radius:999px;background:rgba(24,26,30,.5);-webkit-backdrop-filter:blur(18px) saturate(1.6);backdrop-filter:blur(18px) saturate(1.6);border:1px solid rgba(255,255,255,.3);color:#fff;font:600 15px Inter,system-ui,sans-serif;cursor:pointer;box-shadow:0 14px 34px -10px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.3);transition:transform .3s cubic-bezier(.22,1,.36,1),opacity .25s}.lc-fab.away{transform:translateY(90px);opacity:0;pointer-events:none}
 .lc-fab:hover{transform:translateY(-2px)}.lc-fab.hide{opacity:0;pointer-events:none;transform:scale(.9)}
 .lc-i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}

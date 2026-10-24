@@ -45,9 +45,7 @@ async function uploadOrderFile(orderId,file,folder="client"){
   if(file.size>50*1024*1024) throw new Error("FILE_TOO_LARGE");
   const token=await getIdToken();
   async function send(targetFolder){
-    const response=await withTimeout(fetch(FILE_API+"/upload",{
-      method:"POST",
-      headers:{
+    const upHeaders={
         Authorization:"Bearer "+token,
         "X-Order-Id":String(orderId),
         "X-Folder":String(targetFolder),
@@ -55,9 +53,15 @@ async function uploadOrderFile(orderId,file,folder="client"){
         "X-File-Type":file.type||"application/octet-stream",
         "X-File-Size":String(file.size||0),
         "Content-Type":file.type||"application/octet-stream"
-      },
-      body:file
-    }), 120000, "Cloudflare R2 upload");
+      };
+    const P=window.rvzProgress;
+    let response;
+    if(P){
+      const r=await P.xhr(FILE_API+"/upload",upHeaders,file,"Uploading "+String(file.name||"file").slice(0,28),120000);
+      response={ok:r.ok,status:r.status,json:async()=>r.data};
+    }else{
+      response=await withTimeout(fetch(FILE_API+"/upload",{method:"POST",headers:upHeaders,body:file}), 120000, "Cloudflare R2 upload");
+    }
     let data=null;
     try{data=await response.json();}catch(e){}
     if(!response.ok||!data?.ok){

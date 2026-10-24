@@ -10,7 +10,8 @@ const IC = (p) => `<svg class="lm-i" viewBox="0 0 24 24" aria-hidden="true">${p}
 const EYE = '<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>';
 
 const css = document.createElement("style");
-css.textContent = `
+css.textContent = `.lm-bd,.lm-bd *,.lm-bd *:before,.lm-bd *:after{box-sizing:border-box}
+
 .lm-bd{position:fixed;inset:0;z-index:2000;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(8,9,11,.5);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s;font-family:Inter,system-ui,sans-serif}
 .lm-bd.open{opacity:1;visibility:visible}
 .lm{position:relative;width:min(410px,100%);max-height:calc(100dvh - 36px);overflow:auto;padding:30px 26px 26px;border-radius:30px;color:#fff;background:linear-gradient(160deg,rgba(255,255,255,.16),rgba(255,255,255,.05)),rgba(18,20,24,.68);-webkit-backdrop-filter:blur(26px) saturate(1.6);backdrop-filter:blur(26px) saturate(1.6);border:1px solid rgba(255,255,255,.22);box-shadow:0 40px 90px -20px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.3);transform:translateY(24px) scale(.97);transition:transform .35s cubic-bezier(.22,1,.36,1)}

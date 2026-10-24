@@ -1,3 +1,4 @@
+[class*="rvz-"],[class*="rvz-"] *,[class*="rvz-"] *:before,[class*="rvz-"] *:after{box-sizing:border-box}
 /* RIVENZ — header (two-row editorial bar + dark category strip). Old per-page headers are hidden. */
 .home-header,.site-header{display:none!important}
 .rvz-h{position:sticky;top:0;z-index:1000;background:#fff;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;box-shadow:0 10px 30px -22px rgba(0,0,0,.35)}
