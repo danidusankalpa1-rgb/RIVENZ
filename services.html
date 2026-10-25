@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Shop — RIVENZ Clothing</title>
   <meta name="description" content="Shop RIVENZ clothing — new arrivals, essentials and selected offers.">
+  <link rel="preconnect" href="https://graphics-file-api.danidusankalpa56.workers.dev" crossorigin>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Unbounded:wght@500;600;700&display=swap" rel="stylesheet">
@@ -165,7 +166,7 @@
       .service-actions a{height:35px!important;min-height:35px!important;font-size:7px!important}
     }
   </style>
-  <link rel="stylesheet" href="shop-v2.css?v=26">
+  <link rel="stylesheet" href="shop-v2.css?v=28">
 <link rel="stylesheet" href="user-nav.css?v=26">
 <script>if(!new URLSearchParams(location.search).get("product"))location.replace("collection.html")</script>
 <style>.services-intro,#shopFilters,#shopSubFilters,.services-bottom,#serviceGrid,#rivenzDetailLatest,.rivenz-detail-latest{display:none!important}</style>
@@ -251,6 +252,7 @@
   (function(){let busy=false;async function tick(){if(busy||document.hidden)return;busy=true;try{const r=await window.graphicsPublicContent.catalog('products',true);if(Array.isArray(r)){let ch=false;r.forEach(n=>{const o=products.find(x=>x&&String(x.id)===String(n.id));if(!o)return;const sig=JSON.stringify([n.stockByColorSize,n.stock,n.price,n.offer,n.active]);if(o.__sig!==sig){if(o.__sig!==undefined)ch=true;o.__sig=sig;['stockByColorSize','stock','stockTotal','price','offer','active','colors','sizes'].forEach(k=>{if(n[k]!==undefined)o[k]=n[k]})}});if(ch)window.dispatchEvent(new Event('rvz-live'))}}catch(e){}busy=false}setInterval(tick,8000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)tick()});setTimeout(tick,1500)})();
   async function load(force=false){if(catalogLoading)return catalogLoading;if(!force&&catalogLoadedAt&&Date.now()-catalogLoadedAt<30000){render();return products}catalogLoading=(async()=>{try{const remote=await window.graphicsPublicContent.catalog('products');products=(Array.isArray(remote)&&remote.length?remote:local()).filter(x=>!(x&&x.special))}catch(e){products=local()}catalogLoadedAt=Date.now();render();return products})().finally(()=>{catalogLoading=null});return catalogLoading}
   function rvzVid(url){const v=document.createElement('video');v.src=url;v.muted=true;v.loop=true;v.playsInline=true;v.autoplay=true;v.preload='metadata';v.setAttribute('muted','');v.setAttribute('playsinline','');v.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;opacity:1';v.addEventListener('canplay',()=>{v.play().catch(()=>{})});return v}
+  let cardN=0;
   function makeCard(p,noVid){
     const card=document.createElement('article');card.className='service-card sx-card';card.tabIndex=0;
     const media=document.createElement('div');media.className='service-media sx-img';
@@ -258,7 +260,7 @@
     function syncWish(){const active=readWishlist().some(x=>String(x.id)===String(p.id));wish.classList.toggle('active',active);wish.setAttribute('aria-pressed',String(active));wish.setAttribute('aria-label',active?'Remove from wishlist':'Add to wishlist')}
     wish.onclick=(e)=>{e.preventDefault();e.stopPropagation();toggleWishlist(p);syncWish();};
     const ref=images(p)[0]?.url||'';const vref=(Array.isArray(p.videos)?p.videos:[]).find(v=>v&&v.url)?.url||'';
-    if(vref&&!noVid){media.appendChild(rvzVid(vref))}else if(ref){const img=document.createElement('img');img.alt=p.name||'RIVENZ product';img.loading='lazy';img.decoding='async';img.src=ref;media.appendChild(img)}
+    if(ref){const img=document.createElement('img');img.alt='';img.loading=(cardN++<4?'eager':'lazy');img.decoding='async';img.src=ref;media.appendChild(img)}
     media.appendChild(wish);
     const off=Number(p.offer||0)>0&&Number(p.price||0)>0&&Number(p.offer)<Number(p.price);
     if(off){const t=document.createElement('span');t.className='sx-off';t.textContent='−'+Math.round((1-p.offer/p.price)*100)+'%';media.appendChild(t)}
@@ -440,6 +442,6 @@ if(homeToggle&&homeNav){homeToggle.addEventListener('click',()=>{const open=home
 </script>
 <script type="module" src="cart-store.js?v=26"></script>
 <script type="module" src="account-guard.js?v=26"></script>
-<script type="module" src="user-nav.js?v=26"></script>
+<script type="module" src="user-nav.js?v=28"></script>
 </body>
 </html>

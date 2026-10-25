@@ -88,7 +88,7 @@ body.hx{margin:0;background:var(--hx-bg);color:var(--hx-ink);font-family:Inter,u
   .hx-mid{position:absolute;top:50%;bottom:auto;transform:translate(-50%,-50%)}
   .hx-panel.r{order:2}
   .hx-sec{padding:56px 18px 0}.hx-head{align-items:flex-start}
-  .hx-card{flex-basis:62%}.hx-arr{display:none}
+  .hx-card{flex-basis:48%}.hx-arr{display:none}
   .hx-promo{margin-top:64px}.hx-promo-in{padding:56px 18px;flex-direction:column;align-items:flex-start}
   .hx-feat{grid-template-columns:1fr 1fr;padding:50px 18px 0}
   .hx-help{padding:0 18px;margin-top:56px}.hx-help-in{flex-direction:column;align-items:flex-start}
@@ -111,7 +111,7 @@ body.hx{margin:0;background:var(--hx-bg);color:var(--hx-ink);font-family:Inter,u
 .hx-row{padding:12px 12px 14px!important}
 .hx-card{flex-basis:calc(25% - 10.5px)!important}
 @media(max-width:1000px){.hx-card{flex-basis:calc(33.333% - 9.5px)!important}}
-@media(max-width:760px){.hx-card{flex-basis:62%!important}.hx-rail-wrap{padding:0!important}}
+@media(max-width:760px){.hx-card{flex-basis:48%!important}.hx-rail-wrap{padding:0!important}}
 
 /* home: gap between hero and collection, single hero button */
 .hx-split{margin-top:24px}

@@ -5,10 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RIVENZ — Clothing &amp; Fashion</title>
   <meta name="description" content="RIVENZ — modern clothing, everyday essentials and new fashion collections.">
+  <link rel="preconnect" href="https://graphics-file-api.danidusankalpa56.workers.dev" crossorigin>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Unbounded:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="home-v2.css?v=26">
+  <link rel="stylesheet" href="home-v2.css?v=28">
   <link rel="stylesheet" href="user-nav.css?v=26">
 </head>
 <body class="hx">
@@ -111,9 +112,9 @@
       if(!ads.length){box.hidden=true;return}
       box.innerHTML=ads.map((a,i)=>{
         const m=a.media&&a.media.url?a.media:null,vid=m&&(m.type==='video'||/\.(mp4|webm|mov|m4v)(\?|$)/i.test(m.url));
-        const media=m?(vid?'<video class="hx-ad-m" src="'+esc(m.url)+'" muted loop autoplay playsinline></video>':'<img class="hx-ad-m" src="'+esc(m.url)+'" alt="" loading="lazy">'):'';
-        const tag=a.link?'a':'div';
-        return '<'+tag+' class="hx-ad" '+(a.link?'href="'+esc(a.link)+'"':'')+' style="transition-delay:'+(i?0:0)+'ms">'+media+'<div class="hx-ad-in">'+(a.title?'<h2>'+esc(a.title).replace(/\n/g,'<br>')+'</h2>':'')+(a.description?'<p>'+esc(a.description)+'</p>':'')+(a.link&&a.button?'<span class="hx-btn light">'+esc(a.button)+'</span>':'')+'</div></'+tag+'>';
+        const media=m?(vid?'<video class="hx-ad-m" src="'+esc(m.url)+'" muted loop autoplay playsinline preload="metadata"></video>':'<img class="hx-ad-m" src="'+esc(m.url)+'" alt="" loading="lazy">'):'';
+        const tag='div';
+        return '<'+tag+' class="hx-ad" '+''+' style="transition-delay:'+(i?0:0)+'ms">'+media+'<div class="hx-ad-in">'+(a.title?'<h2>'+esc(a.title).replace(/\n/g,'<br>')+'</h2>':'')+(a.description?'<p>'+esc(a.description)+'</p>':'')+(a.link&&a.button?'<a class="hx-btn light" href="'+esc(a.link)+'">'+esc(a.button)+'</a>':'')+'</div></'+tag+'>';
       }).join('');
       box.hidden=false;
       box.querySelectorAll('video').forEach(v=>{v.muted=true;v.play().catch(()=>{})});
@@ -126,8 +127,8 @@
     const t=p=>Date.parse(p.createdAt||p.created_at||p.updatedAt||'')||0;
     const list=products.slice().sort((a,b)=>t(b)-t(a)).slice(0,10);
     if(!list.length){box.innerHTML='<div class="hx-empty">New pieces are coming soon.</div>';return}
-    box.innerHTML=list.map(p=>{const im=imageOf(p),off=Number(p.offer||0)>0&&Number(p.offer)<Number(p.price||0);
-      return '<a class="hx-card" href="services.html?product='+encodeURIComponent(p.id)+'"><div class="hx-img">'+(im?'<img src="'+esc(im)+'" alt="'+esc(p.name||'')+'" loading="lazy" decoding="async">':'')+(window.rvzCard?rvzCard.tag(p):'')+(off?'<i class="hx-off">\u2212'+Math.round((1-p.offer/p.price)*100)+'%</i>':'')+'</div><div class="hx-row"><span>'+esc(p.name||'RIVENZ product')+'</span><span class="'+(off?'hot':'')+'">'+money(off?p.offer:p.price)+(off?'<s>'+money(p.price)+'</s>':'')+'</span></div>'+(window.rvzCard?rvzCard.sw(p):'')+'</a>'}).join('');
+    box.innerHTML=list.map((p,i)=>{const im=imageOf(p),off=Number(p.offer||0)>0&&Number(p.offer)<Number(p.price||0);
+      return '<a class="hx-card" href="services.html?product='+encodeURIComponent(p.id)+'"><div class="hx-img">'+(im?'<img src="'+esc(im)+'" alt="" '+(i<4?'fetchpriority="high"':'loading="lazy"')+' decoding="async">':'')+(window.rvzCard?rvzCard.tag(p):'')+(off?'<i class="hx-off">\u2212'+Math.round((1-p.offer/p.price)*100)+'%</i>':'')+'</div><div class="hx-row"><span>'+esc(p.name||'RIVENZ product')+'</span><span class="'+(off?'hot':'')+'">'+money(off?p.offer:p.price)+(off?'<s>'+money(p.price)+'</s>':'')+'</span></div>'+(window.rvzCard?rvzCard.sw(p):'')+'</a>'}).join('');
   }
   document.querySelectorAll('.hx-lk').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();location.href=el.dataset.h}));
   const rail=()=>$('homeServices'),step=()=>Math.max(200,rail().clientWidth*.8);
@@ -140,6 +141,6 @@
 </script>
 <script type="module" src="cart-store.js?v=26"></script>
 <script type="module" src="account-guard.js?v=26"></script>
-<script type="module" src="user-nav.js?v=26"></script>
+<script type="module" src="user-nav.js?v=28"></script>
 </body>
 </html>

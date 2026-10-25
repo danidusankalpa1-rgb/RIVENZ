@@ -102,7 +102,7 @@
 @media(max-width:900px){
   #rivenzDetailPage .rivenz-detail-layout{grid-template-columns:1fr!important;gap:22px!important}
   #rivenzDetailPage .rivenz-detail-gallery{order:-1}
-  .rv2-rail .sx-card{flex-basis:62%}
+  .rv2-rail .sx-card{flex-basis:48%}
   .rv2-about{margin-top:38px}
 }
 
@@ -121,7 +121,7 @@
 .rv2-rail{display:flex!important;gap:10px!important;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding-bottom:6px}.rv2-rail::-webkit-scrollbar{display:none}
 .rv2-rail .sx-card{flex:0 0 calc(25% - 8px)!important;min-width:0;scroll-snap-align:start;content-visibility:visible!important}
 .rv2-rail .sx-img img{opacity:1!important}
-@media(max-width:700px){.rv2-rail .sx-card{flex-basis:62%!important}}
+@media(max-width:700px){.rv2-rail .sx-card{flex-basis:48%!important}.sx-img{aspect-ratio:4/5!important}}
 
 /* ===== square boxed cards (final) ===== */
 .service-grid{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important;border-radius:0!important;gap:16px!important}

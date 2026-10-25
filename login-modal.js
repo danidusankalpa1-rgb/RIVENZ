@@ -131,9 +131,16 @@ $("lmLogin").addEventListener("submit", async (e) => {
     } catch (er) { console.warn(er); msg("err", errText(er)); }
   });
 });
+const RV={name(v){v=String(v||'').trim().replace(/\s+/g,' ');if(v.length<2||v.length>60||!/^[\p{L}\p{M}][\p{L}\p{M}\s.'\-]*$/u.test(v)||(v.match(/\p{L}/gu)||[]).length<2||/(.)\1{3,}/u.test(v))return'Please enter your real name (letters only).';return''},
+phone(v,opt){v=String(v||'').trim();if(!v)return opt?'':'Please enter your phone number.';var d=v.replace(/[\s\-()]/g,'');if(!/^(\+94|0094|94|0)?\d{9}$/.test(d)||/[^\d+]/.test(d))return'Enter a valid Sri Lankan number, e.g. 0771234567.';var n=d.replace(/^(\+94|0094|94|0)/,'');if(!/^[1-9]\d{8}$/.test(n)||/^(\d)\1{7,}$/.test(n.slice(1))||/^(01234567|12345678|23456789|87654321|98765432)$/.test(n.slice(1)))return'Enter a valid Sri Lankan number, e.g. 0771234567.';return''},
+email(v){v=String(v||'').trim().toLowerCase();if(!/^[a-z0-9._%+\-]{2,64}@[a-z0-9\-]+(\.[a-z0-9\-]+)*\.[a-z]{2,}$/.test(v)||/\.\./.test(v)||/^(test|asd|abc|xxx|qwe|fake|aaa+)\d*@/.test(v)||/@(example|test|mailinator|yopmail|tempmail|temp-mail|guerrillamail|10minutemail|trashmail|sharklasers|fake|asd|xyz123)\./.test(v))return'Please enter a real email address.';return''},
+postal(v){v=String(v||'').trim();return !v||/^\d{5}$/.test(v)?'':'Postal code must be 5 digits.'},
+text(v,label,min){v=String(v||'').trim();return v.length<(min||3)||!/\p{L}/u.test(v)||/(.)\1{4,}/u.test(v)?'Please enter a valid '+label+'.':''}};
+
 $("lmReg").addEventListener("submit", async (e) => {
   e.preventDefault(); const name = $("lmRN").value.trim(), phone = $("lmRPh").value.trim(), email = $("lmRE").value.trim().toLowerCase(), pw = $("lmRP").value;
   if (!name || !phone || !email || !pw) return msg("err", "Please complete all fields.");
+  { const er = RV.name(name) || RV.phone(phone) || RV.email(email); if (er) return msg("err", er); }
   if (pw.length < 6) return msg("err", "Password must contain at least 6 characters.");
   await busy(e.target.querySelector(".lm-go"), "Creating account...", async () => {
     try {
