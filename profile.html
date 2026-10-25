@@ -57,6 +57,10 @@ body{background:#0f0f11!important;color:#f4f4f5;font-family:Inter,ui-sans-serif,
 </style>
 <link rel="stylesheet" href="user-nav.css?v=26">
 <script src="public-content.js?v=26"></script>
+<style>.pf-r{padding:11px 0!important;font-size:14px!important}.pf-card{padding:2px 16px!important;border-radius:14px!important}.pf-ad{padding:12px 0!important}.pf-ic{width:42px!important;height:42px!important;border-radius:10px!important}.pf-eb{height:36px!important;padding:0 16px!important;font-size:13px!important;border-radius:10px!important}.pf-out{height:46px!important;font-size:14px!important}
+.pf-f input,.pf-f select{height:48px!important;padding:19px 14px 4px!important;font-size:14.5px!important;border-radius:12px!important}.pf-f label{top:7px!important;left:14px!important;font-size:11px!important}
+.pf-f select{width:100%;border:1px solid #34343a;background:#1b1b1f;color:#fff;font-family:Inter,sans-serif;font-weight:500;outline:0;box-sizing:border-box;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239a9aa2' stroke-width='2' stroke-linecap='round'><path d='m6 9 6 6 6-6'/></svg>");background-repeat:no-repeat;background-position:right 12px center;background-size:18px}.pf-f select:focus{border-color:#8b8b95}
+.pf-f select option{background:#1b1b1f;color:#fff}.pf-sh{padding:22px 18px 18px!important}.pf-sh h3{font-size:19px!important;margin-bottom:16px!important}.pf-g{gap:10px!important}.pf-sv{height:46px!important;font-size:14px!important;border-radius:12px!important}</style>
 </head>
 <body class="page-ready">
 <header class="site-header">
@@ -87,7 +91,7 @@ body{background:#0f0f11!important;color:#f4f4f5;font-family:Inter,ui-sans-serif,
 
 <div class="pf-bd" id="bdAddr"><div class="pf-sh" role="dialog" aria-modal="true"><h3>Delivery address <button class="pf-x" type="button" data-close aria-label="Close">&times;</button></h3>
   <div class="pf-g"><div class="pf-f full"><input id="fAddress" autocomplete="street-address" placeholder=" "><label for="fAddress">Address</label></div>
-  <div class="pf-f"><input id="fCity" autocomplete="address-level2" placeholder=" "><label for="fCity">City</label></div><div class="pf-f"><input id="fProvince" autocomplete="address-level1" placeholder=" "><label for="fProvince">Province</label></div>
+  <div class="pf-f"><input id="fCity" autocomplete="address-level2" placeholder=" "><label for="fCity">City</label></div><div class="pf-f"><select id="fProvince"><option value="">Select province</option><option>Western</option><option>Central</option><option>Southern</option><option>Northern</option><option>Eastern</option><option>North Western</option><option>North Central</option><option>Uva</option><option>Sabaragamuwa</option></select><label for="fProvince" class="sl">Province</label></div>
   <div class="pf-f full"><input id="fPostal" autocomplete="postal-code" inputmode="numeric" placeholder=" "><label for="fPostal">Postal code (optional)</label></div></div>
   <div class="pf-st" id="stAddr"></div><div class="pf-sa"><button class="lk dl" id="delAddr" type="button" style="display:none">Remove</button><button class="lk" type="button" data-close>Cancel</button><button class="pf-sv" id="saveAddr" type="button">Save</button></div></div></div>
 
@@ -108,7 +112,7 @@ function render(){
   $("addrBtn").textContent=parts.length?"Edit":"Add";
 }
 $("editBtn").addEventListener("click",()=>{const n=(data.name||user?.displayName||"").trim(),i=n.indexOf(" ");$("fFirst").value=i<0?n:n.slice(0,i);$("fLast").value=i<0?"":n.slice(i+1);$("fPhone").value=data.phone||"";$("fEmail").value=data.email||user?.email||"";$("stEdit").textContent="";open("bdEdit")});
-$("addrBtn").addEventListener("click",()=>{$("fAddress").value=data.address||"";$("fCity").value=data.city||"";$("fProvince").value=data.province||"";$("fPostal").value=data.postalCode||"";$("delAddr").style.display=(data.address||data.city)?"":"none";$("stAddr").textContent="";open("bdAddr")});
+$("addrBtn").addEventListener("click",()=>{$("fAddress").value=data.address||"";$("fCity").value=data.city||"";{const sel=$("fProvince"),v=(data.province||"").replace(/\s*Province$/i,"").trim();sel.value=v;if(sel.value!==v&&v){sel.add(new Option(v,v));sel.value=v}}$("fPostal").value=data.postalCode||"";$("delAddr").style.display=(data.address||data.city)?"":"none";$("stAddr").textContent="";open("bdAddr")});
 async function put(patch,btn,st){if(!user)return;btn.disabled=true;st.className="pf-st";st.textContent="Saving...";try{await setDoc(doc(db,"clients",user.uid),{uid:user.uid,...patch,email:user.email||"",updatedAt:serverTimestamp()},{merge:true});Object.assign(data,patch);render();close()}catch(e){console.error(e);st.className="pf-st err";st.textContent="Could not save. Please try again."}finally{btn.disabled=false}}
 $("saveEdit").addEventListener("click",async()=>{const f=$("fFirst").value.trim(),l=$("fLast").value.trim();if(!f){$("stEdit").className="pf-st err";$("stEdit").textContent="Please enter your first name.";return}const name=(f+" "+l).trim();await put({name,phone:$("fPhone").value.trim()},$("saveEdit"),$("stEdit"));try{await updateProfile(user,{displayName:name})}catch(e){}});
 $("saveAddr").addEventListener("click",()=>{if(!$("fAddress").value.trim()||!$("fCity").value.trim()){$("stAddr").className="pf-st err";$("stAddr").textContent="Please enter your address and city.";return}put({address:$("fAddress").value.trim(),city:$("fCity").value.trim(),province:$("fProvince").value.trim(),postalCode:$("fPostal").value.trim()},$("saveAddr"),$("stAddr"))});

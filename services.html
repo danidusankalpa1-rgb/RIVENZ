@@ -169,6 +169,7 @@
 <link rel="stylesheet" href="user-nav.css?v=26">
 <script>if(!new URLSearchParams(location.search).get("product"))location.replace("collection.html")</script>
 <style>.services-intro,#shopFilters,#shopSubFilters,.services-bottom,#serviceGrid,#rivenzDetailLatest,.rivenz-detail-latest{display:none!important}</style>
+<style>.rivenz-detail-color.soldout{position:relative;overflow:hidden;opacity:.5;filter:grayscale(.7)}.rivenz-detail-color.soldout:after{content:'';position:absolute;left:-10%;top:50%;width:120%;height:2px;background:#e11d1d;transform:rotate(-22deg)}.rivenz-detail-size:disabled{opacity:.35;background:#ececea;text-decoration:line-through;cursor:not-allowed}</style>
 </head>
 <body class="page-ready">
 <header class="home-header">
@@ -353,6 +354,7 @@
     function sizesFor(color){return sizesAll.filter(sz=>stockFor(sz,color)>0||(p.stock&&Object.prototype.hasOwnProperty.call(p.stock,sz)&&typeof p.stock[sz]==='object'))}
     let colorWrap,sizeWrap,stockNote,qtyValue,minus,plus,orderBtn,addBtn;
     if(colors.length){const label=document.createElement('div');label.className='rivenz-detail-label';label.innerHTML='Colour <span id="rv2ColorName" class="rv2-cn">'+esc(colors[0]||'')+'</span>';opt.appendChild(label);colorWrap=document.createElement('div');colorWrap.className='rivenz-detail-options';colors.forEach((c,i)=>{const b=document.createElement('button');b.type='button';b.className='rivenz-detail-color'+(i===0?' selected':'');b.innerHTML='<i class="color-dot" style="background:'+esc(colorHex(p,c))+'"></i>'+esc(c);b.title=c;b.onclick=()=>{chosenColor=c;const cn=document.getElementById('rv2ColorName');if(cn)cn.textContent=c;colorWrap.querySelectorAll('button').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');renderSizes();updateActions()};colorWrap.appendChild(b)});opt.appendChild(colorWrap)}
+    function refreshColors(){if(!colorWrap)return;[...colorWrap.children].forEach((b,i)=>{const c=colors[i];b.classList.toggle('soldout',sizesAll.length>0&&sizesAll.every(sz=>stockFor(sz,c)<=0))})}
     const sl=document.createElement('div');sl.className='rivenz-detail-label';sl.textContent=sizeLabel;opt.appendChild(sl);sizeWrap=document.createElement('div');sizeWrap.className='rivenz-detail-options';opt.appendChild(sizeWrap);stockNote=document.createElement('div');stockNote.className='rivenz-detail-stock';opt.appendChild(stockNote);
     const ql=document.createElement('div');ql.className='rivenz-detail-label';ql.textContent='Quantity';opt.appendChild(ql);const q=document.createElement('div');q.className='rivenz-detail-qty';q.innerHTML='<button type="button" aria-label="Decrease quantity">−</button><span>1</span><button type="button" aria-label="Increase quantity">+</button>';opt.appendChild(q);minus=q.querySelector('button:first-child');qtyValue=q.querySelector('span');plus=q.querySelector('button:last-child');
     orderBtn=page.querySelector('#rivenzDetailOrder');addBtn=page.querySelector('#rivenzDetailAdd');
@@ -362,7 +364,7 @@
     addBtn.onclick=async()=>{await waitForRivenzCartStore();await window.rivenzCartStore.ready;if(!window.rivenzCartStore.requireLogin())return;const currentStock=stockFor(chosenSize,chosenColor);if(!chosenSize||currentStock<1)return;let items=window.rivenzCartStore.getCart();const key=[p.id,chosenSize,chosenColor].join('|'),item=items.find(x=>x.key===key);if(item)item.quantity=Math.min(currentStock,Number(item.quantity||0)+qty);else items.push({key,productId:p.id,name:p.name||'RIVENZ Product',image:imgs[0]?.url||'',size:chosenSize,color:chosenColor,quantity:qty,price:Number(price||0),deliveryFee:delivery});window.rivenzCartStore.saveCart(items);updateRivenzCartCount();const lb=addBtn.querySelector('span');if(lb){lb.textContent='Added to cart';setTimeout(()=>lb.textContent='Add to cart',1300)}};
     page.querySelector('#rivenzDetailBack').onclick=()=>{location.href=catPage(p)};
     const detailCart=page.querySelector('#rivenzDetailCartCount');if(detailCart){await waitForRivenzCartStore();await window.rivenzCartStore.ready;detailCart.textContent='('+window.rivenzCartStore.count()+')'}
-    renderSizes();window.addEventListener('rvz-live',()=>{try{renderSizes()}catch(e){}});
+    renderSizes();refreshColors();window.addEventListener('rvz-live',()=>{try{renderSizes();refreshColors()}catch(e){}});
     (function(){
       const sizesTxt=sizesAll.join(', ')||'-';
       const panes={d:'<p>'+esc(p.description||'A clean RIVENZ piece made for everyday wear.')+'</p>',

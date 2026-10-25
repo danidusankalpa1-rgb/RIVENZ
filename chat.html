@@ -131,8 +131,9 @@ async function loadSheet() {
       list.innerHTML = rows.length ? rows.map((p, i) => { const img = p.images?.[0]?.url || p.image?.url || (typeof p.image === "string" ? p.image : ""); return `<button type="button" class="pit" data-p="${i}"><span class="ref-i">${img ? `<img src="${esc(img)}" alt="">` : BAG}</span><span><b>${esc(p.name)}</b><span>${money(p.offer || p.price)}</span></span></button>`; }).join("") : '<div class="cempty">No products found.</div>';
       list.querySelectorAll("[data-p]").forEach((b) => b.onclick = () => { const p = rows[b.dataset.p]; picked = { type: "product", id: String(p.id), name: p.name, price: p.offer || p.price || 0, image: p.images?.[0]?.url || p.image?.url || (typeof p.image === "string" ? p.image : "") }; closeSheet(); renderPick(); $("text").focus(); });
     } else {
-      if (!orders) { await graphicsOrderFlow.ready; orders = await graphicsOrderFlow.orders(); }
-      const rows = orders.filter((o) => !q || String(o.id).toLowerCase().includes(q));
+      { await graphicsOrderFlow.ready; orders = await graphicsOrderFlow.orders(); }
+      let hid = new Set(); try { hid = new Set(JSON.parse(localStorage.getItem("rvzHiddenOrders:" + (user && user.uid)) || "[]").map(String)); } catch (e) {}
+      const rows = orders.filter((o) => !o.customerHidden && !hid.has(String(o.id)) && (!q || String(o.id).toLowerCase().includes(q)));
       list.innerHTML = rows.length ? rows.map((o, i) => `<button type="button" class="pit" data-o="${i}"><span class="ref-i">${BAG}</span><span><b>${esc(o.id)}</b><span>${esc(o.status || "")} · ${money(o.total)}</span></span></button>`).join("") : '<div class="cempty">You have no orders yet.</div>';
       list.querySelectorAll("[data-o]").forEach((b) => b.onclick = () => { const o = rows[b.dataset.o]; picked = { type: "order", id: o.id, status: o.status || "", total: Number(o.total || 0) }; closeSheet(); renderPick(); $("text").focus(); });
     }
@@ -145,7 +146,7 @@ $("sheetBg").onclick = (e) => { if (e.target.id === "sheetBg") closeSheet(); };
 $("sheetQ").oninput = loadSheet;
 document.querySelectorAll(".tab").forEach((b) => b.onclick = () => { tab = b.dataset.t; document.querySelectorAll(".tab").forEach((x) => x.classList.toggle("on", x === b)); loadSheet(); });
 $("pick").onclick = (e) => { if (e.target.closest("#pickX")) { picked = null; renderPick(); } };
-$("text").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } });
+$("text").addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); send(); } });
 $("text").addEventListener("input", (e) => { e.target.style.height = "auto"; e.target.style.height = Math.min(120, e.target.scrollHeight) + "px"; });
 $("msgs").onclick = async (e) => { const d = e.target.closest("[data-del]"); if (!d || !confirm("Delete this message?")) return; try { await deleteDoc(doc(db, "chats", user.uid, "messages", d.dataset.del)); } catch (err) { alert("This message was already seen, so it can no longer be deleted."); } };
 

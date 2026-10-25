@@ -143,8 +143,9 @@ a.lc-chip{cursor:pointer}
         list.innerHTML = rows.length ? rows.map((p, i) => `<button type="button" class="lc-it" data-p="${i}"><span class="lc-ri">${pimg(p) ? `<img src="${esc(pimg(p))}" alt="">` : IC(BAGP)}</span><span><b>${esc(p.name)}</b>${money(p.offer || p.price)}</span></button>`).join("") : '<div class="lc-empty">No products found.</div>';
         list.querySelectorAll("[data-p]").forEach((b) => b.onclick = () => { const p = rows[b.dataset.p]; picked = { type: "product", id: String(p.id), name: p.name, price: p.offer || p.price || 0, image: pimg(p) }; $("lcSh").classList.remove("open"); paintPick(); });
       } else {
-        if (!orders) { const f = window.graphicsOrderFlow; if (!f) { await import("./order-flow.js"); } await window.graphicsOrderFlow.ready; orders = await window.graphicsOrderFlow.orders(); }
-        const rows = orders.filter((o) => !q || String(o.id).toLowerCase().includes(q));
+        { const f = window.graphicsOrderFlow; if (!f) { await import("./order-flow.js"); } await window.graphicsOrderFlow.ready; orders = await window.graphicsOrderFlow.orders(); }
+        let hid = new Set(); try { hid = new Set(JSON.parse(localStorage.getItem("rvzHiddenOrders:" + (user && user.uid)) || "[]").map(String)); } catch (e) {}
+        const rows = orders.filter((o) => !o.customerHidden && !hid.has(String(o.id)) && (!q || String(o.id).toLowerCase().includes(q)));
         list.innerHTML = rows.length ? rows.map((o, i) => `<button type="button" class="lc-it" data-o="${i}"><span class="lc-ri">${IC(BAGP)}</span><span><b>${esc(o.id)}</b>${esc(o.status || "")} · ${money(o.total)}</span></button>`).join("") : '<div class="lc-empty">You have no orders yet.</div>';
         list.querySelectorAll("[data-o]").forEach((b) => b.onclick = () => { const o = rows[b.dataset.o]; picked = { type: "order", id: o.id, status: o.status || "", total: Number(o.total || 0) }; $("lcSh").classList.remove("open"); paintPick(); });
       }
@@ -158,7 +159,7 @@ a.lc-chip{cursor:pointer}
   // every "Chat" link in the site opens the live chat instead of a new page
   document.addEventListener("click", (e) => { const a = e.target.closest('a[href="chat.html"]'); if (!a) return; e.preventDefault(); document.getElementById("rvzMob")?.classList.remove("open"); document.getElementById("rvzBd")?.classList.remove("open"); document.documentElement.style.overflow = ""; open(); }, true);
   $("lcSend").onclick = send;
-  $("lcT").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } });
+  $("lcT").addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); send(); } });
   $("lcT").addEventListener("input", (e) => { e.target.style.height = "auto"; e.target.style.height = Math.min(110, e.target.scrollHeight) + "px"; });
   $("lcQs").onclick = (e) => { const b = e.target.closest("[data-q]"); if (b) { $("lcT").value = b.dataset.q; } };
   $("lcPlus").onclick = () => { $("lcSh").classList.add("open"); $("lcSQ").value = ""; loadSheet(); };
