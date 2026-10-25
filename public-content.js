@@ -178,6 +178,7 @@ async function saveCatalog(type,items){
   const v=Array.isArray(items)&&items[0]?items[0]:null;if(v)all.push({...v,_key:type});
   await rawSave('showcase',all);return items;
 }
-window.graphicsPublicContent={API,upload,catalog,saveCatalog,removeFile,getAuthUser};
+async function api(path,opts){const token=await getToken();return jsonRequest(path,{...(opts||{}),headers:{Authorization:'Bearer '+token,'Content-Type':'application/json',...((opts&&opts.headers)||{})}})}
+window.graphicsPublicContent={API,upload,catalog,saveCatalog,removeFile,getAuthUser,api};
 window.graphicsPublicContentReady=Promise.resolve(window.graphicsPublicContent);
 window.dispatchEvent(new Event('graphics-public-content-ready'));
