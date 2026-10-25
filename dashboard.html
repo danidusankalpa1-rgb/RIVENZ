@@ -128,6 +128,6 @@ document.getElementById("dashboardLogout")?.addEventListener("click",async e=>{e
 onAuthStateChanged(auth,user=>{if(!user){if(stopOrderWatch)stopOrderWatch();location.replace("auth.html?next=dashboard.html");return;}dashboardUser=user;render(user);watchCustomerOrders(user);});
 </script>
 <script type="module" src="account-guard.js?v=26"></script>
-<script type="module" src="user-nav.js?v=28"></script>
+<script type="module" src="user-nav.js?v=29"></script>
 </body>
 </html>

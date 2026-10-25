@@ -196,6 +196,6 @@ $("copyId").addEventListener("click",()=>{try{navigator.clipboard.writeText(id||
 onAuthStateChanged(auth,async user=>{if(!user){location.href="auth.html?next="+encodeURIComponent("order-confirmation.html?id="+(id||""));return}try{await load()}catch(e){console.error(e);$("hP").textContent="We could not load this order. Please try again."}});
 </script>
 <script type="module" src="account-guard.js?v=26"></script>
-<script type="module" src="user-nav.js?v=28"></script>
+<script type="module" src="user-nav.js?v=29"></script>
 </body>
 </html>

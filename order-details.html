@@ -127,6 +127,6 @@ $("menu").addEventListener("click",()=>{const open=$("nav").classList.toggle("op
 onAuthStateChanged(auth,async user=>{if(!user){location.href="auth.html?next="+encodeURIComponent("order-details.html?id="+orderId);return}try{await load()}catch(e){console.error(e);$("loading").textContent="We could not load your order. Please refresh and try again."}});
 </script>
 <script type="module" src="account-guard.js?v=26"></script>
-<script type="module" src="user-nav.js?v=28"></script>
+<script type="module" src="user-nav.js?v=29"></script>
 </body>
 </html>
