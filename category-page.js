@@ -38,9 +38,13 @@
   var gp=window.graphicsPublicContent;
   if(!gp){$("cpGrid").innerHTML='<div class="cp-empty">Could not load products.</div>';return}
   gp.catalog("showcase").then(function(r){hero((Array.isArray(r)?r:[]).find(function(x){return x&&x._key===KEY}))}).catch(function(){});
-  gp.catalog("products").then(function(r){
-    var list=(Array.isArray(r)?r:[]).filter(function(p){return p&&p.active!==false&&match(p)}).reverse();
+  var lastSig="";
+  function paint(r){
+    var list=(Array.isArray(r)?r:[]).filter(function(p){return p&&p.active!==false&&!p.special&&match(p)}).reverse();
     $("cpCount").textContent=list.length+(list.length===1?" product":" products");
+    var sig=JSON.stringify(list.map(function(p){return [p.id,p.stockByColorSize,p.stock,p.price,p.offer,p.colors]}));if(sig===lastSig)return;lastSig=sig;
     $("cpGrid").innerHTML=list.length?list.map(card).join(""):'<div class="cp-empty">No products here yet. Please check back soon.</div>';
-  }).catch(function(){$("cpGrid").innerHTML='<div class="cp-empty">Could not load products. Please refresh.</div>'});
+  }
+  gp.catalog("products").then(paint).catch(function(){$("cpGrid").innerHTML='<div class="cp-empty">Could not load products. Please refresh.</div>'});
+  setInterval(function(){if(document.hidden)return;gp.catalog("products",true).then(paint).catch(function(){})},8000);
 })();

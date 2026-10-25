@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Unbounded:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="home.css">
-  <script src="ui-messages.js?v=24"></script>
+  <script src="ui-messages.js?v=26"></script>
   <style>
     :root{--svc-ink:#15171b;--svc-muted:#747983;--svc-line:#e9eaed;--svc-soft:#f6f7f8}
     body{background:#fbfbfa;color:var(--svc-ink)}
@@ -140,8 +140,8 @@
     .shop-filters,.shop-subfilters{display:none!important}
   .offers-only-note{font-size:10px;color:#777c84;margin:0 0 18px}
 </style>
-<link rel="stylesheet" href="shop-v2.css?v=24">
-<link rel="stylesheet" href="user-nav.css?v=24">
+<link rel="stylesheet" href="shop-v2.css?v=26">
+<link rel="stylesheet" href="user-nav.css?v=26">
 </head>
 <body class="page-ready">
 <header class="home-header">
@@ -178,8 +178,8 @@
 </main>
 
 <footer><img src="logo.png" alt="RIVENZ logo"><span>© 2026 RIVENZ. All rights reserved.</span></footer>
-<script src="file-store.js?v=24"></script>
-<script src="public-content.js?v=24"></script>
+<script src="file-store.js?v=26"></script>
+<script src="public-content.js?v=26"></script>
 <script src="card-extras.js?v=1"></script>
 <script>graphicsFileStore.migrateOrders();</script>
 <script>
@@ -195,7 +195,7 @@
   function readWishlist(){try{const x=JSON.parse(localStorage.getItem((()=>{try{return 'rivenzWishlistV1:'+(window.rivenzCartStore&&window.rivenzCartStore.uid||'guest')}catch(e){return 'rivenzWishlistV1:guest'}})())||'[]');return Array.isArray(x)?x:[]}catch(e){return[]}}
   function toggleWishlist(p){const list=readWishlist(),id=String(p.id||p.name||'');const i=list.findIndex(x=>String(x.id)===id);if(i>=0)list.splice(i,1);else list.push({id:p.id||p.name||'',name:p.name||'RIVENZ Product',image:images(p)[0]?.url||'',price:Number(p.price||0),offer:Number(p.offer||0),category:p.category||'RIVENZ Clothing'});localStorage.setItem((()=>{try{return 'rivenzWishlistV1:'+(window.rivenzCartStore&&window.rivenzCartStore.uid||'guest')}catch(e){return 'rivenzWishlistV1:guest'}})(),JSON.stringify(list));window.dispatchEvent(new CustomEvent('rivenz:wishlist-change'));return i<0}
   function availableSizes(p){return ['XS','S','M','L','XL','XXL','XXXL'].filter(x=>{const v=p.stock?.[x];if(typeof v==='number')return v>0;if(v&&typeof v==='object')return Object.values(v).some(n=>Number(n)>0);return false})}
-  async function load(){try{products=await window.graphicsPublicContent.catalog('products')}catch(e){products=[]}if(!products.length)products=local();render()}
+  async function load(){try{products=(await window.graphicsPublicContent.catalog('products')).filter(x=>!(x&&x.special))}catch(e){products=[]}if(!products.length)products=local();render()}
   function makeCard(p){
     const card=document.createElement('article');card.className='service-card sx-card';card.tabIndex=0;
     const media=document.createElement('div');media.className='service-media sx-img';
@@ -274,8 +274,8 @@ updateRivenzCartCount();window.addEventListener('storage',updateRivenzCartCount)
 const homeToggle=document.querySelector('.home-menu-toggle'),homeNav=document.querySelector('.home-nav');
 if(homeToggle&&homeNav){homeToggle.addEventListener('click',()=>{const open=homeNav.classList.toggle('open');homeToggle.setAttribute('aria-expanded',open)});homeNav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>homeNav.classList.remove('open')))}
 </script>
-<script type="module" src="cart-store.js?v=24"></script>
-<script type="module" src="account-guard.js?v=24"></script>
-<script type="module" src="user-nav.js?v=24"></script>
+<script type="module" src="cart-store.js?v=26"></script>
+<script type="module" src="account-guard.js?v=26"></script>
+<script type="module" src="user-nav.js?v=26"></script>
 </body>
 </html>

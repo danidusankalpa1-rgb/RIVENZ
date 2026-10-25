@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Special event — RIVENZ Clothing</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Unbounded:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="user-nav.css?v=24">
+<link rel="stylesheet" href="user-nav.css?v=26">
 <style>
 :root{--bg:#d8d8c8;--bg2:#c9c9b6;--ac:#8cc63f;--tx:#15171b;--bt:#15171b;--bx:#fff;--wide:'Unbounded','Inter',sans-serif;--ease:cubic-bezier(.22,1,.36,1)}
 *{box-sizing:border-box}
@@ -49,15 +49,17 @@ body.se{margin:0;color:var(--tx);font-family:Inter,system-ui,sans-serif;backgrou
  .se-mid{min-height:0}.se-hero{width:min(78%,320px)}.se-left p{max-width:none}.se-rail{justify-content:flex-start;padding:0 20px;bottom:18px}.se-card{flex-basis:230px}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
-</style></head>
+</style><style>.se-hero{touch-action:pan-y;cursor:grab;user-select:none}.se-hero video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .7s}.se-hero video.on{opacity:1}.se-dots{position:absolute;left:0;right:0;bottom:14px;display:flex;justify-content:center;gap:6px;z-index:3}.se-dots i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.55)}.se-dots i.on{background:#fff;width:20px;border-radius:99px}
+.se-ol{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin:16px 0 8px;opacity:.7}.se-ob{display:flex;flex-wrap:wrap;gap:8px}.se-ob button{border:1.5px solid currentColor;background:transparent;color:inherit;border-radius:999px;padding:8px 15px;font:700 12px Inter,sans-serif;cursor:pointer;opacity:.55}.se-ob button.on{opacity:1;background:var(--bt);color:var(--bx);border-color:var(--bt)}.se-ob button:disabled{opacity:.25;text-decoration:line-through;cursor:not-allowed}.se-cta.se-off{opacity:.5;cursor:not-allowed}</style>
+</head>
 <body class="se page-ready">
 <div class="se-stage" id="seStage">
   <div class="se-word" id="seWord">EVENT</div>
   <div class="se-in" id="seIn"><div class="se-empty"><p>Loading…</p></div></div>
   <div class="se-rail" id="seRail"></div>
 </div>
-<script src="file-store.js?v=24"></script>
-<script src="public-content.js?v=24"></script>
+<script src="file-store.js?v=26"></script>
+<script src="public-content.js?v=26"></script>
 <script>
 (function(){
   const $=id=>document.getElementById(id),root=document.documentElement;
@@ -68,12 +70,19 @@ body.se{margin:0;color:var(--tx);font-family:Inter,system-ui,sans-serif;backgrou
   const DEF={active:false,name:'Special Event',title:'Special event collection',subtitle:'Limited pieces for a limited time.',tag:'RIVENZ SPECIAL',bg:'#d8d8c8',bg2:'#c9c9b6',accent:'#8cc63f',text:'#15171b',button:'#15171b',buttonText:'#ffffff',heroImage:null,productIds:[]};
   function theme(v){const s=root.style;s.setProperty('--bg',v.bg);s.setProperty('--bg2',v.bg2||v.bg);s.setProperty('--ac',v.accent);s.setProperty('--tx',v.text);s.setProperty('--bt',v.button);s.setProperty('--bx',v.buttonText);document.querySelector('meta[name=theme-color]')?.remove()}
   let list=[],cur=0;
-  function show(i,anim){
-    const p=list[i];if(!p)return;cur=i;const u=unit(p),im=imgs(p);
-    const hero=$('seHero');if(hero){hero.querySelectorAll('img').forEach(x=>x.classList.remove('on'));let t=hero.querySelector('img[data-i="'+i+'"]');if(!t&&im[0]){t=new Image();t.dataset.i=i;t.alt=p.name||'';t.src=im[0];hero.appendChild(t)}if(t)requestAnimationFrame(()=>t.classList.add('on'))}
+  let ph=0,sel={c:'',z:''};
+  const stk=(p,c,z)=>{const m=p.stockByColorSize;if(m&&typeof m==='object'&&Object.keys(m).length){const k=m[c]?c:Object.keys(m).find(x=>x.toLowerCase()===String(c).toLowerCase());return Math.max(0,parseInt((m[k]||{})[z],10)||0)}const s=p.stock||{};return Math.max(0,parseInt(typeof s[z]==='object'?s[z][c]:s[z],10)||0)};
+  const medias=p=>{const a=imgs(p).map(u=>({u,v:0}));const v=(Array.isArray(p.videos)?p.videos:[]).filter(x=>x&&x.url).map(x=>({u:x.url,v:1}));return v.concat(a)};
+  function hero(){const p=list[cur],md=medias(p),hh=$('seHero');if(!hh||!md.length)return;ph=(ph+md.length)%md.length;hh.innerHTML='';md.forEach((m,k)=>{let e;if(m.v){e=document.createElement('video');e.src=m.u;e.muted=true;e.loop=true;e.autoplay=true;e.playsInline=true;e.setAttribute('muted','');e.setAttribute('playsinline','');e.play&&e.play().catch(()=>{})}else{e=new Image();e.src=m.u;e.alt=p.name||''}e.dataset.k=k;if(k===ph)e.classList.add('on');hh.appendChild(e)});if(md.length>1){const d=document.createElement('div');d.className='se-dots';d.innerHTML=md.map((_,k)=>'<i'+(k===ph?' class="on"':'')+'></i>').join('');hh.appendChild(d)}}
+  function opts(){const p=list[cur],box=$('seOpt');if(!box)return;const cols=(Array.isArray(p.colors)?p.colors:[]).filter(Boolean),sizes=(Array.isArray(p.sizes)?p.sizes:[]).filter(Boolean);if(cols.length&&(!sel.c||!cols.includes(sel.c)))sel.c=cols.find(c=>sizes.some(z=>stk(p,c,z)>0))||cols[0];const ok=z=>stk(p,sel.c||'',z)>0;if(!sel.z||!ok(sel.z))sel.z=sizes.find(ok)||'';
+    box.innerHTML=(cols.length?'<div class="se-ol">Colour</div><div class="se-ob">'+cols.map(c=>'<button type="button" data-c="'+esc(c)+'" class="'+(c===sel.c?'on':'')+'">'+esc(c)+'</button>').join('')+'</div>':'')+(sizes.length?'<div class="se-ol">Size</div><div class="se-ob">'+sizes.map(z=>'<button type="button" data-z="'+esc(z)+'" class="'+(z===sel.z?'on':'')+'"'+(ok(z)?'':' disabled')+'>'+esc(z)+'</button>').join('')+'</div>':'');
+    const go=$('seGo');if(go){const can=!!sel.z;go.classList.toggle('se-off',!can);go.textContent=can?'Order now':'Out of stock';go.href=can?'order.html?product='+encodeURIComponent(p.id)+'&color='+encodeURIComponent(sel.c||'')+'&size='+encodeURIComponent(sel.z)+'&quantity=1':'#'}}
+  function show(i){
+    const p=list[i];if(!p)return;if(cur!==i)ph=0;cur=i;const u=unit(p);
+    hero();
     const box=$('seInfo');box.classList.remove('se-swap');void box.offsetWidth;box.classList.add('se-swap');
     $('sePN').textContent=p.name||'RIVENZ product';$('sePP').innerHTML=money(u.now)+(u.old?'<s>'+money(u.old)+'</s>':'');$('sePD').textContent=p.description||'';
-    $('seGo').href='services.html?product='+encodeURIComponent(p.id);
+    opts();
     document.querySelectorAll('.se-card').forEach((c,k)=>c.classList.toggle('on',k===i));
   }
   function render(v,products){
@@ -83,9 +92,12 @@ body.se{margin:0;color:var(--tx);font-family:Inter,system-ui,sans-serif;backgrou
     if(!v.active||!list.length){IN.innerHTML='<div class="se-empty"><h1>No special event right now</h1><p>Seasonal and festival collections will appear here. Check back soon.</p></div>';rail.innerHTML='';return}
     IN.innerHTML='<div class="se-left"><span class="se-kick">'+esc(v.tag)+'</span><h1>'+esc(v.title)+'</h1><p>'+esc(v.subtitle)+'</p></div>'+
       '<div class="se-mid"><div class="se-hero" id="seHero"></div></div>'+
-      '<div class="se-right"><div id="seInfo"><div class="se-pn" id="sePN"></div><div class="se-pp" id="sePP"></div><p class="se-pd" id="sePD"></p></div><a class="se-cta" id="seGo" href="services.html">Order now</a></div>';
+      '<div class="se-right"><div id="seInfo"><div class="se-pn" id="sePN"></div><div class="se-pp" id="sePP"></div><p class="se-pd" id="sePD"></p></div><div id="seOpt"></div><a class="se-cta" id="seGo" href="#">Order now</a></div>';
     rail.innerHTML=list.map((p,i)=>{const u=unit(p);return '<button type="button" class="se-card" data-i="'+i+'" style="animation-delay:'+(.3+i*.07)+'s"><img src="'+esc(imgs(p)[0]||'')+'" alt="" loading="lazy" decoding="async"><span><b>'+esc(p.name||'')+'</b><small>'+money(u.now)+'</small></span><span class="se-plus"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span></button>'}).join('');
     rail.onclick=e=>{const c=e.target.closest('.se-card');if(c)show(+c.dataset.i)};
+    $('seOpt').onclick=e=>{const b=e.target.closest('button');if(!b||b.disabled)return;if(b.dataset.c!==undefined)sel.c=b.dataset.c;if(b.dataset.z!==undefined)sel.z=b.dataset.z;opts()};
+    $('seGo').onclick=e=>{if($('seGo').classList.contains('se-off'))e.preventDefault()};
+    (function(){const hh=$('seHero');let x0=null;const step=d=>{ph+=d;hero()};hh.addEventListener('touchstart',e=>{x0=e.touches[0].clientX},{passive:true});hh.addEventListener('touchend',e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)>35)step(dx<0?1:-1)});let m0=null;hh.addEventListener('mousedown',e=>{m0=e.clientX});window.addEventListener('mouseup',e=>{if(m0==null)return;const dx=e.clientX-m0;m0=null;if(Math.abs(dx)>35)step(dx<0?1:-1)})})();
     show(0);
     const st=$('seStage'),h=()=>$('seHero');
     st.onmousemove=e=>{const r=st.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;if(h())h().style.transform='perspective(900px) rotateY('+x*8+'deg) rotateX('+(-y*6)+'deg)'};
@@ -99,7 +111,7 @@ body.se{margin:0;color:var(--tx);font-family:Inter,system-ui,sans-serif;backgrou
   })();
 })();
 </script>
-<script type="module" src="cart-store.js?v=24"></script>
-<script type="module" src="account-guard.js?v=24"></script>
-<script type="module" src="user-nav.js?v=24"></script>
+<script type="module" src="cart-store.js?v=26"></script>
+<script type="module" src="account-guard.js?v=26"></script>
+<script type="module" src="user-nav.js?v=26"></script>
 </body></html>

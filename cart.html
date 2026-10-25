@@ -57,7 +57,7 @@ body{background:#f4f4f4;color:#111}
 @media(max-width:800px){.cart-layout{grid-template-columns:1fr}.cart-card{padding-right:0}.cart-summary{border-left:0!important;border-top:1px solid #cfcfcf!important;padding:26px 0 0!important;margin-top:22px}.cart-page{padding:28px 16px 55px}}
 @media(max-width:520px){.cart-item,.cart-item+.cart-item{grid-template-columns:22px 62px minmax(0,1fr);gap:12px;row-gap:10px}.cart-image{width:62px!important;height:62px!important}.qty{grid-column:3;grid-row:2;justify-self:start}.cart-price{grid-column:3;grid-row:2;justify-self:end;min-width:0}}
 </style>
-<link rel="stylesheet" href="user-nav.css?v=24">
+<link rel="stylesheet" href="user-nav.css?v=26">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Unbounded:wght@500;600;700&display=swap" rel="stylesheet">
 <style>body{font-family:Inter,ui-sans-serif,system-ui,sans-serif}.cart-head h1{font-family:Unbounded,Inter,sans-serif!important;text-transform:uppercase;letter-spacing:-.02em;font-weight:600!important;font-size:clamp(22px,3.6vw,34px)!important}.cart-summary h2{font-family:Unbounded,Inter,sans-serif!important;text-transform:uppercase;letter-spacing:-.02em;font-weight:600!important;font-size:15px!important}.empty h2{font-family:Unbounded,Inter,sans-serif!important;text-transform:uppercase;letter-spacing:-.02em;font-weight:600}</style>
 </head>
@@ -96,7 +96,7 @@ body{background:#f4f4f4;color:#111}
     </aside>
   </section>
 </main>
-<script src="public-content.js?v=24"></script>
+<script src="public-content.js?v=26"></script>
 <script type="module">
 import "./cart-store.js";
 (function(){
@@ -121,7 +121,7 @@ import "./cart-store.js";
   const toggle=document.querySelector('.home-menu-toggle'),nav=document.querySelector('.home-nav');if(toggle&&nav){toggle.addEventListener('click',()=>{const open=nav.classList.toggle('open');toggle.setAttribute('aria-expanded',open)});nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>nav.classList.remove('open')))}
 })();
 </script>
-<script type="module" src="account-guard.js?v=24"></script>
-<script type="module" src="user-nav.js?v=24"></script>
+<script type="module" src="account-guard.js?v=26"></script>
+<script type="module" src="user-nav.js?v=26"></script>
 </body>
 </html>

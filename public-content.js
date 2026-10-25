@@ -166,7 +166,8 @@ async function removeFile(key){
 }
 // Settings (home/payment/special-event) live inside the allowed 'showcase' catalog as items tagged _key.
 const SETTINGS_KEYS=['home-settings','payment-settings','special-event'];
-async function catalog(type){
+async function catalog(type,fresh){
+  if(fresh){delete catMem[String(type||'portfolio')]}
   if(!SETTINGS_KEYS.includes(type)) return rawCatalog(type);
   const all=await rawCatalog('showcase');const it=all.find(x=>x&&x._key===type);
   if(!it) return [];const {_key,...rest}=it;return [rest];
