@@ -43,11 +43,14 @@
 .rvz-row .rvz-b{position:static;margin-left:auto}
 .rvz-mob{display:none}
 @media(max-width:900px){
-  .rvz-w{height:60px;padding:0 10px;grid-template-columns:44px 1fr auto;gap:8px}
+  .rvz-w{height:64px;padding:0 6px;grid-template-columns:40px 40px minmax(0,1fr) 40px 40px;gap:0}
   .rvz-tag,.rvz-navrow,.rvz-sub,.rvz-r>.rvz-chat,.rvz-r>.rvz-acc,.rvz-r>.rvz-login{display:none}
-  .rvz-menu{display:grid;grid-column:1;grid-row:1}
-  .rvz-logo{grid-column:2;grid-row:1}.rvz-logo img{width:104px}
-  .rvz-r{grid-column:3;grid-row:1}
+  .rvz-menu{display:grid;grid-column:1;grid-row:1;justify-self:start}
+  .rvz-logo{grid-column:3;grid-row:1;justify-self:center}.rvz-logo img{width:132px}
+  .rvz-r{display:contents}
+  .rvz-r>.rvz-bell{grid-column:2;grid-row:1;justify-self:center}
+  .rvz-r>a.rvz-c[href="cart.html"]{grid-column:4;grid-row:1;justify-self:center}
+  .rvz-w .rvz-r>.rvz-acc{display:grid!important;grid-column:5;grid-row:1;justify-self:center}
   .rvz-menu .rvz-x{display:none}.rvz-menu.open .rvz-x{display:block}.rvz-menu.open .rvz-m{display:none}
   .rvz-card.rvz-mob{display:flex}
   .rvz-card.rvz-acc-card{display:none}
