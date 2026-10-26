@@ -118,3 +118,18 @@
 .rvz-acc-card .rvz-sep{background:rgba(255,255,255,.12)}
 html body{overflow-x:clip!important;overflow-y:visible!important}
 .page-ready{animation-fill-mode:backwards!important}
+
+/* order notifications */
+.rvz-bell .rvz-i{width:22px;height:22px}
+#rvzNotif.rvz-card{width:min(380px,calc(100vw - 20px));padding:0;border-radius:18px;overflow:hidden}
+.rvz-nh{padding:16px 18px 12px;font-size:15px;font-weight:700;color:#111316;border-bottom:1px solid #f0f0ec}
+.rvz-nl{max-height:min(420px,70vh);overflow-y:auto}
+.rvz-ni{display:flex;gap:12px;align-items:flex-start;padding:14px 18px;text-decoration:none;color:#111316;border-bottom:1px solid #f4f4f1}
+.rvz-ni:hover{background:#f7f7f5}.rvz-ni:last-child{border-bottom:0}
+.rvz-ni i{flex:none;width:8px;height:8px;border-radius:50%;background:transparent;margin-top:6px}
+.rvz-ni.new i{background:#111316}
+.rvz-ni b{display:block;font-size:13.5px;font-weight:600;line-height:1.45;color:#2b2e33;overflow-wrap:anywhere}
+.rvz-ni.new b{color:#111316}
+.rvz-ni small{display:block;margin-top:3px;font-size:12px;color:#8a8d93}
+.rvz-ne{padding:30px 20px;text-align:center;color:#8a8d93;font-size:13.5px;line-height:1.5}
+@media(max-width:900px){#rvzNotif.rvz-card{position:fixed;right:10px;top:64px}}
