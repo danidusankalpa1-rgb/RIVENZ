@@ -45,7 +45,7 @@ body.oc{margin:0;background:#f6f6f3;color:var(--ink);font-family:Inter,system-ui
 .oc-item{display:grid;grid-template-columns:60px 1fr auto;gap:12px;align-items:center;padding:10px;border:1px solid var(--line);border-radius:18px;margin-bottom:10px}
 .oc-item img,.oc-item .ph{width:60px;height:72px;border-radius:12px;object-fit:cover;background:var(--soft)}
 .oc-item b{font-size:13.5px;display:block}.oc-item small{color:var(--mut);font-size:12px}.oc-item strong{font-size:13.5px}
-.oc-row{display:flex;justify-content:space-between;gap:12px;padding:9px 0;font-size:13.5px}.oc-row span{color:var(--mut)}
+.oc-row[hidden]{display:none!important}.oc-row{display:flex;justify-content:space-between;gap:12px;padding:9px 0;font-size:13.5px}.oc-row span{color:var(--mut)}
 .oc-row.t{border-top:1.5px solid var(--ink);margin-top:6px;padding-top:14px}.oc-row.t strong{font-size:20px}
 .oc-btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
 .oc-btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;height:50px;padding:0 24px;border-radius:999px;font:inherit;font-size:13.5px;font-weight:700;cursor:pointer;text-decoration:none;border:1.5px solid var(--ink);background:#fff;color:var(--ink);transition:transform .2s var(--ease),background .2s,color .2s}
@@ -99,6 +99,7 @@ body.oc{margin:0;background:#f6f6f3;color:var(--ink);font-family:Inter,system-ui
         <div class="oc-h"><i><svg class="oc-i" viewBox="0 0 24 24"><path d="M6 7h12l-1 13H7L6 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg></i><div><h2>Order summary</h2><p>Your selected pieces</p></div></div>
         <div id="items"></div>
         <div class="oc-row"><span>Subtotal</span><strong id="subtotal">Rs. 0</strong></div>
+        <div class="oc-row" id="discRow" hidden><span id="discLbl">Discount</span><strong id="disc" style="color:#1f8a5b"></strong></div>
         <div class="oc-row"><span>Delivery</span><strong id="delivery">To be confirmed</strong></div>
         <div class="oc-row t"><span>Total</span><strong id="total">Rs. 0</strong></div>
         <div class="oc-btns">
@@ -146,7 +147,7 @@ function receiptHTML(o){
   return `<div class="rc-top"><img src="logo.png" alt="RIVENZ"><p>Order receipt</p></div>
   <div class="rc-meta"><div><small>Order no.</small><b>${esc(o.id||id)}</b></div><div><small>Date</small><b>${esc(fmt(d))}</b></div><div><small>Customer</small><b>${esc(o.client||o.clientName||"-")}</b></div><div><small>Phone</small><b>${esc(o.phone||"-")}</b></div><div style="grid-column:1/-1"><small>Deliver to</small><b>${esc([o.address,o.city,o.province,o.postalCode].filter(Boolean).join(", ")||"-")}</b></div></div>
   <div class="rc-lines">${lines.map(l=>`<div class="rc-l"><span><b>${esc(l.name)}</b><small>${esc(l.meta)}${l.meta?" · ":""}Qty ${l.qty}</small></span><b>${money(l.total)}</b></div>`).join("")}</div>
-  <div class="rc-tot"><div class="oc-row"><span>Subtotal</span><strong>${money(o.subtotal??o.total)}</strong></div><div class="oc-row"><span>Delivery</span><strong>${o.deliveryFee==null?"To be confirmed":money(o.deliveryFee)}</strong></div><div class="oc-row t"><span>Total</span><strong>${money(o.total)}</strong></div><div class="oc-row"><span>Payment</span><strong>${esc(o.paymentMethod||"-")}</strong></div><div class="oc-row"><span>Status</span><strong>${esc(o.paymentStatus||"Pending")}</strong></div></div>
+  <div class="rc-tot"><div class="oc-row"><span>Subtotal</span><strong>${money(o.subtotal??o.total)}</strong></div>${Number(o.discount)>0?`<div class="oc-row"><span>Discount${o.couponCode?" ("+esc(o.couponCode)+")":""}</span><strong>- ${money(o.discount)}</strong></div>`:""}<div class="oc-row"><span>Delivery</span><strong>${o.deliveryFee==null?"To be confirmed":money(o.deliveryFee)}</strong></div><div class="oc-row t"><span>Total</span><strong>${money(o.total)}</strong></div><div class="oc-row"><span>Payment</span><strong>${esc(o.paymentMethod||"-")}</strong></div><div class="oc-row"><span>Status</span><strong>${esc(o.paymentStatus||"Pending")}</strong></div></div>
   <div class="rc-ft">Thank you for shopping with RIVENZ.<br>This receipt confirms your order was placed.</div>`;
 }
 /* ---- JPG receipt drawn on a canvas (no external libraries) ---- */
@@ -160,7 +161,7 @@ async function downloadJpg(){
   const rows=lines.map(l=>({n:wrap(l.name,W-P*2-170,"700 22px "+F),m:l.meta+(l.meta?" · ":"")+"Qty "+l.qty,t:money(l.total)}));
   let H=P+90+40+ (4*34+ (addrL.length-1)*26) +30;
   rows.forEach(r=>{H+=r.n.length*28+30+14});
-  H+=30+5*40+90+P;
+  H+=30+5*40+90+P+(Number(o.discount)>0?38:0);
   c.width=W;c.height=H;
   x.fillStyle="#fffdf8";x.fillRect(0,0,W,H);
   const line=y=>{x.save();x.strokeStyle="#cfcdc2";x.lineWidth=2;x.setLineDash([8,6]);x.beginPath();x.moveTo(P,y);x.lineTo(W-P,y);x.stroke();x.restore()};
@@ -175,7 +176,7 @@ async function downloadJpg(){
   rows.forEach(r=>{x.fillStyle="#111316";x.font="700 22px "+F;r.n.forEach((t,i)=>x.fillText(t,P,y+i*28));x.textAlign="right";x.fillText(r.t,W-P,y);x.textAlign="left";y+=r.n.length*28;x.fillStyle="#7c8087";x.font="500 17px "+F;x.fillText(r.m,P,y);y+=44});
   line(y);y+=40;
   const tr=(k,v,big)=>{x.fillStyle=big?"#111316":"#7c8087";x.font=(big?"800 26px ":"500 19px ")+F;x.fillText(k,P,y);x.fillStyle="#111316";x.textAlign="right";x.font=(big?"800 28px ":"700 19px ")+F;x.fillText(v,W-P,y);x.textAlign="left";y+=big?46:38};
-  tr("Subtotal",money(o.subtotal??o.total));tr("Delivery",o.deliveryFee==null?"To be confirmed":money(o.deliveryFee));tr("Total",money(o.total),true);tr("Payment",String(o.paymentMethod||"-"));tr("Status",String(o.paymentStatus||"Pending"));
+  tr("Subtotal",money(o.subtotal??o.total));if(Number(o.discount)>0)tr("Discount"+(o.couponCode?" ("+o.couponCode+")":""),"- "+money(o.discount));tr("Delivery",o.deliveryFee==null?"To be confirmed":money(o.deliveryFee));tr("Total",money(o.total),true);tr("Payment",String(o.paymentMethod||"-"));tr("Status",String(o.paymentStatus||"Pending"));
   y+=14;x.textAlign="center";x.fillStyle="#7c8087";x.font="500 16px "+F;x.fillText("Thank you for shopping with RIVENZ.",W/2,y);
   c.toBlob(b=>{const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="RIVENZ-receipt-"+String(o.id||id).replace(/[^\w-]/g,"")+".jpg";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500)},"image/jpeg",.95);
 }
@@ -185,7 +186,7 @@ async function load(){
   order=await window.graphicsOrderFlow.get(id);
   if(!order){$("hT").textContent="Order not found";$("hP").textContent="We could not find this order.";return}
   lines=(order.items||order.products||[]).map(lineOf);
-  $("subtotal").textContent=money(order.subtotal??order.total);$("total").textContent=money(order.total);
+  $("subtotal").textContent=money(order.subtotal??order.total);{const dv=Number(order.discount)||0;$("discRow").hidden=!(dv>0);if(dv>0){$("discLbl").textContent="Discount"+(order.couponCode?" ("+order.couponCode+")":"");$("disc").textContent="- "+money(dv)}}$("total").textContent=money(order.total);
   $("delivery").textContent=order.deliveryFee==null?"To be confirmed":(Number(order.deliveryFee)?money(order.deliveryFee):"Free");
   $("items").innerHTML=lines.map(l=>`<div class="oc-item" data-pid="${esc(l.pid)}">${l.image?`<img src="${esc(l.image)}" alt="">`:'<div class="ph"></div>'}<div><b>${esc(l.name)}</b><small>${esc(l.meta)}${l.meta?" · ":""}Qty ${l.qty}</small></div><strong>${money(l.total)}</strong></div>`).join("");
   paint(order);$("rc").innerHTML=receiptHTML(order);
