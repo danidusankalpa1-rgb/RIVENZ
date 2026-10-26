@@ -68,7 +68,7 @@
 
 <script src="file-store.js?v=26"></script>
 <script src="public-content.js?v=26"></script>
-<script src="card-extras.js?v=1"></script>
+<script src="card-extras.js?v=2"></script>
 <script>
 (function(){
   const KEY='rivenzHomeSettingsV1';
@@ -128,7 +128,7 @@
     const list=products.slice().sort((a,b)=>t(b)-t(a)).slice(0,10);
     if(!list.length){box.innerHTML='<div class="hx-empty">New pieces are coming soon.</div>';return}
     box.innerHTML=list.map((p,i)=>{const im=imageOf(p),off=Number(p.offer||0)>0&&Number(p.offer)<Number(p.price||0);
-      return '<a class="hx-card" href="services.html?product='+encodeURIComponent(p.id)+'"><div class="hx-img">'+(im?'<img src="'+esc(im)+'" alt="" '+(i<4?'fetchpriority="high"':'loading="lazy"')+' decoding="async">':'')+(window.rvzCard?rvzCard.tag(p):'')+(off?'<i class="hx-off">\u2212'+Math.round((1-p.offer/p.price)*100)+'%</i>':'')+'</div><div class="hx-row"><span>'+esc(p.name||'RIVENZ product')+'</span><span class="'+(off?'hot':'')+'">'+money(off?p.offer:p.price)+(off?'<s>'+money(p.price)+'</s>':'')+'</span></div>'+(window.rvzCard?rvzCard.sw(p):'')+'</a>'}).join('');
+      return '<a class="hx-card'+(window.rvzCard&&rvzCard.sold(p)?' rz-sold':'')+'" href="services.html?product='+encodeURIComponent(p.id)+'"><div class="hx-img">'+(im?'<img src="'+esc(im)+'" alt="" '+(i<4?'fetchpriority="high"':'loading="lazy"')+' decoding="async">':'')+(window.rvzCard?rvzCard.tag(p):'')+(off?'<i class="hx-off">\u2212'+Math.round((1-p.offer/p.price)*100)+'%</i>':'')+'</div><div class="hx-row"><span>'+esc(p.name||'RIVENZ product')+'</span><span class="'+(off?'hot':'')+'">'+money(off?p.offer:p.price)+(off?'<s>'+money(p.price)+'</s>':'')+'</span></div>'+(window.rvzCard?rvzCard.sw(p):'')+'</a>'}).join('');
   }
   document.querySelectorAll('.hx-lk').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();location.href=el.dataset.h}));
   const rail=()=>$('homeServices'),step=()=>Math.max(200,rail().clientWidth*.8);
