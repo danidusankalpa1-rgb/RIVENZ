@@ -221,6 +221,7 @@
 </main>
 
 <footer><img src="logo.png" alt="Graphics logo"><span>© 2026 RIVENZ. All rights reserved.</span></footer>
+<script src="card-extras.js?v=3"></script>
 <script src="file-store.js?v=26"></script>
 <script src="public-content.js?v=26"></script>
 <script>graphicsFileStore.migrateOrders();</script>
@@ -254,7 +255,7 @@
   function rvzVid(url){const v=document.createElement('video');v.src=url;v.muted=true;v.loop=true;v.playsInline=true;v.autoplay=true;v.preload='metadata';v.setAttribute('muted','');v.setAttribute('playsinline','');v.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;opacity:1';v.addEventListener('canplay',()=>{v.play().catch(()=>{})});return v}
   let cardN=0;
   function makeCard(p,noVid){
-    const card=document.createElement('article');card.className='service-card sx-card';card.tabIndex=0;
+    const card=document.createElement('article');card.className='service-card sx-card'+(window.rvzCard&&rvzCard.sold&&rvzCard.sold(p)?' rz-sold':'');card.tabIndex=0;
     const media=document.createElement('div');media.className='service-media sx-img';
     const wish=document.createElement('button');wish.type='button';wish.className='rivenz-wishlist-btn';wish.setAttribute('aria-pressed','false');wish.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M20.84 8.72c0 5.34-8.84 10.1-8.84 10.1S3.16 14.06 3.16 8.72A4.72 4.72 0 0 1 12 6.2a4.72 4.72 0 0 1 8.84 2.52Z"/></svg>';
     function syncWish(){const active=readWishlist().some(x=>String(x.id)===String(p.id));wish.classList.toggle('active',active);wish.setAttribute('aria-pressed',String(active));wish.setAttribute('aria-label',active?'Remove from wishlist':'Add to wishlist')}
@@ -443,6 +444,6 @@ if(homeToggle&&homeNav){homeToggle.addEventListener('click',()=>{const open=home
 <script type="module" src="cart-store.js?v=26"></script>
 <script type="module" src="account-guard.js?v=26"></script>
 <script type="module" src="user-nav.js?v=30"></script>
-<script type="module" src="reviews.js?v=1"></script>
+<script type="module" src="reviews.js?v=2"></script>
 </body>
 </html>

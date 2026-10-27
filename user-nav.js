@@ -21,7 +21,7 @@ const P = {
 };
 const I = (k, c = "") => `<svg class="rvz-i ${c}" viewBox="0 0 24 24" aria-hidden="true">${P[k]}</svg>`;
 const file = (location.pathname.split("/").pop() || "index.html").toLowerCase();
-const ACTIVE = { "index.html": "home", "": "home", "services.html": "collection", "product-details.html": "collection", "collection.html": "collection", "collection-mens.html": "collection", "collection-women.html": "collection", "collection-shoes.html": "collection", "collection-accessories.html": "collection", "portfolio.html": "collection", "weddings.html": "offers", "chat.html": "chat", "cart.html": "cart", "order.html": "cart", "order-confirmation.html": "cart", "special-event.html": "event", "profile.html": "profile", "dashboard.html": "order", "order-details.html": "order" }[file] || "";
+const ACTIVE = { "index.html": "home", "": "home", "services.html": "collection", "product-details.html": "collection", "collection.html": "collection", "collection-mens.html": "collection", "collection-women.html": "collection", "collection-shoes.html": "collection", "collection-accessories.html": "collection", "portfolio.html": "collection", "weddings.html": "offers", "chat.html": "chat", "cart.html": "cart", "order.html": "cart", "order-confirmation.html": "cart", "special-event.html": "event", "profile.html": "profile", "dashboard.html": "order", "order-details.html": "order", "refund.html": "refund" }[file] || "";
 const MAIN = [["home", "Home", "index.html"], ["collection", "Collection", "collection.html"], ["offers", "Offers", "weddings.html"], ["event", "Special event", "special-event.html"]];
 
 const h = document.createElement("header");
@@ -39,7 +39,7 @@ function paint() {
   if (h.dataset.sig === sigNow && h.firstChild) return;
   h.dataset.sig = sigNow;
   const cartB = `<em class="rvz-b" data-cart${cartN ? "" : " hidden"}>${cartN}</em>`, chatB = `<em class="rvz-b" data-unread${unread ? "" : " hidden"}>${unread}</em>`;
-  const full = [...MAIN.slice(0, 3).map(([k, l, u]) => [k, l, u]), ["chat", "Chat", "chat.html", chatB], ["cart", "Cart", "cart.html", cartB], MAIN[3], ...(li ? [["profile", "My profile", "profile.html"], ["order", "My order", "dashboard.html"]] : [])];
+  const full = [...MAIN.slice(0, 3).map(([k, l, u]) => [k, l, u]), ["chat", "Chat", "chat.html", chatB], ["cart", "Cart", "cart.html", cartB], MAIN[3], ...(li ? [["profile", "My profile", "profile.html"], ["order", "My order", "dashboard.html"], ["refund", "My refund", "refund.html"]] : [])];
   const dl = ([k, l, u, bd = ""]) => `<a class="rvz-dr${on(k)}" href="${u}"><span>${l}</span>${bd}</a>`;
   const row = ([k, l, u, b = ""]) => `<a class="rvz-row${on(k)}" href="${u}">${I(k === "profile" ? "user" : k)}<span>${l}</span>${b}</a>`;
   const isShop = false, curCat = new URLSearchParams(location.search).get("category")||"all";
@@ -57,9 +57,9 @@ function paint() {
   </div>
   <div class="rvz-navrow"><nav class="rvz-nav" aria-label="Main">${MAIN.map(([k, l, u]) => `<a class="rvz-a${on(k)}" href="${u}"><span>${l}</span></a>`).join("")}</nav></div>
   ${isShop ? `<div class="rvz-sub"><nav aria-label="Categories">${[["All", "all"], ...CATS.map(([l, c]) => [l, c])].map(([l, c]) => `<a class="${curCat === c ? "on" : ""}" href="services.html${c === "all" ? "" : "?category=" + c}">${l}</a>`).join("")}</nav></div>` : ""}
-  <div class="rvz-search rvz-blk" id="rvzSearch"><form class="rvz-sw" id="rvzSF" role="search"><input type="search" name="q" placeholder="Search products" autocomplete="off" maxlength="60" aria-label="Search products"><button type="submit">Search</button></form></div>
+  <div class="rvz-search rvz-blk" id="rvzSearch"><form class="rvz-sw" id="rvzSF" role="search"><input type="search" name="q" placeholder="Search products" autocomplete="off" maxlength="60" aria-label="Search products"></form><div class="rvz-sr" id="rvzSR" hidden></div></div>
   <div class="rvz-w2">
-    <div class="rvz-card rvz-acc-card" id="rvzAccCard"><a class="rvz-row${on("profile")}" href="profile.html">${I("user")}<span>My profile</span></a><a class="rvz-row${on("order")}" href="dashboard.html">${I("order")}<span>My order</span></a><div class="rvz-sep"></div><button type="button" class="rvz-row" data-out>${I("out")}<span>Log out</span></button></div>
+    <div class="rvz-card rvz-acc-card" id="rvzAccCard"><a class="rvz-row${on("profile")}" href="profile.html">${I("user")}<span>My profile</span></a><a class="rvz-row${on("order")}" href="dashboard.html">${I("order")}<span>My order</span></a><a class="rvz-row${on("refund")}" href="refund.html">${I("order")}<span>My refund</span></a><div class="rvz-sep"></div><button type="button" class="rvz-row" data-out>${I("out")}<span>Log out</span></button></div>
     <div class="rvz-card rvz-mob" id="rvzMob"><div class="rvz-dh"><img src="logo.png" alt="RIVENZ"><button type="button" class="rvz-dx" data-close aria-label="Close menu">${I("x")}</button></div><nav class="rvz-dn">${full.map((r) => dl(r)).join("")}${li ? `<button type="button" class="rvz-dr" data-out><span>Log out</span></button>` : `<a class="rvz-dr" href="auth.html?next=${encodeURIComponent(file)}"><span>Login</span></a>`}</nav></div>
     <div class="rvz-bd" id="rvzBd"></div>
   </div>`;
@@ -78,12 +78,30 @@ function toggle(btn, card) {
 h.addEventListener("click", async (e) => {
   const m = e.target.closest("#rvzMenu"), a = e.target.closest("#rvzAcc");
   const sb = e.target.closest("#rvzSBtn");
-  if (sb) { e.stopPropagation(); const f = h.querySelector("#rvzSearch"), op = !f.classList.contains("open"); closeAll(); f.classList.toggle("open", op); sb.setAttribute("aria-expanded", String(op)); if (op) f.querySelector("input")?.focus(); return; }
+  if (sb) { e.stopPropagation(); const f = h.querySelector("#rvzSearch"), op = !f.classList.contains("open"); closeAll(); f.classList.toggle("open", op); sb.setAttribute("aria-expanded", String(op)); if (op) { f.querySelector("input")?.focus(); loadSearchProducts(); } return; }
   if (m) { e.stopPropagation(); return toggle(m, h.querySelector("#rvzMob")); }
   if (a) { e.stopPropagation(); return toggle(a, h.querySelector("#rvzAccCard")); }
   if (e.target.closest("[data-close]") || e.target.closest("#rvzBd")) { closeAll(); return; }
   if (e.target.closest("[data-out]")) { try { await signOut(getAuth(app)); } catch (_) {} location.href = "index.html"; }
 });
+let sProducts = null, sLoading = null;
+async function loadSearchProducts() {
+  if (sProducts) return sProducts;
+  if (!sLoading) sLoading = (async () => { for (let i = 0; i < 25 && !window.graphicsPublicContent?.catalog; i++) await new Promise((r) => setTimeout(r, 200)); try { const r = await window.graphicsPublicContent.catalog("products"); sProducts = (Array.isArray(r) ? r : []).filter((p) => p && p.active !== false && !p.special); } catch (_) { sProducts = []; } return sProducts; })();
+  return sLoading;
+}
+let sTimer = 0;
+async function runSearch(q) {
+  const box = h.querySelector("#rvzSR"); if (!box) return;
+  q = q.trim().toLowerCase();
+  if (!q) { box.hidden = true; box.innerHTML = ""; return; }
+  const list = (await loadSearchProducts()).filter((p) => (String(p.name || "") + " " + String(p.category || "") + " " + String(p.description || "")).toLowerCase().includes(q)).slice(0, 7);
+  if (h.querySelector("#rvzSF input").value.trim().toLowerCase() !== q) return;
+  const money = (v) => "Rs. " + Number(v || 0).toLocaleString("en-LK");
+  box.innerHTML = list.length ? list.map((p) => { const im = (Array.isArray(p.images) && p.images.find((x) => x && x.url)) || p.image || {}; const pr = Number(p.offer) > 0 && Number(p.offer) < Number(p.price) ? p.offer : p.price; return `<a href="services.html?product=${encodeURIComponent(p.id)}">${im.url ? `<img src="${esc2(im.url)}" alt="">` : '<img alt="">'}<span class="si"><b>${esc2(p.name || "Product")}</b><small>${money(pr)}</small></span></a>`; }).join("") : '<div class="none">No products found.</div>';
+  box.hidden = false;
+}
+h.addEventListener("input", (e) => { if (e.target.closest("#rvzSF")) { clearTimeout(sTimer); const v = e.target.value; sTimer = setTimeout(() => runSearch(v), 180); } });
 h.addEventListener("submit", (e) => { const f = e.target.closest("#rvzSF"); if (!f) return; e.preventDefault(); const q = f.q.value.trim(); if (q) location.href = "services.html?q=" + encodeURIComponent(q); });
 document.addEventListener("click", (e) => { if (!h.contains(e.target)) closeAll(); });
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeAll(); });
@@ -109,7 +127,8 @@ const popQ = []; let popEl = null, popTimer = 0;
 function popCss() {
   if (document.getElementById("rvzPopCss")) return;
   const c = document.createElement("style"); c.id = "rvzPopCss";
-  c.textContent = `.rvz-blk{background:#0b0b0c!important;border-top:1px solid #222!important;box-shadow:0 24px 40px -24px rgba(0,0,0,.6)!important}.rvz-blk .rvz-sw{background:#1b1b1d;border:1px solid #2c2c30}.rvz-blk .rvz-sw input{color:#fff}.rvz-blk .rvz-sw input::placeholder{color:#8d8f96}.rvz-blk .rvz-sw button{height:42px;padding:0 26px;flex:none;border:0;border-radius:999px;background:#fff;color:#0b0b0c;font:800 13px Inter,system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:background .15s,transform .15s}.rvz-blk .rvz-sw button:hover{background:#e9e9ec}.rvz-blk .rvz-sw button:active{transform:scale(.97)}.rvz-blk .rvz-sw input::-webkit-search-cancel-button{-webkit-appearance:none}
+  c.textContent = `.rvz-blk{background:#0b0b0c!important;border-top:1px solid #222!important;box-shadow:0 24px 40px -24px rgba(0,0,0,.6)!important}.rvz-blk .rvz-sw{background:#000;border:1px solid #2a2a2e;padding:4px 18px}.rvz-blk .rvz-sw input{color:#fff;padding:12px 0}.rvz-blk .rvz-sw input::placeholder{color:#7d7f87}.rvz-blk .rvz-sw input::-webkit-search-cancel-button{-webkit-appearance:none}
+.rvz-sr{max-width:680px;margin:8px auto 0;background:#000;border:1px solid #2a2a2e;border-radius:18px;overflow:hidden;max-height:min(60vh,420px);overflow-y:auto}.rvz-sr[hidden]{display:none}.rvz-sr a{display:flex;align-items:center;gap:12px;padding:10px 14px;color:#fff;text-decoration:none;border-bottom:1px solid #1a1a1d}.rvz-sr a:last-child{border-bottom:0}.rvz-sr a:hover,.rvz-sr a:focus{background:#151517;outline:0}.rvz-sr img{width:40px;height:48px;object-fit:cover;border-radius:8px;background:#1c1c1f;flex:none}.rvz-sr .si{min-width:0;flex:1}.rvz-sr b{display:block;font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rvz-sr small{display:block;font-size:12px;color:#9a9ca4;margin-top:2px}.rvz-sr .none{padding:16px;color:#8d8f96;font-size:13px}
 .rvz-pp{position:fixed;right:20px;bottom:20px;z-index:100000;width:min(360px,calc(100vw - 24px));background:#0b0b0c;color:#fff;border:1px solid #26262a;border-radius:18px;padding:16px 16px 14px;box-shadow:0 26px 60px -18px rgba(0,0,0,.65);font-family:Inter,system-ui,sans-serif;transform:translateY(18px);opacity:0;transition:transform .28s ease,opacity .28s ease}.rvz-pp.in{transform:none;opacity:1}
 .rvz-pp .rvz-px{position:absolute;top:8px;right:8px;width:30px;height:30px;border:0;border-radius:50%;background:transparent;color:#9a9ca4;font-size:20px;line-height:1;cursor:pointer}.rvz-pp .rvz-px:hover{background:#1c1c1f;color:#fff}
 .rvz-pk{font-size:10px;font-weight:800;letter-spacing:.16em;color:#8d8f96;margin-bottom:6px}.rvz-pm{font-size:14px;font-weight:600;line-height:1.5;padding-right:22px;word-break:break-word}.rvz-pl{display:inline-block;margin-top:10px;font-size:12.5px;font-weight:700;color:#fff;text-decoration:underline;text-underline-offset:3px}
