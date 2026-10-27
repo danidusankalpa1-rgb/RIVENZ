@@ -42,7 +42,7 @@ body{background:#0f0f11!important;color:#f4f4f5;font-family:Inter,ui-sans-serif,
 .pf-card{background:#1b1b1f;border-radius:16px;padding:6px 18px;margin-bottom:34px}
 .pf-r{display:flex;justify-content:space-between;gap:16px;align-items:center;padding:15px 0;border-top:1px solid #2a2a30;font-size:14.5px}.pf-r:first-child{border-top:0}.pf-r span{color:#9a9aa2}.pf-r b{font-weight:500;text-align:right;word-break:break-all;color:#f4f4f5}
 .pf-ad{display:flex;gap:16px;align-items:center;padding:16px 0}.pf-ic{width:50px;height:50px;border-radius:12px;background:#26262b;display:grid;place-items:center;flex:0 0 auto;color:#e5e5e8}.pf-ad div{min-width:0}.pf-ad .n{color:#9a9aa2;font-size:15px}.pf-ad .t{font-size:14.5px;line-height:1.5;color:#f4f4f5}
-.pf-out{display:block;width:100%;height:54px;border-radius:14px;border:1px solid #3a3a40;background:transparent;color:#fff;font:600 15px Inter,sans-serif;cursor:pointer;margin-top:6px}.pf-out:hover{background:#1c1c20}
+.pf-out{color:#ff4d4f!important;border-color:rgba(255,77,79,.45)!important;display:block;width:100%;height:54px;border-radius:14px;border:1px solid #3a3a40;background:transparent;color:#fff;font:600 15px Inter,sans-serif;cursor:pointer;margin-top:6px}.pf-out:hover{background:#1c1c20}
 .pf-bd{position:fixed;inset:0;z-index:2500;background:rgba(0,0,0,.55);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);display:flex;align-items:flex-end;justify-content:center;opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s}.pf-bd.show{opacity:1;visibility:visible}
 .pf-sh{width:min(560px,100%);max-height:92dvh;overflow:auto;background:#17171a;border-radius:24px 24px 0 0;padding:26px 20px 22px;transform:translateY(100%);transition:transform .32s cubic-bezier(.22,1,.36,1)}.pf-bd.show .pf-sh{transform:none}
 @media(min-width:700px){.pf-bd{align-items:center}.pf-sh{border-radius:24px}}
@@ -55,7 +55,7 @@ body{background:#0f0f11!important;color:#f4f4f5;font-family:Inter,ui-sans-serif,
 .pf-st{font-size:13px;color:#9a9aa2;margin-top:12px;min-height:18px;text-align:right}.pf-st.ok{color:#4ade80}.pf-st.err{color:#f87171}
 @media(max-width:520px){.pf-g{grid-template-columns:1fr}}
 </style>
-<link rel="stylesheet" href="user-nav.css?v=31">
+<link rel="stylesheet" href="user-nav.css?v=32">
 <script src="public-content.js?v=26"></script>
 <style>.pf-r{padding:11px 0!important;font-size:14px!important}.pf-card{padding:2px 16px!important;border-radius:14px!important}.pf-ad{padding:12px 0!important}.pf-ic{width:42px!important;height:42px!important;border-radius:10px!important}.pf-eb{height:36px!important;padding:0 16px!important;font-size:13px!important;border-radius:10px!important}.pf-out{height:46px!important;font-size:14px!important}
 .pf-f input,.pf-f select{height:48px!important;padding:19px 14px 4px!important;font-size:14.5px!important;border-radius:12px!important}.pf-f label{top:7px!important;left:14px!important;font-size:11px!important}
@@ -127,6 +127,6 @@ $("logout").addEventListener("click",async()=>{try{await signOut(auth)}finally{l
 onAuthStateChanged(auth,u=>{if(stop)stop();if(!u){location.replace("auth.html?next=profile.html");return}user=u;stop=onSnapshot(doc(db,"clients",u.uid),s=>{data=s.exists()?s.data():{name:u.displayName||"",email:u.email||""};render()},err=>console.error(err))});
 </script>
 <script type="module" src="account-guard.js?v=26"></script>
-<script type="module" src="user-nav.js?v=30"></script>
+<script type="module" src="user-nav.js?v=32"></script>
 </body>
 </html>

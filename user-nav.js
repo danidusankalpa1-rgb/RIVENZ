@@ -13,6 +13,7 @@ const P = {
   cart: '<circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M3 3h2l2.4 12.4a2 2 0 0 0 2 1.6h8.2a2 2 0 0 0 2-1.5L21 8H6"/>',
   event: '<path d="M20 12v9H4v-9M2 7h20v5H2zM12 21V7"/><path d="M12 7H7.5a2.5 2.5 0 1 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 1 0 0-5C13 2 12 7 12 7z"/>',
   user: '<circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/>',
+  refund: '<path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/><path d="M14.5 9.5c-.4-.6-1.2-1-2.3-1-1.3 0-2.2.6-2.2 1.6 0 2.2 4.6 1 4.6 3.2 0 1-1 1.7-2.4 1.7-1.2 0-2.1-.5-2.5-1.2M12 7v1.5M12 15v1.5"/>',
   order: '<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>',
   out: '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/>',
   bell: '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/>',
@@ -59,7 +60,7 @@ function paint() {
   ${isShop ? `<div class="rvz-sub"><nav aria-label="Categories">${[["All", "all"], ...CATS.map(([l, c]) => [l, c])].map(([l, c]) => `<a class="${curCat === c ? "on" : ""}" href="services.html${c === "all" ? "" : "?category=" + c}">${l}</a>`).join("")}</nav></div>` : ""}
   <div class="rvz-search rvz-blk" id="rvzSearch"><form class="rvz-sw" id="rvzSF" role="search"><input type="search" name="q" placeholder="Search products" autocomplete="off" maxlength="60" aria-label="Search products"></form><div class="rvz-sr" id="rvzSR" hidden></div></div>
   <div class="rvz-w2">
-    <div class="rvz-card rvz-acc-card" id="rvzAccCard"><a class="rvz-row${on("profile")}" href="profile.html">${I("user")}<span>My profile</span></a><a class="rvz-row${on("order")}" href="dashboard.html">${I("order")}<span>My order</span></a><a class="rvz-row${on("refund")}" href="refund.html">${I("order")}<span>My refund</span></a><div class="rvz-sep"></div><button type="button" class="rvz-row" data-out>${I("out")}<span>Log out</span></button></div>
+    <div class="rvz-card rvz-acc-card" id="rvzAccCard"><a class="rvz-row${on("profile")}" href="profile.html">${I("user")}<span>My profile</span></a><a class="rvz-row${on("order")}" href="dashboard.html">${I("order")}<span>My order</span></a><a class="rvz-row${on("refund")}" href="refund.html">${I("refund")}<span>My refund</span></a><div class="rvz-sep"></div><button type="button" class="rvz-row" data-out>${I("out")}<span>Log out</span></button></div>
     <div class="rvz-card rvz-mob" id="rvzMob"><div class="rvz-dh"><img src="logo.png" alt="RIVENZ"><button type="button" class="rvz-dx" data-close aria-label="Close menu">${I("x")}</button></div><nav class="rvz-dn">${full.map((r) => dl(r)).join("")}${li ? `<button type="button" class="rvz-dr" data-out><span>Log out</span></button>` : `<a class="rvz-dr" href="auth.html?next=${encodeURIComponent(file)}"><span>Login</span></a>`}</nav></div>
     <div class="rvz-bd" id="rvzBd"></div>
   </div>`;
@@ -137,6 +138,7 @@ function popCss() {
 @media(max-width:600px){.rvz-pp{right:12px;left:12px;bottom:12px;width:auto}}`;
   document.head.appendChild(c);
 }
+popCss();
 const STAR = '<svg viewBox="0 0 24 24"><path d="m12 2.5 2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4 6.1 20.5l1.2-6.5L2.5 9.4l6.6-.9z"/></svg>';
 function closePop() { clearTimeout(popTimer); if (!popEl) return; const el = popEl; popEl = null; el.classList.remove("in"); setTimeout(() => { el.remove(); nextPop(); }, 280); }
 function nextPop() { if (popEl || !popQ.length) return; showPop(popQ.shift()); }
@@ -146,9 +148,9 @@ function showPop(n) {
   const items = []; const seenP = new Set();
   (n.items || []).forEach((it) => { const id = String(it.productId || ""); if (id && !seenP.has(id) && items.length < 3) { seenP.add(id); items.push({ id, name: it.productName || it.name || "Product", img: String(it.image || it.img || (it.images && it.images[0] && it.images[0].url) || "") }); } });
   const delivered = n.delivered && items.length;
-  el.innerHTML = `<button type="button" class="rvz-px" aria-label="Close">&times;</button><div class="rvz-pk">ORDER UPDATE</div><div class="rvz-pm">${delivered ? "Your order " + esc2(n.orderId) + " has been delivered. How was it?" : esc2(n.message)}</div>` +
+  el.innerHTML = `<button type="button" class="rvz-px" aria-label="Close">&times;</button><div class="rvz-pk">${n.custom ? "MESSAGE FROM RIVENZ" : "ORDER UPDATE"}</div><div class="rvz-pm">${delivered ? "Your order " + esc2(n.orderId) + " has been delivered. How was it?" : esc2(n.message)}</div>` +
     (delivered ? items.map((it) => `<div class="rvz-rt" data-pid="${esc2(it.id)}"><div class="rvz-rn">${(it.img && !/^\s*(javascript|vbscript):/i.test(it.img)) ? `<img src="${esc2(it.img)}" alt="">` : ""}<span>${esc2(it.name)}</span></div><div class="rvz-rs">${[1, 2, 3, 4, 5].map((i) => `<button type="button" data-v="${i}" aria-label="${i} star">${STAR}</button>`).join("")}</div><div class="rvz-rf" hidden><textarea maxlength="600" placeholder="Write a few words (optional)"></textarea><button type="button" class="rvz-rg">Submit review</button></div><div class="rvz-rm"></div></div>`).join("") : "") +
-    `<a class="rvz-pl" href="order-details.html?id=${encodeURIComponent(n.orderId)}">View order</a>`;
+    (n.custom ? "" : `<a class="rvz-pl" href="order-details.html?id=${encodeURIComponent(n.orderId)}">View order</a>`);
   document.body.appendChild(el); popEl = el; requestAnimationFrame(() => el.classList.add("in"));
   el.addEventListener("click", async (e) => {
     if (e.target.closest(".rvz-px")) return closePop();
@@ -168,11 +170,25 @@ function showPop(n) {
   if (!delivered) popTimer = setTimeout(closePop, 9000);
 }
 function queuePop(n) { if (popQ.some((x) => x.orderId === n.orderId) || (popEl && popEl.dataset.oid === n.orderId)) return; popQ.push(n); nextPop(); }
-let stopOrd = null;
+let stopOrd = null, stopNote = null;
+function watchNotice(u) {
+  try {
+    stopNote = onSnapshot(doc(db, "clients", u.uid), (d) => {
+      if (d.metadata && d.metadata.hasPendingWrites) return;
+      const n = d.exists() && d.data().adminNotice; if (!n || !n.message) return;
+      const id = String(n.id || n.time || ""), k = "rvzNoticeSeen_" + u.uid; let seen = null;
+      try { seen = localStorage.getItem(k); } catch (_) {}
+      if (seen === id) return;
+      try { localStorage.setItem(k, id); } catch (_) {}
+      if (seen === null && ts(n.time) < Date.now() - 3 * 86400000) return;
+      queuePop({ orderId: "msg-" + id, message: String(n.message), custom: true });
+    }, () => {});
+  } catch (_) {}
+}
 function watchOrders(u) {
   try {
     stopOrd = onSnapshot(query(collection(db, "orders"), where("uid", "==", u.uid)), (snap) => {
-      const list = snap.docs.map((d) => { const o = d.data(), n = o.lastNotification; if (!n || !n.message || o.customerHidden) return null; return { orderId: d.id, message: n.message, key: String(n.time || "") + "|" + String(n.message), ms: ts(n.createdAt) || ts(n.time) || ts(o.updatedAt), delivered: /^deliver/i.test(String(o.status || "")), items: o.items || o.products || [] }; }).filter(Boolean).sort((a, b) => a.ms - b.ms);
+      const list = snap.docs.map((d) => { if (d.metadata && d.metadata.hasPendingWrites) return null; const o = d.data(), n = o.lastNotification; if (!n || !n.message || o.customerHidden) return null; return { orderId: d.id, message: n.message, key: String(n.time || "") + "|" + String(n.message), ms: ts(n.createdAt) || ts(n.time) || ts(o.updatedAt), delivered: /^deliver/i.test(String(o.status || "")), items: o.items || o.products || [] }; }).filter(Boolean).sort((a, b) => a.ms - b.ms);
       if (readSeen() === null) { const seen = {}; list.forEach((n) => { if (n.ms < Date.now() - 86400000) seen[n.orderId] = n.key; }); try { localStorage.setItem(sKey(), JSON.stringify(seen)); } catch (_) {} }
       const seen = readSeen() || {}; let changed = false;
       list.forEach((n) => { if (seen[n.orderId] !== n.key) { seen[n.orderId] = n.key; changed = true; queuePop(n); } });
@@ -184,9 +200,9 @@ function watchOrders(u) {
 paint(); readCart();
 let stopChat = null;
 onAuthStateChanged(getAuth(app), (u) => {
-  user = u || null; authReady = true; unread = 0; if (stopChat) { stopChat(); stopChat = null; } if (stopOrd) { stopOrd(); stopOrd = null; }
+  user = u || null; authReady = true; unread = 0; if (stopChat) { stopChat(); stopChat = null; } if (stopOrd) { stopOrd(); stopOrd = null; } if (stopNote) { stopNote(); stopNote = null; }
   try { if (u) localStorage.setItem("rvzNavUser", JSON.stringify({ i: String(u.displayName || u.email || "U").trim().slice(0, 1).toUpperCase() })); else localStorage.removeItem("rvzNavUser"); } catch (_) {}
-  paint(); readCart(); if (u) watchOrders(u);
+  paint(); readCart(); if (u) { watchOrders(u); watchNotice(u); }
   if (u) stopChat = onSnapshot(doc(db, "chats", u.uid), (s) => { unread = Number(s.data()?.unreadUser) > 0 ? Number(s.data().unreadUser) : 0; setBadge("[data-unread]", unread); }, () => {});
 });
 import("./live-chat.js?v=27").catch((e) => console.warn("live chat", e));

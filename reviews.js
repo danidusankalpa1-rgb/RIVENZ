@@ -22,7 +22,7 @@ css.textContent = `.rvw{position:relative;margin-top:54px;padding:22px;border-ra
 .rvw-list{display:grid;gap:10px}.rvw-card{border-radius:16px;padding:14px 16px}.rvw-card header{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.rvw-card b{font-size:13.5px;margin-right:6px}.rvw-card time{font-size:11.5px;color:#6b7080}.rvw-card p{margin:8px 0 0;font-size:13.5px;line-height:1.6;color:#33384a;white-space:pre-line;word-break:break-word}.rvw-card .rvw-st i{width:14px;height:14px}
 .rvw-empty{color:#5d6270;font-size:14px;padding:6px 2px}
 .rvw-sk{display:grid;gap:10px}.rvw-sk div{height:62px;border-radius:16px;background:linear-gradient(90deg,rgba(255,255,255,.35) 25%,rgba(255,255,255,.8) 50%,rgba(255,255,255,.35) 75%);background-size:200% 100%;animation:rvwsh 1.2s linear infinite}.rvw-ld{font-size:12.5px;color:#5d6270;margin:-6px 0 12px}@keyframes rvwsh{to{background-position:-200% 0}}
-.rvw-m{position:fixed;inset:0;z-index:100001;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:16px}.rvw-mc{position:relative;width:min(400px,100%);background:#0b0b0c;color:#fff;border:1px solid #26262a;border-radius:20px;padding:22px 20px 18px;box-shadow:0 30px 70px -20px rgba(0,0,0,.7);font-family:Inter,system-ui,sans-serif}.rvw-mc h3{margin:0 0 4px;font-size:17px}.rvw-mc p{margin:0 0 14px;font-size:13px;color:#9a9ca4;line-height:1.5}.rvw-x{position:absolute;top:10px;right:10px;width:32px;height:32px;border:0;border-radius:50%;background:transparent;color:#9a9ca4;font-size:22px;cursor:pointer}.rvw-x:hover{background:#1c1c1f;color:#fff}
+@keyframes rvwIn{from{opacity:0}to{opacity:1}}@keyframes rvwUp{from{opacity:0;transform:translateY(18px) scale(.96)}to{opacity:1;transform:none}}.rvw-m{animation:rvwIn .2s ease both}.rvw-mc{animation:rvwUp .28s cubic-bezier(.2,.8,.2,1) both}.rvw-m{position:fixed;inset:0;z-index:100001;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:16px}.rvw-mc{position:relative;width:min(400px,100%);background:#0b0b0c;color:#fff;border:1px solid #26262a;border-radius:20px;padding:22px 20px 18px;box-shadow:0 30px 70px -20px rgba(0,0,0,.7);font-family:Inter,system-ui,sans-serif}.rvw-mc h3{margin:0 0 4px;font-size:17px}.rvw-mc p{margin:0 0 14px;font-size:13px;color:#9a9ca4;line-height:1.5}.rvw-x{position:absolute;top:10px;right:10px;width:32px;height:32px;border:0;border-radius:50%;background:transparent;color:#9a9ca4;font-size:22px;cursor:pointer}.rvw-x:hover{background:#1c1c1f;color:#fff}
 .rvw-pick{display:flex;gap:4px;margin-bottom:12px}.rvw-pick button{border:0;background:none;padding:2px;width:38px;height:38px;cursor:pointer}.rvw-pick svg{width:100%;height:100%;fill:#3a3a40;transition:fill .12s}.rvw-pick button.on svg{fill:#f5b301}
 .rvw-mc textarea{width:100%;box-sizing:border-box;min-height:96px;border:1px solid #2c2c30;background:#151517;color:#fff;border-radius:12px;padding:12px 14px;font:inherit;font-size:14px;resize:vertical;outline:0}.rvw-mc textarea:focus{border-color:#fff}.rvw-go{margin-top:12px;width:100%;height:46px;border:0;border-radius:999px;background:#fff;color:#0b0b0c;font:800 13px Inter,system-ui,sans-serif;cursor:pointer}.rvw-go:disabled{opacity:.6}.rvw-note{margin-top:10px;font-size:13px;color:#9a9ca4}.rvw-note.ok{color:#4ade80;font-weight:600}.rvw-note.err{color:#f87171}.rvw-lg{display:inline-block;margin-top:6px;color:#fff;font-weight:700;font-size:13px;text-decoration:underline}
 @media(max-width:600px){.rvw{padding:16px;border-radius:22px;margin-top:38px}}`;
@@ -32,7 +32,7 @@ let box = null, data = null, eligibleOrder = "", done = false, signedIn = false,
 
 function render() {
   if (!box) return;
-  const hd = '<div class="rvw-hd"><h2>Customer reviews</h2><button type="button" class="rvw-add" id="rvwAdd">+ Add review</button></div>';
+  const hd = '<div class="rvw-hd"><h2>Customer reviews</h2>' + (eligibleOrder && !done ? '<button type="button" class="rvw-add" id="rvwAdd">+ Add review</button>' : "") + "</div>";
   if (!data) { box.innerHTML = hd + '<div class="rvw-ld">Loading reviews...</div><div class="rvw-sk"><div></div><div></div></div>'; wire(); return; }
   const list = data.reviews || [];
   const sum = list.length ? '<div class="rvw-sum rvw-glass"><div class="rvw-avg">' + Number(data.avg || 0).toFixed(1) + '</div><div class="rvw-meta">' + stars(data.avg || 0) + "<small>" + data.count + " review" + (data.count === 1 ? "" : "s") + "</small></div></div>" : "";
@@ -82,7 +82,7 @@ async function findOrder(user) {
       if (hit) eligibleOrder = hit.id;
     }
   } catch (e) {}
-  authResolve();
+  authResolve(); render();
 }
 function mount() {
   const anchor = document.querySelector(".rv2-about");
