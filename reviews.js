@@ -26,8 +26,8 @@ function render() {
   if (!list.length && !eligibleOrder) { box.hidden = true; return; }
   box.hidden = false;
   const top = list.length ? '<div class="rvw-top"><div class="rvw-avg">' + data.avg.toFixed(1) + '</div><div class="rvw-meta">' + stars(data.avg) + "<small>" + data.count + " review" + (data.count === 1 ? "" : "s") + "</small></div></div>" : "";
-  const cards = list.length ? '<div class="rvw-list">' + list.map((r) => '<article class="rvw-card"><header><div><b>' + esc(r.name || "Customer") + "</b> " + stars(r.rating) + "</div><time>" + esc(String(r.createdAt || "").slice(0, 10)) + "</time></header><p>" + esc(r.text) + "</p></article>").join("") + "</div>" : '<div class="rvw-empty">No reviews yet.</div>';
-  const form = eligibleOrder && !done ? '<div class="rvw-form"><h3>Write a review</h3><div class="rvw-pick" id="rvwPick">' + [1, 2, 3, 4, 5].map((i) => '<button type="button" data-v="' + i + '" aria-label="' + i + ' star">' + STAR + "</button>").join("") + '</div><textarea id="rvwText" maxlength="600" placeholder="Share your experience with this product"></textarea><button type="button" class="rvw-go" id="rvwGo">Submit review</button><div class="rvw-note" id="rvwNote"></div></div>' : done ? '<div class="rvw-form"><div class="rvw-note ok">Thank you! Your review will appear after RIVENZ approves it.</div></div>' : "";
+  const cards = list.length ? '<div class="rvw-list">' + list.map((r) => '<article class="rvw-card"><header><div><b>' + esc(r.name || "Customer") + "</b> " + stars(r.rating) + "</div><time>" + esc(String(r.createdAt || "").slice(0, 10)) + "</time></header>" + (r.text ? "<p>" + esc(r.text) + "</p>" : "") + "</article>").join("") + "</div>" : '<div class="rvw-empty">No reviews yet.</div>';
+  const form = eligibleOrder && !done ? '<div class="rvw-form"><h3>Write a review</h3><div class="rvw-pick" id="rvwPick">' + [1, 2, 3, 4, 5].map((i) => '<button type="button" data-v="' + i + '" aria-label="' + i + ' star">' + STAR + "</button>").join("") + '</div><textarea id="rvwText" maxlength="600" placeholder="Share your experience (optional)"></textarea><button type="button" class="rvw-go" id="rvwGo">Submit review</button><div class="rvw-note" id="rvwNote"></div></div>' : done ? '<div class="rvw-form"><div class="rvw-note ok">Thank you! Your review will appear after RIVENZ approves it.</div></div>' : "";
   box.innerHTML = "<h2>Customer reviews</h2>" + top + cards + form;
   if (form && !done) wire();
 }
@@ -38,7 +38,6 @@ function wire() {
   go.onclick = async () => {
     note.className = "rvw-note"; note.textContent = "";
     if (!rating) { note.className = "rvw-note err"; note.textContent = MSG.BAD_RATING; return; }
-    if (txt.value.trim().length < 3) { note.className = "rvw-note err"; note.textContent = MSG.TEXT_TOO_SHORT; return; }
     go.disabled = true;
     try {
       const r = await window.graphicsPublicContent.api("/reviews/submit", { method: "POST", body: JSON.stringify({ orderId: eligibleOrder, productId: pid, rating, text: txt.value }) });

@@ -29,9 +29,15 @@ h.className = "rvz-h";
 document.body.prepend(h);
 let user = null, unread = 0, cartN = 0, notifs = [], nUnread = 0;
 
+let authReady = false;
+const cachedU = () => { try { return JSON.parse(localStorage.getItem("rvzNavUser") || "null"); } catch (_) { return null; } };
 function paint() {
-  const li = !!user, on = (k) => (ACTIVE === k ? " on" : "");
-  const initial = String(user?.displayName || user?.email || "U").trim().slice(0, 1).toUpperCase();
+  const cu = !authReady ? cachedU() : null;
+  const li = !!user || !!cu, on = (k) => (ACTIVE === k ? " on" : "");
+  const initial = user ? String(user.displayName || user.email || "U").trim().slice(0, 1).toUpperCase() : String(cu?.i || "U").slice(0, 1).toUpperCase();
+  const sigNow = [li, initial].join("|");
+  if (h.dataset.sig === sigNow && h.firstChild) return;
+  h.dataset.sig = sigNow;
   const cartB = `<em class="rvz-b" data-cart${cartN ? "" : " hidden"}>${cartN}</em>`, chatB = `<em class="rvz-b" data-unread${unread ? "" : " hidden"}>${unread}</em>`;
   const full = [...MAIN.slice(0, 3).map(([k, l, u]) => [k, l, u]), ["chat", "Chat", "chat.html", chatB], ["cart", "Cart", "cart.html", cartB], MAIN[3], ...(li ? [["profile", "My profile", "profile.html"], ["order", "My order", "dashboard.html"]] : [])];
   const dl = ([k, l, u, bd = ""]) => `<a class="rvz-dr${on(k)}" href="${u}"><span>${l}</span>${bd}</a>`;
@@ -42,7 +48,7 @@ function paint() {
     <span class="rvz-tag">#RIVENZFASHION</span>
     <a class="rvz-logo" href="index.html" aria-label="RIVENZ home"><img src="logo.png" alt="RIVENZ"></a>
     <div class="rvz-r">
-      ${li ? `<button type="button" class="rvz-c rvz-bell" id="rvzBell" aria-label="Notifications" aria-expanded="false">${I("bell")}<em class="rvz-b" data-nb${nUnread ? "" : " hidden"}>${nUnread}</em></button>` : ""}
+      <button type="button" class="rvz-c rvz-bell rvz-sbtn" id="rvzSBtn" aria-label="Search" aria-expanded="false">${I("search")}</button>
       <a class="rvz-c rvz-chat${on("chat")}" href="chat.html" aria-label="Chat">${I("chat")}${chatB}</a>
       <a class="rvz-c${on("cart")}" href="cart.html" aria-label="Cart">${I("cart")}${cartB}</a>
       ${li ? `<button type="button" class="rvz-c rvz-acc" id="rvzAcc" aria-label="Account" aria-expanded="false"><span class="rvz-av">${initial}</span></button>` : `<a class="rvz-login" href="auth.html?next=${encodeURIComponent(file)}">${I("user")}<span>Login</span></a>`}
@@ -51,17 +57,17 @@ function paint() {
   </div>
   <div class="rvz-navrow"><nav class="rvz-nav" aria-label="Main">${MAIN.map(([k, l, u]) => `<a class="rvz-a${on(k)}" href="${u}"><span>${l}</span></a>`).join("")}</nav></div>
   ${isShop ? `<div class="rvz-sub"><nav aria-label="Categories">${[["All", "all"], ...CATS.map(([l, c]) => [l, c])].map(([l, c]) => `<a class="${curCat === c ? "on" : ""}" href="services.html${c === "all" ? "" : "?category=" + c}">${l}</a>`).join("")}</nav></div>` : ""}
+  <div class="rvz-search rvz-blk" id="rvzSearch"><form class="rvz-sw" id="rvzSF" role="search"><input type="search" name="q" placeholder="Search products" autocomplete="off" maxlength="60" aria-label="Search products"><button type="submit">Search</button></form></div>
   <div class="rvz-w2">
     <div class="rvz-card rvz-acc-card" id="rvzAccCard"><a class="rvz-row${on("profile")}" href="profile.html">${I("user")}<span>My profile</span></a><a class="rvz-row${on("order")}" href="dashboard.html">${I("order")}<span>My order</span></a><div class="rvz-sep"></div><button type="button" class="rvz-row" data-out>${I("out")}<span>Log out</span></button></div>
     <div class="rvz-card rvz-mob" id="rvzMob"><div class="rvz-dh"><img src="logo.png" alt="RIVENZ"><button type="button" class="rvz-dx" data-close aria-label="Close menu">${I("x")}</button></div><nav class="rvz-dn">${full.map((r) => dl(r)).join("")}${li ? `<button type="button" class="rvz-dr" data-out><span>Log out</span></button>` : `<a class="rvz-dr" href="auth.html?next=${encodeURIComponent(file)}"><span>Login</span></a>`}</nav></div>
-    <div class="rvz-card rvz-notif" id="rvzNotif"><div class="rvz-nh">Notifications</div><div class="rvz-nl" id="rvzNL"></div></div>
     <div class="rvz-bd" id="rvzBd"></div>
   </div>`;
 }
 function lock() { setTimeout(() => window.dispatchEvent(new Event("scroll")), 0); const o = !!h.querySelector("#rvzMob.open"); h.querySelector("#rvzBd")?.classList.toggle("open", o); document.documentElement.style.overflow = o ? "hidden" : ""; }
 function closeAll() {
   h.querySelectorAll(".rvz-card,.rvz-search").forEach((c) => c.classList.remove("open"));
-  h.querySelectorAll("#rvzMenu,#rvzAcc,#rvzBell").forEach((b) => { b.classList.remove("open"); b.setAttribute("aria-expanded", "false"); });
+  h.querySelectorAll("#rvzMenu,#rvzAcc,#rvzSBtn").forEach((b) => { b.classList.remove("open"); b.setAttribute("aria-expanded", "false"); });
   lock();
 }
 function toggle(btn, card) {
@@ -73,18 +79,17 @@ h.addEventListener("click", async (e) => {
   const m = e.target.closest("#rvzMenu"), a = e.target.closest("#rvzAcc");
   const sb = e.target.closest("#rvzSBtn");
   if (sb) { e.stopPropagation(); const f = h.querySelector("#rvzSearch"), op = !f.classList.contains("open"); closeAll(); f.classList.toggle("open", op); sb.setAttribute("aria-expanded", String(op)); if (op) f.querySelector("input")?.focus(); return; }
-  const bl = e.target.closest("#rvzBell");
-  if (bl) { e.stopPropagation(); const card = h.querySelector("#rvzNotif"), wasOpen = card.classList.contains("open"); toggle(bl, card); if (!wasOpen) markSeen(); return; }
   if (m) { e.stopPropagation(); return toggle(m, h.querySelector("#rvzMob")); }
   if (a) { e.stopPropagation(); return toggle(a, h.querySelector("#rvzAccCard")); }
   if (e.target.closest("[data-close]") || e.target.closest("#rvzBd")) { closeAll(); return; }
   if (e.target.closest("[data-out]")) { try { await signOut(getAuth(app)); } catch (_) {} location.href = "index.html"; }
 });
+h.addEventListener("submit", (e) => { const f = e.target.closest("#rvzSF"); if (!f) return; e.preventDefault(); const q = f.q.value.trim(); if (q) location.href = "services.html?q=" + encodeURIComponent(q); });
 document.addEventListener("click", (e) => { if (!h.contains(e.target)) closeAll(); });
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeAll(); });
 let lastW = innerWidth; window.addEventListener("resize", () => { if (innerWidth !== lastW) { lastW = innerWidth; closeAll(); } });
 const OVER = file === "index.html" || file === "collection.html" || file === ""; if (OVER) h.classList.add("rvz-fix");
-const onScroll = () => { h.classList.toggle("rvz-sm", window.scrollY > 70); h.classList.toggle("rvz-over", OVER && window.scrollY < 24 && !h.querySelector(".rvz-card.open")); };
+const onScroll = () => { h.classList.toggle("rvz-sm", window.scrollY > 70); h.classList.toggle("rvz-over", OVER && window.scrollY < 24 && !h.querySelector(".rvz-card.open,.rvz-search.open")); };
 window.addEventListener("scroll", onScroll, { passive: true }); onScroll();
 
 const setBadge = (sel, n) => h.querySelectorAll(sel).forEach((b) => { b.textContent = n > 99 ? "99+" : n; b.hidden = !n; });
@@ -95,27 +100,64 @@ window.addEventListener("storage", readCart);
 window.addEventListener("rivenz-cart-store-ready", () => window.rivenzCartStore?.ready?.then(readCart));
 
 
-/* ---------- Order notifications (bell) ---------- */
+/* ---------- Order notifications: black pop-up (only the new one; no list) ---------- */
 const sKey = () => "rvzNotifSeen_" + (user?.uid || "");
 const readSeen = () => { try { return JSON.parse(localStorage.getItem(sKey()) || "null"); } catch (_) { return null; } };
 const esc2 = (v) => String(v ?? "").replace(/[&<>"']/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m]));
-function ago(ms) { if (!ms) return ""; const d = Math.max(0, Date.now() - ms), m = Math.floor(d / 60000); if (m < 1) return "Just now"; if (m < 60) return m + " min ago"; const hh = Math.floor(m / 60); if (hh < 24) return hh + " hr ago"; const dd = Math.floor(hh / 24); return dd < 7 ? dd + " day" + (dd > 1 ? "s" : "") + " ago" : new Date(ms).toLocaleDateString("en-LK", { day: "numeric", month: "short" }); }
-function drawNotif() {
-  const seen = readSeen() || {};
-  nUnread = notifs.filter((n) => seen[n.orderId] !== n.key).length;
-  setBadge("[data-nb]", nUnread);
-  const box = h.querySelector("#rvzNL"); if (!box) return;
-  box.innerHTML = notifs.length ? notifs.map((n) => `<a class="rvz-ni${seen[n.orderId] !== n.key ? " new" : ""}" href="order-details.html?id=${encodeURIComponent(n.orderId)}"><i></i><span><b>${esc2(n.message)}</b><small>${esc2(ago(n.ms))}</small></span></a>`).join("") : '<div class="rvz-ne">No notifications yet. Updates about your orders will appear here.</div>';
-}
-function markSeen() { if (!user) return; const seen = {}; notifs.forEach((n) => { seen[n.orderId] = n.key; }); try { localStorage.setItem(sKey(), JSON.stringify(seen)); } catch (_) {} setTimeout(() => { setBadge("[data-nb]", 0); nUnread = 0; }, 400); }
 function ts(v) { return v?.toMillis ? v.toMillis() : v instanceof Date ? v.getTime() : Number.isFinite(Date.parse(v)) ? Date.parse(v) : 0; }
+const popQ = []; let popEl = null, popTimer = 0;
+function popCss() {
+  if (document.getElementById("rvzPopCss")) return;
+  const c = document.createElement("style"); c.id = "rvzPopCss";
+  c.textContent = `.rvz-blk{background:#0b0b0c!important;border-top:1px solid #222!important;box-shadow:0 24px 40px -24px rgba(0,0,0,.6)!important}.rvz-blk .rvz-sw{background:#1b1b1d;border:1px solid #2c2c30}.rvz-blk .rvz-sw input{color:#fff}.rvz-blk .rvz-sw input::placeholder{color:#8d8f96}.rvz-blk .rvz-sw button{height:42px;padding:0 26px;flex:none;border:0;border-radius:999px;background:#fff;color:#0b0b0c;font:800 13px Inter,system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:background .15s,transform .15s}.rvz-blk .rvz-sw button:hover{background:#e9e9ec}.rvz-blk .rvz-sw button:active{transform:scale(.97)}.rvz-blk .rvz-sw input::-webkit-search-cancel-button{-webkit-appearance:none}
+.rvz-pp{position:fixed;right:20px;bottom:20px;z-index:100000;width:min(360px,calc(100vw - 24px));background:#0b0b0c;color:#fff;border:1px solid #26262a;border-radius:18px;padding:16px 16px 14px;box-shadow:0 26px 60px -18px rgba(0,0,0,.65);font-family:Inter,system-ui,sans-serif;transform:translateY(18px);opacity:0;transition:transform .28s ease,opacity .28s ease}.rvz-pp.in{transform:none;opacity:1}
+.rvz-pp .rvz-px{position:absolute;top:8px;right:8px;width:30px;height:30px;border:0;border-radius:50%;background:transparent;color:#9a9ca4;font-size:20px;line-height:1;cursor:pointer}.rvz-pp .rvz-px:hover{background:#1c1c1f;color:#fff}
+.rvz-pk{font-size:10px;font-weight:800;letter-spacing:.16em;color:#8d8f96;margin-bottom:6px}.rvz-pm{font-size:14px;font-weight:600;line-height:1.5;padding-right:22px;word-break:break-word}.rvz-pl{display:inline-block;margin-top:10px;font-size:12.5px;font-weight:700;color:#fff;text-decoration:underline;text-underline-offset:3px}
+.rvz-rt{margin-top:12px;padding-top:12px;border-top:1px solid #1f1f23}.rvz-rn{display:flex;align-items:center;gap:9px;font-size:12.5px;font-weight:600;margin-bottom:6px;color:#e8e8ea}.rvz-rn img{width:30px;height:36px;object-fit:cover;border-radius:6px;background:#1c1c1f;flex:none}.rvz-rn span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rvz-rs{display:flex;gap:2px}.rvz-rs button{border:0;background:none;padding:2px;width:30px;height:30px;cursor:pointer}.rvz-rs svg{width:100%;height:100%;fill:#3a3a40;transition:fill .12s}.rvz-rs button.on svg{fill:#f5b301}
+.rvz-rf{margin-top:8px}.rvz-rf textarea{width:100%;box-sizing:border-box;min-height:62px;border:1px solid #2c2c30;background:#151517;color:#fff;border-radius:10px;padding:9px 11px;font:inherit;font-size:13px;resize:vertical;outline:0}.rvz-rf textarea:focus{border-color:#fff}.rvz-rg{margin-top:8px;border:0;background:#fff;color:#0b0b0c;border-radius:999px;padding:9px 18px;font:inherit;font-size:12.5px;font-weight:800;cursor:pointer}.rvz-rg:disabled{opacity:.6}.rvz-rm{margin-top:6px;font-size:12px;color:#8d8f96}.rvz-rm.ok{color:#4ade80}.rvz-rm.err{color:#f87171}
+@media(max-width:600px){.rvz-pp{right:12px;left:12px;bottom:12px;width:auto}}`;
+  document.head.appendChild(c);
+}
+const STAR = '<svg viewBox="0 0 24 24"><path d="m12 2.5 2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4 6.1 20.5l1.2-6.5L2.5 9.4l6.6-.9z"/></svg>';
+function closePop() { clearTimeout(popTimer); if (!popEl) return; const el = popEl; popEl = null; el.classList.remove("in"); setTimeout(() => { el.remove(); nextPop(); }, 280); }
+function nextPop() { if (popEl || !popQ.length) return; showPop(popQ.shift()); }
+function showPop(n) {
+  popCss();
+  const el = document.createElement("div"); el.className = "rvz-pp"; el.dataset.oid = n.orderId; el.setAttribute("role", "status");
+  const items = []; const seenP = new Set();
+  (n.items || []).forEach((it) => { const id = String(it.productId || ""); if (id && !seenP.has(id) && items.length < 3) { seenP.add(id); items.push({ id, name: it.productName || it.name || "Product", img: String(it.image || it.img || (it.images && it.images[0] && it.images[0].url) || "") }); } });
+  const delivered = n.delivered && items.length;
+  el.innerHTML = `<button type="button" class="rvz-px" aria-label="Close">&times;</button><div class="rvz-pk">ORDER UPDATE</div><div class="rvz-pm">${delivered ? "Your order " + esc2(n.orderId) + " has been delivered. How was it?" : esc2(n.message)}</div>` +
+    (delivered ? items.map((it) => `<div class="rvz-rt" data-pid="${esc2(it.id)}"><div class="rvz-rn">${(it.img && !/^\s*(javascript|vbscript):/i.test(it.img)) ? `<img src="${esc2(it.img)}" alt="">` : ""}<span>${esc2(it.name)}</span></div><div class="rvz-rs">${[1, 2, 3, 4, 5].map((i) => `<button type="button" data-v="${i}" aria-label="${i} star">${STAR}</button>`).join("")}</div><div class="rvz-rf" hidden><textarea maxlength="600" placeholder="Write a few words (optional)"></textarea><button type="button" class="rvz-rg">Submit review</button></div><div class="rvz-rm"></div></div>`).join("") : "") +
+    `<a class="rvz-pl" href="order-details.html?id=${encodeURIComponent(n.orderId)}">View order</a>`;
+  document.body.appendChild(el); popEl = el; requestAnimationFrame(() => el.classList.add("in"));
+  el.addEventListener("click", async (e) => {
+    if (e.target.closest(".rvz-px")) return closePop();
+    const row = e.target.closest(".rvz-rt"); if (!row) return;
+    clearTimeout(popTimer);
+    const sb = e.target.closest(".rvz-rs button");
+    if (sb) { const v = Number(sb.dataset.v); row.dataset.r = v; row.querySelectorAll(".rvz-rs button").forEach((b) => b.classList.toggle("on", Number(b.dataset.v) <= v)); row.querySelector(".rvz-rf").hidden = false; return; }
+    const go = e.target.closest(".rvz-rg"); if (!go) return;
+    const msg = row.querySelector(".rvz-rm"); go.disabled = true; msg.className = "rvz-rm"; msg.textContent = "";
+    try {
+      for (let i = 0; i < 20 && !window.graphicsPublicContent?.api; i++) await new Promise((r) => setTimeout(r, 200));
+      const r = await window.graphicsPublicContent.api("/reviews/submit", { method: "POST", body: JSON.stringify({ orderId: n.orderId, productId: row.dataset.pid, rating: Number(row.dataset.r), text: row.querySelector("textarea").value }) });
+      if (r && r.ok === false) throw new Error(r.error || "FAILED");
+      row.innerHTML = '<div class="rvz-rn">' + esc2(row.querySelector(".rvz-rn span").textContent) + '</div><div class="rvz-rm ok">Thank you! Your review will appear after approval.</div>';
+    } catch (er) { msg.className = "rvz-rm err"; msg.textContent = String(er?.message) === "ALREADY_REVIEWED" ? "You have already reviewed this product." : "Could not send your review. Please try again."; go.disabled = false; }
+  });
+  if (!delivered) popTimer = setTimeout(closePop, 9000);
+}
+function queuePop(n) { if (popQ.some((x) => x.orderId === n.orderId) || (popEl && popEl.dataset.oid === n.orderId)) return; popQ.push(n); nextPop(); }
 let stopOrd = null;
 function watchOrders(u) {
   try {
     stopOrd = onSnapshot(query(collection(db, "orders"), where("uid", "==", u.uid)), (snap) => {
-      notifs = snap.docs.map((d) => { const o = d.data(), n = o.lastNotification; if (!n || !n.message || o.customerHidden) return null; return { orderId: d.id, message: n.message, key: String(n.time || "") + "|" + String(n.message), ms: ts(n.createdAt) || ts(n.time) || ts(o.updatedAt) }; }).filter(Boolean).sort((a, b) => b.ms - a.ms).slice(0, 20);
-      if (readSeen() === null) { const seen = {}; notifs.forEach((n) => { if (n.ms < Date.now() - 86400000) seen[n.orderId] = n.key; }); try { localStorage.setItem(sKey(), JSON.stringify(seen)); } catch (_) {} }
-      drawNotif();
+      const list = snap.docs.map((d) => { const o = d.data(), n = o.lastNotification; if (!n || !n.message || o.customerHidden) return null; return { orderId: d.id, message: n.message, key: String(n.time || "") + "|" + String(n.message), ms: ts(n.createdAt) || ts(n.time) || ts(o.updatedAt), delivered: /^deliver/i.test(String(o.status || "")), items: o.items || o.products || [] }; }).filter(Boolean).sort((a, b) => a.ms - b.ms);
+      if (readSeen() === null) { const seen = {}; list.forEach((n) => { if (n.ms < Date.now() - 86400000) seen[n.orderId] = n.key; }); try { localStorage.setItem(sKey(), JSON.stringify(seen)); } catch (_) {} }
+      const seen = readSeen() || {}; let changed = false;
+      list.forEach((n) => { if (seen[n.orderId] !== n.key) { seen[n.orderId] = n.key; changed = true; queuePop(n); } });
+      if (changed) { try { localStorage.setItem(sKey(), JSON.stringify(seen)); } catch (_) {} }
     }, () => {});
   } catch (_) {}
 }
@@ -123,8 +165,9 @@ function watchOrders(u) {
 paint(); readCart();
 let stopChat = null;
 onAuthStateChanged(getAuth(app), (u) => {
-  user = u || null; unread = 0; notifs = []; nUnread = 0; if (stopChat) { stopChat(); stopChat = null; } if (stopOrd) { stopOrd(); stopOrd = null; }
-  paint(); readCart(); drawNotif(); if (u) watchOrders(u);
+  user = u || null; authReady = true; unread = 0; if (stopChat) { stopChat(); stopChat = null; } if (stopOrd) { stopOrd(); stopOrd = null; }
+  try { if (u) localStorage.setItem("rvzNavUser", JSON.stringify({ i: String(u.displayName || u.email || "U").trim().slice(0, 1).toUpperCase() })); else localStorage.removeItem("rvzNavUser"); } catch (_) {}
+  paint(); readCart(); if (u) watchOrders(u);
   if (u) stopChat = onSnapshot(doc(db, "chats", u.uid), (s) => { unread = Number(s.data()?.unreadUser) > 0 ? Number(s.data().unreadUser) : 0; setBadge("[data-unread]", unread); }, () => {});
 });
 import("./live-chat.js?v=27").catch((e) => console.warn("live chat", e));
