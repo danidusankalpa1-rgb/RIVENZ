@@ -127,6 +127,6 @@ $("logout").addEventListener("click",async()=>{try{await signOut(auth)}finally{l
 onAuthStateChanged(auth,u=>{if(stop)stop();if(!u){location.replace("auth.html?next=profile.html");return}user=u;stop=onSnapshot(doc(db,"clients",u.uid),s=>{data=s.exists()?s.data():{name:u.displayName||"",email:u.email||""};render()},err=>console.error(err))});
 </script>
 <script type="module" src="account-guard.js?v=26"></script>
-<script type="module" src="user-nav.js?v=32"></script>
+<script type="module" src="user-nav.js?v=33"></script>
 </body>
 </html>

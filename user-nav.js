@@ -144,7 +144,7 @@ function closePop() { clearTimeout(popTimer); if (!popEl) return; const el = pop
 function nextPop() { if (popEl || !popQ.length) return; showPop(popQ.shift()); }
 function showPop(n) {
   popCss();
-  const el = document.createElement("div"); el.className = "rvz-pp"; el.dataset.oid = n.orderId; el.setAttribute("role", "status");
+  const el = document.createElement("div"); el.className = "rvz-pp"; el.dataset.oid = n.orderId; el.dataset.key = n.key || n.orderId + "|" + n.message; el.setAttribute("role", "status");
   const items = []; const seenP = new Set();
   (n.items || []).forEach((it) => { const id = String(it.productId || ""); if (id && !seenP.has(id) && items.length < 3) { seenP.add(id); items.push({ id, name: it.productName || it.name || "Product", img: String(it.image || it.img || (it.images && it.images[0] && it.images[0].url) || "") }); } });
   const delivered = n.delivered && items.length;
@@ -167,9 +167,9 @@ function showPop(n) {
       row.innerHTML = '<div class="rvz-rn">' + esc2(row.querySelector(".rvz-rn span").textContent) + '</div><div class="rvz-rm ok">Thank you! Your review will appear after approval.</div>';
     } catch (er) { msg.className = "rvz-rm err"; msg.textContent = String(er?.message) === "ALREADY_REVIEWED" ? "You have already reviewed this product." : "Could not send your review. Please try again."; go.disabled = false; }
   });
-  if (!delivered) popTimer = setTimeout(closePop, 9000);
+  if (!delivered) { let left = 8000, t0 = Date.now(); const arm = () => { t0 = Date.now(); popTimer = setTimeout(closePop, left); }; arm(); el.addEventListener("mouseenter", () => { clearTimeout(popTimer); left -= Date.now() - t0; }); el.addEventListener("mouseleave", arm); }
 }
-function queuePop(n) { if (popQ.some((x) => x.orderId === n.orderId) || (popEl && popEl.dataset.oid === n.orderId)) return; popQ.push(n); nextPop(); }
+function queuePop(n) { const k = n.key || n.orderId + "|" + n.message; if (popQ.some((x) => (x.key || x.orderId + "|" + x.message) === k) || (popEl && popEl.dataset.key === k)) return; popQ.push(n); nextPop(); }
 let stopOrd = null, stopNote = null;
 function watchNotice(u) {
   try {
@@ -210,4 +210,4 @@ import("./login-modal.js?v=29").catch((e) => console.warn("login popup", e));
 
 if (!window.__rvzLd) { const sc = document.createElement("script"); sc.src = "public-content.js?v=26"; document.head.appendChild(sc); }
 
-import("./site-footer.js?v=26").catch(() => {});
+import("./site-footer.js?v=28").catch(() => {});

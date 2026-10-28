@@ -10,17 +10,17 @@
 <link rel="stylesheet" href="user-nav.css?v=32">
 <script src="public-content.js?v=26"></script>
 <style>
-body{background:#f7f7f5;font-family:Inter,system-ui,sans-serif}
+body{background:#000;font-family:Inter,system-ui,sans-serif;position:relative;overflow-x:hidden}body:before,body:after{content:"";position:fixed;z-index:0;border-radius:50%;filter:blur(80px);pointer-events:none}body:before{width:320px;height:320px;left:-90px;top:140px;background:#3b4a8f;opacity:.3}body:after{width:340px;height:340px;right:-100px;top:420px;background:#6b4a3a;opacity:.25}.home-header,.rf-wrap,.rvz-ft{position:relative;z-index:1}
 .rf-wrap{max-width:860px;margin:0 auto;padding:40px 18px 80px}
-.rf-wrap h1{font-size:clamp(28px,5vw,40px);margin:0 0 6px;color:#111}.rf-wrap>p{color:#777;margin:0 0 24px;font-size:14px}
-.rf-card{background:#0b0b0c;color:#fff;border:1px solid #26262a;border-radius:20px;padding:20px;margin-bottom:14px}
+.rf-wrap h1{font-size:clamp(30px,6vw,46px);font-weight:800;letter-spacing:-.03em;margin:0 0 6px;color:#fff}.rf-wrap>p{color:#a5a7ae;margin:0 0 24px;font-size:14px}
+.rf-card{background:rgba(255,255,255,.06);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);color:#fff;border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:20px;margin-bottom:14px}
 .rf-h{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap}
 .rf-h b{font-size:15px}.rf-h small{display:block;color:#9a9ca4;margin-top:3px;font-size:12px}
 .rf-amt{font-size:20px;font-weight:800}
 .rf-s{display:flex;gap:6px;margin:16px 0 10px}.rf-s span{flex:1;font-size:11.5px;padding-top:8px;border-top:3px solid #34343a;color:#80828a}.rf-s span.c0.on{border-color:#e5484d;color:#fff}.rf-s span.c1.on{border-color:#f5a524;color:#fff}.rf-s span.c2.on{border-color:#30a46c;color:#fff}.rf-lk{display:inline-flex;align-items:center;gap:7px;margin-top:12px;color:#7d7f87;border:1px solid #2a2a2e;border-radius:999px;padding:9px 16px;font-size:13px;font-weight:600;cursor:not-allowed}.rf-lk svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .rf-n{font-size:13px;color:#c9cbd1;line-height:1.55}
 .rf-a{display:inline-block;margin-top:12px;color:#fff;border:1px solid #3a3a40;border-radius:999px;padding:9px 16px;font-size:13px;font-weight:600;text-decoration:none}
-.rf-e{background:#0b0b0c;color:#9a9ca4;border-radius:20px;padding:34px;text-align:center;font-size:14px}
+.rf-e{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#9a9ca4;border-radius:20px;padding:34px;text-align:center;font-size:14px}
 </style>
 </head>
 <body>
@@ -49,6 +49,6 @@ onAuthStateChanged(getAuth(app),u=>{
 });
 </script>
 <script type="module" src="account-guard.js?v=26"></script>
-<script type="module" src="user-nav.js?v=32"></script>
+<script type="module" src="user-nav.js?v=33"></script>
 </body>
 </html>
