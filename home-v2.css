@@ -133,3 +133,18 @@ a.hx-ad:hover .hx-ad-m{transform:scale(1.04)}
 .hx-ad-in .hx-btn{margin-top:22px;display:inline-flex}
 @media(max-width:760px){.hx-ads{width:calc(100% - 24px);gap:12px;margin-top:18px}.hx-ad{min-height:62vh;border-radius:22px}}
 @media(prefers-reduced-motion:reduce){.hx-ad{opacity:1;transform:none;transition:none}}
+
+/* ===== home v3: square black buttons, full-width ads, 4+ arrivals on desktop ===== */
+.hx-sq{display:inline-flex;align-items:center;justify-content:center;height:52px;padding:0 34px;background:#000;color:#fff!important;border:1px solid #000;border-radius:0;font:700 12.5px Inter,system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;cursor:pointer;transition:background .2s,color .2s}
+.hx-sq:hover{background:#fff;color:#000!important}
+.hx-hero-in{flex-direction:column!important;align-items:flex-start!important;justify-content:flex-end!important;gap:26px!important}
+.hx-hero-cta{justify-content:flex-start!important;gap:12px}
+.hx-ads{width:100%!important;max-width:none!important;margin:0!important;gap:0!important}
+.hx-ad{border-radius:0!important;min-height:min(78vh,640px)!important;width:100%}
+.hx-ad:after{background:linear-gradient(180deg,rgba(0,0,0,.05) 30%,rgba(0,0,0,.6))!important}
+.hx-ad-in .hx-sq{margin-top:22px}
+.hx-sec{padding:64px 24px 0!important}
+.hx-img{aspect-ratio:4/5!important}
+.hx-card{flex-basis:calc(20% - 11.2px)!important}
+@media(max-width:1199px){.hx-card{flex-basis:calc(25% - 10.5px)!important}}
+@media(max-width:760px){.hx-card{flex-basis:48%!important}.hx-sec{padding:44px 14px 0!important}.hx-hero-in{padding:0 16px 34px!important}.hx-sq{height:48px;padding:0 22px;font-size:11.5px}.hx-ad{min-height:64vh!important}}

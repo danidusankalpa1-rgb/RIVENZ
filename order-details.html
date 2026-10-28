@@ -19,7 +19,7 @@
 <style>
 .home-header{position:sticky;top:0;z-index:80;background:#fff!important;border-bottom:1px solid #e7e7e2;box-shadow:0 8px 25px rgba(17,19,22,.035);backdrop-filter:none}.home-nav-wrap{width:min(1180px,calc(100% - 48px));height:72px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:24px}.home-brand{display:flex;align-items:center}.home-brand img{width:112px;display:block}.home-nav{display:flex;align-items:center;gap:5px;padding:5px;background:#fff;border:1px solid #e8e8e4;border-radius:999px;box-shadow:0 8px 30px rgba(0,0,0,.04)}.home-nav a{font-size:12px;color:#555a61;padding:9px 15px;border-radius:999px;text-decoration:none}.home-nav a:hover{color:#111;background:#f3f3f0}.home-nav a.active{background:#111316;color:#fff}.home-nav .home-login{margin-left:12px;background:#111316;color:#fff;padding-inline:19px}.home-menu-toggle{display:none;border:0;background:#111316;color:#fff;border-radius:50%;width:40px;height:40px;font-size:17px}@media(max-width:800px){.home-nav-wrap{height:66px}.home-menu-toggle{display:block}.home-nav{display:none;position:absolute;top:66px;left:16px;right:16px;border-radius:20px;padding:10px;background:#fff;flex-direction:column;align-items:stretch;box-shadow:0 18px 50px rgba(0,0,0,.12)}.home-nav.open{display:flex}.home-nav a{border-radius:12px}.home-nav .home-login{margin-left:0}}
 </style>
-<link rel="stylesheet" href="user-nav.css?v=32">
+<link rel="stylesheet" href="user-nav.css?v=40">
 <link rel="stylesheet" href="orders-v2.css?v=26">
 <script src="public-content.js?v=27"></script>
 <script src="refund-receipt.js?v=1"></script>
@@ -64,7 +64,7 @@ body.ov-det{background:#fff!important}
 .t2 .badge{white-space:normal}.t2-sum b{overflow-wrap:anywhere}.t2 .item .name{overflow-wrap:anywhere}</style>
 </head>
 <body class="ov-det">
-<header class="home-header"><div class="home-nav-wrap"><a class="home-brand" href="index.html" aria-label="RIVENZ home"><img src="logo.png" alt="RIVENZ"></a><button class="home-menu-toggle" id="menu" type="button" aria-label="Open menu" aria-expanded="false">☰</button><nav class="home-nav" id="nav"><a href="index.html">Home</a><a href="collection.html">Collections</a><a href="weddings.html">Offers</a><a href="dashboard.html" class="active">My Orders</a><a href="profile.html">My Profile</a><a class="home-login" href="index.html">Logout</a></nav></div></header>
+<header class="home-header"><div class="home-nav-wrap"><a class="home-brand" href="index.html" aria-label="RIVENZ home"><img src="logo.png" alt="RIVENZ"></a><button class="home-menu-toggle" id="menu" type="button" aria-label="Open menu" aria-expanded="false">☰</button><nav class="home-nav" id="nav"><a href="index.html">Home</a><a href="weddings.html">Offers</a><a href="dashboard.html" class="active">My Orders</a><a href="profile.html">My Profile</a><a class="home-login" href="index.html">Logout</a></nav></div></header>
 <main class="wrap t2">
 <section class="t2-top"><a class="ov-back" href="dashboard.html">&lsaquo; My orders</a><h1>Order Tracking</h1><p>Follow your RIVENZ order from confirmation to delivery. Updates made by the store appear here automatically.</p></section>
 <div id="loading" class="card loading">Loading your order…</div>
@@ -83,7 +83,7 @@ body.ov-det{background:#fff!important}
 <div class="card" id="cancelCard" style="display:none"><div class="head"><i class="ci"><svg class="ov-i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/></svg></i><div><h2>Cancel order</h2><div class="sub">You can cancel your order until it is shipped. Paid orders are refunded.</div></div></div><button type="button" id="cancelOrder" class="cancel-btn">Cancel this order</button><div class="tracking-note" id="cancelMsg" style="display:none"></div></div>
 <div class="card" id="receivedCard" style="display:none"><div class="head"><i class="ci"><svg class="ov-i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg></i><div><h2>Confirm delivery</h2><div class="sub">Confirm only after you have received your order.</div></div></div><div id="receivedMessage" class="sub" style="font-size:11px;line-height:1.6"></div><div class="actions"><button class="btn primary" id="confirmReceived" type="button" style="display:none">I Received Order</button></div></div>
 </div>
-<div class="actions t2-act"><a class="btn primary" href="collection.html">Continue shopping</a><a class="btn" href="dashboard.html">My orders</a></div>
+<div class="actions t2-act"><a class="btn primary" href="index.html">Continue shopping</a><a class="btn" href="dashboard.html">My orders</a></div>
 </div>
 </main>
 <div class="cx-bd" id="cxModal"><div class="cx-box" role="dialog" aria-modal="true" aria-labelledby="cxT"><h3 id="cxT">Cancel this order?</h3><p>Please tell us why you want to cancel. This cannot be undone.</p>
@@ -136,6 +136,6 @@ $("menu").addEventListener("click",()=>{const open=$("nav").classList.toggle("op
 onAuthStateChanged(auth,async user=>{if(!user){location.href="auth.html?next="+encodeURIComponent("order-details.html?id="+orderId);return}try{await load()}catch(e){console.error(e);$("loading").textContent="We could not load your order. Please refresh and try again."}});
 </script>
 <script type="module" src="account-guard.js?v=26"></script>
-<script type="module" src="user-nav.js?v=33"></script>
+<script type="module" src="user-nav.js?v=35"></script>
 </body>
 </html>

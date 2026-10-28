@@ -11,7 +11,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Unbounded:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="home.css">
-  <script src="ui-messages.js?v=26"></script>
+  <style>.rvz-sg-link{margin-left:12px;background:none;border:0;padding:0;color:inherit;opacity:.65;font:600 12px Inter,system-ui,sans-serif;text-decoration:underline;text-underline-offset:3px;cursor:pointer;letter-spacing:0;text-transform:none}.rvz-sg-link:hover{opacity:1}</style>
+<script src="size-guide.js?v=1"></script>
+<script src="ui-messages.js?v=26"></script>
   <style>
     :root{--svc-ink:#15171b;--svc-muted:#747983;--svc-line:#e9eaed;--svc-soft:#f6f7f8}
     body{background:#fbfbfa;color:var(--svc-ink)}
@@ -167,8 +169,8 @@
     }
   </style>
   <link rel="stylesheet" href="shop-v2.css?v=28">
-<link rel="stylesheet" href="user-nav.css?v=32">
-<script>if(!new URLSearchParams(location.search).get("product"))location.replace("collection.html")</script>
+<link rel="stylesheet" href="user-nav.css?v=40">
+<script>if(!new URLSearchParams(location.search).get("product"))location.replace("index.html")</script>
 <style>.services-intro,#shopFilters,#shopSubFilters,.services-bottom,#serviceGrid,#rivenzDetailLatest,.rivenz-detail-latest{display:none!important}</style>
 <style>.rivenz-detail-color.soldout{position:relative;overflow:hidden;opacity:.5;filter:grayscale(.7)}.rivenz-detail-color.soldout:after{content:'';position:absolute;left:-10%;top:50%;width:120%;height:2px;background:#e11d1d;transform:rotate(-22deg)}.rivenz-detail-size:disabled{opacity:.35;background:#ececea;text-decoration:line-through;cursor:not-allowed}</style>
 </head>
@@ -180,10 +182,10 @@
     <nav class="home-nav nav">
       <a href="index.html">Home</a>
       <a class="active" href="services.html">Shop</a>
-      <a href="collection.html">Collections</a>
+      
       <a href="weddings.html">Offers</a>
       <a href="contact.html">Contact</a>
-      <a class="cart-nav-link" href="cart.html">Cart <span class="cart-count" id="cartCount">0</span></a>
+      <a class="cart-nav-link" href="index.html?cart=1">Cart <span class="cart-count" id="cartCount">0</span></a>
       <a class="nav-login home-login" href="auth.html">Login</a>
       <a href="dashboard.html">My Dashboard</a>
     </nav>
@@ -309,7 +311,7 @@
     const fn=replace?'replaceState':'pushState';history[fn]({rivenzProduct:productId||null},'',url);
   }
   function catKey(p){const c=String(p?.category||'').toLowerCase(),t=String(p?.productType||'').toLowerCase();if(c==='shoes'||t==='shoes')return'shoes';if(c.indexOf('accessories')===0||t==='accessories')return'accessories';if(c==='ladies'||c==='women')return'women';if(c==='mens')return'mens';return''}
-  function catPage(p){const k=catKey(p);return k?'collection-'+k+'.html':'collection.html'}
+  function catPage(p){const k=catKey(p);return k?'collection-'+k+'.html':'index.html'}
   function catLabel(p){return({mens:"Men's",women:'Women',shoes:'Shoes',accessories:'Accessories'})[catKey(p)]||'RIVENZ'}
   function openProduct(p,push=true){
     if(!p)return;
@@ -330,7 +332,7 @@
     const sizeLabel={clothing:'Size','shoe-eu':'Shoe size · EU','shoe-uk':'Shoe size · UK','shoe-us':'Shoe size · US','one-size':'Size',custom:'Size'}[p.sizeType]||'Size';
     let current=0,chosenColor=colors[0]||'',chosenSize='',qty=1;
     const hasOff=Number(p.offer||0)>0&&Number(p.price||0)>0&&Number(p.offer)<Number(p.price);
-    page.innerHTML='<div class="rv2-crumbs"><button type="button" class="rivenz-detail-back" id="rivenzDetailBack">Collection</button><span>/</span><a href="'+catPage(p)+'" style="color:inherit;text-decoration:none">'+esc(catLabel(p))+'</a><span>/</span><b>'+esc(p.name||'Product')+'</b><a class="rivenz-detail-cart" href="cart.html">Cart <span id="rivenzDetailCartCount"></span></a></div>'+
+    page.innerHTML='<div class="rv2-crumbs"><button type="button" class="rivenz-detail-back" id="rivenzDetailBack">Back</button><span>/</span><a href="'+catPage(p)+'" style="color:inherit;text-decoration:none">'+esc(catLabel(p))+'</a><span>/</span><b>'+esc(p.name||'Product')+'</b><a class="rivenz-detail-cart" href="index.html?cart=1">Cart <span id="rivenzDetailCartCount"></span></a></div>'+
     '<div class="rivenz-detail-layout"><div class="rivenz-detail-info"><h1 class="rivenz-detail-title">'+esc(p.name||'RIVENZ Product')+'</h1>'+(p.sku?'<div class="rv2-sku">Item no. '+esc(p.sku)+'</div>':'')+'<div id="rivenzDetailOptions"></div>'+
     '<div class="rv2-price"><span class="rivenz-detail-price">'+money(price)+'</span>'+(hasOff?'<span class="rivenz-detail-old">'+money(p.price)+'</span><span class="rv2-off">\u2212'+Math.round((1-p.offer/p.price)*100)+'%</span>':'')+'</div>'+
     '<div class="rivenz-delivery-box"><svg class="rv2-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.6"/><circle cx="17" cy="17.5" r="1.6"/></svg>'+(delivery>0?'<span><strong>Delivery '+money(delivery)+'</strong> Islandwide</span>':'<span><strong class="rivenz-delivery-free">Free delivery</strong> Islandwide</span>')+'</div>'+
@@ -349,7 +351,7 @@
     let colorWrap,sizeWrap,stockNote,qtyValue,minus,plus,orderBtn,addBtn;
     if(colors.length){const label=document.createElement('div');label.className='rivenz-detail-label';label.innerHTML='Colour <span id="rv2ColorName" class="rv2-cn">'+esc(colors[0]||'')+'</span>';opt.appendChild(label);colorWrap=document.createElement('div');colorWrap.className='rivenz-detail-options';colors.forEach((c,i)=>{const b=document.createElement('button');b.type='button';b.className='rivenz-detail-color'+(i===0?' selected':'');b.innerHTML='<i class="color-dot" style="background:'+esc(colorHex(p,c))+'"></i>'+esc(c);b.title=c;b.onclick=()=>{chosenColor=c;const cn=document.getElementById('rv2ColorName');if(cn)cn.textContent=c;colorWrap.querySelectorAll('button').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');renderSizes();updateActions()};colorWrap.appendChild(b)});opt.appendChild(colorWrap)}
     function refreshColors(){if(!colorWrap)return;[...colorWrap.children].forEach((b,i)=>{const c=colors[i];b.classList.toggle('soldout',sizesAll.length>0&&sizesAll.every(sz=>stockFor(sz,c)<=0))})}
-    const sl=document.createElement('div');sl.className='rivenz-detail-label';sl.textContent=sizeLabel;opt.appendChild(sl);sizeWrap=document.createElement('div');sizeWrap.className='rivenz-detail-options';opt.appendChild(sizeWrap);stockNote=document.createElement('div');stockNote.className='rivenz-detail-stock';opt.appendChild(stockNote);
+    const sl=document.createElement('div');sl.className='rivenz-detail-label';sl.textContent=sizeLabel;if(!/one-size/.test(String(p.sizeType||''))){const sg=document.createElement('button');sg.type='button';sg.className='rvz-sg-link';sg.textContent='Size guide';sg.onclick=()=>window.rvzSizeGuide&&window.rvzSizeGuide(p.sizeType);sl.appendChild(sg)}opt.appendChild(sl);sizeWrap=document.createElement('div');sizeWrap.className='rivenz-detail-options';opt.appendChild(sizeWrap);stockNote=document.createElement('div');stockNote.className='rivenz-detail-stock';opt.appendChild(stockNote);
     const ql=document.createElement('div');ql.className='rivenz-detail-label';ql.textContent='Quantity';opt.appendChild(ql);const q=document.createElement('div');q.className='rivenz-detail-qty';q.innerHTML='<button type="button" aria-label="Decrease quantity">−</button><span>1</span><button type="button" aria-label="Increase quantity">+</button>';opt.appendChild(q);minus=q.querySelector('button:first-child');qtyValue=q.querySelector('span');plus=q.querySelector('button:last-child');
     orderBtn=page.querySelector('#rivenzDetailOrder');addBtn=page.querySelector('#rivenzDetailAdd');
     function updateActions(){const currentStock=stockFor(chosenSize,chosenColor);if(!chosenSize&&sizesFor(chosenColor).length)chosenSize=sizesFor(chosenColor)[0];const available=stockFor(chosenSize,chosenColor);if(qty>Math.max(1,available))qty=Math.max(1,available);qtyValue.textContent=qty;stockNote.innerHTML=available>0?'<strong>Available</strong>'+(chosenColor?' · '+esc(chosenColor):''):'<strong>Unavailable</strong> for this selection';const can=!!chosenSize&&available>0;orderBtn.classList.toggle('disabled',!can);addBtn.disabled=!can;orderBtn.href=can?'order.html?product='+encodeURIComponent(p.id)+'&color='+encodeURIComponent(chosenColor)+'&size='+encodeURIComponent(chosenSize)+'&quantity='+encodeURIComponent(qty):'#';minus.disabled=qty<=1;plus.disabled=!can||qty>=available}
@@ -419,7 +421,7 @@
   window.addEventListener('popstate',()=>{
     const id=new URL(location.href).searchParams.get('product')||'';
     if(id){activeProductId=id;detailOpen=true;render();requestAnimationFrame(()=>document.getElementById('rivenzDetailPage')?.scrollIntoView({block:'start',behavior:'smooth'}));}
-    else{location.href='collection.html'}
+    else{location.href='index.html'}
   });
   async function loadAndOpen(){await load();}
   loadAndOpen();window.addEventListener('focus',()=>load(false));
@@ -434,7 +436,7 @@ if(homeToggle&&homeNav){homeToggle.addEventListener('click',()=>{const open=home
 </script>
 <script type="module" src="cart-store.js?v=26"></script>
 <script type="module" src="account-guard.js?v=26"></script>
-<script type="module" src="user-nav.js?v=33"></script>
+<script type="module" src="user-nav.js?v=35"></script>
 <script type="module" src="reviews.js?v=4"></script>
 </body>
 </html>

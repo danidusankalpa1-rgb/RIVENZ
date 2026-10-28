@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Unbounded:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="home-v2.css?v=28">
-  <link rel="stylesheet" href="user-nav.css?v=32">
+  <link rel="stylesheet" href="home-v2.css?v=29">
+  <link rel="stylesheet" href="user-nav.css?v=40">
 </head>
 <body class="hx">
 <main>
@@ -23,7 +23,7 @@
         <p id="hxDesc"></p>
       </div>
       <div class="hx-hero-cta">
-        <a class="hx-btn dark" id="hxB1" href="collection.html">Shop Now</a>
+        <a class="hx-sq" href="collection-mens.html">Shop Mens</a><a class="hx-sq" href="collection-women.html">Shop Womens</a>
       </div>
     </div>
   </section>
@@ -31,7 +31,7 @@
   <section class="hx-ads" id="collections" hidden></section>
 
   <section class="hx-sec" id="shop-preview">
-    <div class="hx-head"><div><h2>New arrivals</h2><p>Fresh pieces, just landed.</p></div><a class="hx-btn ghost" href="collection.html">Shop all</a></div>
+    <div class="hx-head"><div><h2>New arrivals</h2><p>Fresh pieces, just landed.</p></div></div>
     <div class="hx-rail-wrap">
       <button class="hx-arr p" id="hxPrev" aria-label="Previous"><svg class="hx-i" viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></svg></button>
       <div class="hx-rail" id="homeServices"><div class="hx-empty">Loading new arrivals…</div></div>
@@ -42,7 +42,7 @@
   <section class="hx-promo" id="offers-preview">
     <div class="hx-promo-in">
       <div><h2 id="hxPT">Simple pieces. Strong style.</h2><p id="hxPP"></p></div>
-      <div class="btns"><a class="hx-btn light" href="weddings.html">View offers</a><a class="hx-btn line-w" href="special-event.html">Special events</a></div>
+      <div class="btns"><a class="hx-btn light" href="weddings.html?tab=offers">View offers</a><a class="hx-btn line-w" href="special-event.html">Special events</a></div>
     </div>
   </section>
 
@@ -63,7 +63,7 @@
 
 <footer class="hx-foot">
   <div><img src="logo.png" alt="RIVENZ"><small>© 2026 RIVENZ. All rights reserved.</small></div>
-  <nav><a href="index.html">Home</a><a href="collection.html">Collection</a><a href="weddings.html">Offers</a><a href="contact.html">Contact</a></nav>
+  <nav><a href="index.html">Home</a><a href="weddings.html">Offers</a><a href="contact.html">Contact</a></nav>
 </footer>
 
 <script src="file-store.js?v=26"></script>
@@ -92,7 +92,6 @@
     $('hxPill').textContent=v.heroPill||DEFAULT.heroPill;
     $('hxTitle').innerHTML=[v.heroLine1,v.heroLine2,v.heroLine3].filter(Boolean).map(esc).join('<br>');
     $('hxDesc').textContent=v.heroDescription||DEFAULT.heroDescription;
-    $('hxB1').textContent=v.primaryButton||DEFAULT.primaryButton;
     $('hxPT').textContent=v.promoTitle||DEFAULT.promoTitle;$('hxPP').textContent=v.promoText||DEFAULT.promoText;
     $('hxCT').textContent=v.contactTitle||DEFAULT.contactTitle;
   }
@@ -101,7 +100,8 @@
     const hi=v.heroImage,vid=/^video/.test(hi.type||'')||/\.(mp4|webm|mov)(\?|$)/i.test(String(url));if(vid){const el=document.createElement('video');el.src=url;el.muted=true;el.loop=true;el.autoplay=true;el.playsInline=true;el.setAttribute('playsinline','');el.preload='auto';el.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover';$('heroBg').appendChild(el);el.play&&el.play().catch(()=>{})}else $('heroBg').style.backgroundImage='url("'+String(url).replace(/"/g,'%22')+'")';$('heroCard').classList.add('has-img');
   }
   function applyVisibility(v){
-    [['#shop-preview',v.showShop],['#collections',v.showCollections],['#offers-preview',v.showPromo],['.process-section',v.showProcess],['#contact',v.showContact]].forEach(([s,on])=>{const el=document.querySelector(s);if(el)el.style.display=on===false?'none':''});
+    window.__hxAdsOff=v.showCollections===false;document.querySelectorAll('.hx-ads').forEach(e=>e.style.display=window.__hxAdsOff?'none':'');
+    [['#shop-preview',v.showShop],['#offers-preview',v.showPromo],['.process-section',v.showProcess],['#contact',v.showContact]].forEach(([s,on])=>{const el=document.querySelector(s);if(el)el.style.display=on===false?'none':''});
   }
   async function loadAds(){
     const box=$('collections');if(!box)return;
@@ -110,16 +110,23 @@
       const it=(Array.isArray(r)?r:[]).find(x=>x&&x._key==='home-ads');
       const ads=(it&&Array.isArray(it.ads)?it.ads:[]).filter(a=>a&&(a.media?.url||a.title));
       if(!ads.length){box.hidden=true;return}
-      box.innerHTML=ads.map((a,i)=>{
+      const AFTER={hero:'#heroCard',new:'#shop-preview',promo:'#offers-preview',feat:'.process-section',contact:'#contact'};
+      const html=a=>{
         const m=a.media&&a.media.url?a.media:null,vid=m&&(m.type==='video'||/\.(mp4|webm|mov|m4v)(\?|$)/i.test(m.url));
         const media=m?(vid?'<video class="hx-ad-m" src="'+esc(m.url)+'" muted loop autoplay playsinline preload="metadata"></video>':'<img class="hx-ad-m" src="'+esc(m.url)+'" alt="" loading="lazy">'):'';
-        const tag='div';
-        return '<'+tag+' class="hx-ad" '+''+' style="transition-delay:'+(i?0:0)+'ms">'+media+'<div class="hx-ad-in">'+(a.title?'<h2>'+esc(a.title).replace(/\n/g,'<br>')+'</h2>':'')+(a.description?'<p>'+esc(a.description)+'</p>':'')+(a.link&&a.button?'<a class="hx-btn light" href="'+esc(a.link)+'">'+esc(a.button)+'</a>':'')+'</div></'+tag+'>';
-      }).join('');
-      box.hidden=false;
-      box.querySelectorAll('video').forEach(v=>{v.muted=true;v.play().catch(()=>{})});
+        return '<div class="hx-ad">'+media+'<div class="hx-ad-in">'+(a.title?'<h2>'+esc(a.title).replace(/\n/g,'<br>')+'</h2>':'')+(a.description?'<p>'+esc(a.description)+'</p>':'')+(a.link&&a.button?'<a class="hx-sq" href="'+esc(a.link)+'">'+esc(a.button)+'</a>':'')+'</div></div>';
+      };
+      const groups={};ads.forEach(a=>{const k=AFTER[a.pos]?a.pos:'hero';(groups[k]=groups[k]||[]).push(a)});
+      const els=[];
+      Object.keys(groups).forEach(k=>{
+        let host=k==='hero'?box:document.createElement('section');
+        if(k!=='hero'){host.className='hx-ads';const t=document.querySelector(AFTER[k]);if(!t)return;t.insertAdjacentElement('afterend',host)}
+        host.innerHTML=groups[k].map(html).join('');host.hidden=false;if(window.__hxAdsOff)host.style.display='none';els.push(host);
+      });
+      if(!groups.hero)box.hidden=true;
+      els.forEach(h=>h.querySelectorAll('video').forEach(v=>{v.muted=true;v.play().catch(()=>{})}));
       const io='IntersectionObserver'in window?new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12}):null;
-      box.querySelectorAll('.hx-ad').forEach(el=>io?io.observe(el):el.classList.add('in'));
+      els.forEach(h=>h.querySelectorAll('.hx-ad').forEach(el=>io?io.observe(el):el.classList.add('in')));
     }catch(e){box.hidden=true}
   }
   function renderArrivals(products){
@@ -141,6 +148,6 @@
 </script>
 <script type="module" src="cart-store.js?v=26"></script>
 <script type="module" src="account-guard.js?v=26"></script>
-<script type="module" src="user-nav.js?v=33"></script>
+<script type="module" src="user-nav.js?v=35"></script>
 </body>
 </html>

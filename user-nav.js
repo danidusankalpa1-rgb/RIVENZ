@@ -3,6 +3,7 @@ import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/fi
 import { doc, onSnapshot, collection, query, where } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
 import { app, db } from "./firebase-config.js";
 import "./cart-store.js";
+import "./cart-drawer.js?v=1";
 
 const P = {
   home: '<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
@@ -22,9 +23,10 @@ const P = {
 };
 const I = (k, c = "") => `<svg class="rvz-i ${c}" viewBox="0 0 24 24" aria-hidden="true">${P[k]}</svg>`;
 const file = (location.pathname.split("/").pop() || "index.html").toLowerCase();
-const ACTIVE = { "index.html": "home", "": "home", "services.html": "collection", "product-details.html": "collection", "collection.html": "collection", "collection-mens.html": "collection", "collection-women.html": "collection", "collection-shoes.html": "collection", "collection-accessories.html": "collection", "portfolio.html": "collection", "weddings.html": "offers", "chat.html": "chat", "cart.html": "cart", "order.html": "cart", "order-confirmation.html": "cart", "special-event.html": "event", "profile.html": "profile", "dashboard.html": "order", "order-details.html": "order", "refund.html": "refund" }[file] || "";
-const MAIN = [["home", "Home", "index.html"], ["collection", "Shop collection", "collection.html"], ["offers", "Offers", "weddings.html"], ["event", "Special event", "special-event.html"]];
+const ACTIVE = { "index.html": "home", "": "home", "collection-mens.html": "mens", "collection-women.html": "women", "collection-shoes.html": "shoes", "collection-accessories.html": "acc", "weddings.html": "offers", "special-event.html": "event", "profile.html": "profile", "dashboard.html": "order", "order-details.html": "order", "refund.html": "refund", "chat.html": "chat" }[file] || "";
+const MAIN = [["home", "Home", "index.html"], ["mens", "Mens", "collection-mens.html"], ["women", "Women", "collection-women.html"], ["shoes", "Shoes", "collection-shoes.html"], ["acc", "Accessories", "collection-accessories.html"], ["offers", "Last chance", "weddings.html"], ["event", "Special Event", "special-event.html"]];
 
+const esc3 = (v) => String(v ?? "").replace(/[&<>"']/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m]));
 const h = document.createElement("header");
 h.className = "rvz-h";
 document.body.prepend(h);
@@ -36,32 +38,28 @@ function paint() {
   const cu = !authReady ? cachedU() : null;
   const li = !!user || !!cu, on = (k) => (ACTIVE === k ? " on" : "");
   const initial = user ? String(user.displayName || user.email || "U").trim().slice(0, 1).toUpperCase() : String(cu?.i || "U").slice(0, 1).toUpperCase();
-  const sigNow = [li, initial].join("|");
+  const sigNow = [li, initial, user?.email || cu?.e || ""].join("|");
   if (h.dataset.sig === sigNow && h.firstChild) return;
   h.dataset.sig = sigNow;
   const cartB = `<em class="rvz-b" data-cart${cartN ? "" : " hidden"}>${cartN}</em>`, chatB = `<em class="rvz-b" data-unread${unread ? "" : " hidden"}>${unread}</em>`;
-  const full = [...MAIN.slice(0, 3).map(([k, l, u]) => [k, l, u]), ["chat", "Chat", "chat.html", chatB], ["cart", "Cart", "cart.html", cartB], MAIN[3], ...(li ? [["profile", "My profile", "profile.html"], ["order", "My order", "dashboard.html"], ["refund", "My refund", "refund.html"]] : [])];
+  const full = MAIN;
   const dl = ([k, l, u, bd = ""]) => `<a class="rvz-dr${on(k)}" href="${u}"><span>${l}</span>${bd}</a>`;
   const row = ([k, l, u, b = ""]) => `<a class="rvz-row${on(k)}" href="${u}">${I(k === "profile" ? "user" : k)}<span>${l}</span>${b}</a>`;
   const isShop = false, curCat = new URLSearchParams(location.search).get("category")||"all";
   const CATS = [["Men's", "mens"], ["Ladies", "ladies"], ["Unisex", "unisex"], ["Kids", "kids"], ["Accessories", "accessories"]];
   h.innerHTML = `<div class="rvz-w">
-    <span class="rvz-tag">#RIVENZFASHION</span>
+    <div class="rvz-l"><button type="button" class="rvz-c rvz-menu" id="rvzMenu" aria-label="Open menu" aria-expanded="false"><span class="rvz-m">${I("menu")}</span><span class="rvz-x">${I("x")}</span></button>
+    <button type="button" class="rvz-c rvz-bell rvz-sbtn" id="rvzSBtn" aria-label="Search" aria-expanded="false">${I("search")}</button></div>
     <a class="rvz-logo" href="index.html" aria-label="RIVENZ home"><img src="logo.png" alt="RIVENZ"></a>
     <div class="rvz-r">
-      <button type="button" class="rvz-c rvz-bell rvz-sbtn" id="rvzSBtn" aria-label="Search" aria-expanded="false">${I("search")}</button>
-      <a class="rvz-c rvz-chat${on("chat")}" href="chat.html" aria-label="Chat">${I("chat")}${chatB}</a>
-      <a class="rvz-c${on("cart")}" href="cart.html" aria-label="Cart">${I("cart")}${cartB}</a>
+      <a class="rvz-c${on("cart")}" href="index.html?cart=1" aria-label="Cart" data-cartbtn>${I("cart")}${cartB}</a>
       ${li ? `<button type="button" class="rvz-c rvz-acc" id="rvzAcc" aria-label="Account" aria-expanded="false"><span class="rvz-av">${initial}</span></button>` : `<a class="rvz-login" href="auth.html?next=${encodeURIComponent(file)}">${I("user")}<span>Login</span></a>`}
     </div>
-    <button type="button" class="rvz-c rvz-menu" id="rvzMenu" aria-label="Open menu" aria-expanded="false"><span class="rvz-m">${I("menu")}</span><span class="rvz-x">${I("x")}</span></button>
   </div>
-  <div class="rvz-navrow"><nav class="rvz-nav" aria-label="Main">${MAIN.map(([k, l, u]) => `<a class="rvz-a${on(k)}" href="${u}"><span>${l}</span></a>`).join("")}</nav></div>
-  ${isShop ? `<div class="rvz-sub"><nav aria-label="Categories">${[["All", "all"], ...CATS.map(([l, c]) => [l, c])].map(([l, c]) => `<a class="${curCat === c ? "on" : ""}" href="services.html${c === "all" ? "" : "?category=" + c}">${l}</a>`).join("")}</nav></div>` : ""}
   <div class="rvz-search rvz-blk" id="rvzSearch"><form class="rvz-sw" id="rvzSF" role="search"><input type="search" name="q" placeholder="Search products" autocomplete="off" maxlength="60" aria-label="Search products"></form><div class="rvz-sr" id="rvzSR" hidden></div></div>
   <div class="rvz-w2">
-    <div class="rvz-card rvz-acc-card" id="rvzAccCard"><a class="rvz-row${on("profile")}" href="profile.html">${I("user")}<span>My profile</span></a><a class="rvz-row${on("order")}" href="dashboard.html">${I("order")}<span>My order</span></a><a class="rvz-row${on("refund")}" href="refund.html">${I("refund")}<span>My refund</span></a><div class="rvz-sep"></div><button type="button" class="rvz-row" data-out>${I("out")}<span>Log out</span></button></div>
-    <div class="rvz-card rvz-mob" id="rvzMob"><div class="rvz-dh"><img src="logo.png" alt="RIVENZ"><button type="button" class="rvz-dx" data-close aria-label="Close menu">${I("x")}</button></div><nav class="rvz-dn">${full.map((r) => dl(r)).join("")}${li ? `<button type="button" class="rvz-dr" data-out><span>Log out</span></button>` : `<a class="rvz-dr" href="auth.html?next=${encodeURIComponent(file)}"><span>Login</span></a>`}</nav></div>
+    <div class="rvz-card rvz-acc-card" id="rvzAccCard"><a class="rvz-row${on("profile")}" href="profile.html">${I("user")}<span>My profile</span></a><a class="rvz-row${on("order")}" href="dashboard.html">${I("order")}<span>My order</span></a><a class="rvz-row${on("refund")}" href="refund.html">${I("refund")}<span>My refund</span></a><a class="rvz-row${on("chat")}" href="chat.html">${I("chat")}<span>Chat</span>${chatB}</a><div class="rvz-sep"></div><button type="button" class="rvz-row" data-out>${I("out")}<span>Log out</span></button></div>
+    <div class="rvz-card rvz-mob" id="rvzMob"><div class="rvz-dh"><img src="logo.png" alt="RIVENZ"><button type="button" class="rvz-dx" data-close aria-label="Close menu">${I("x")}</button></div><nav class="rvz-dn">${full.map((r) => dl(r)).join("")}</nav><div class="rvz-df">${li ? `<span>Signed in as</span><b data-who>${esc3(user?.email || cachedU()?.e || "")}</b>` : `<a href="auth.html?next=${encodeURIComponent(file)}">Login / Sign up</a>`}</div></div>
     <div class="rvz-bd" id="rvzBd"></div>
   </div>`;
 }
@@ -107,7 +105,7 @@ h.addEventListener("submit", (e) => { const f = e.target.closest("#rvzSF"); if (
 document.addEventListener("click", (e) => { if (!h.contains(e.target)) closeAll(); });
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeAll(); });
 let lastW = innerWidth; window.addEventListener("resize", () => { if (innerWidth !== lastW) { lastW = innerWidth; closeAll(); } });
-const OVER = file === "index.html" || file === "collection.html" || file === ""; if (OVER) h.classList.add("rvz-fix");
+const OVER = file === "index.html" || file === ""; if (OVER) h.classList.add("rvz-fix");
 const onScroll = () => { h.classList.toggle("rvz-sm", window.scrollY > 70); h.classList.toggle("rvz-over", OVER && window.scrollY < 24 && !h.querySelector(".rvz-card.open,.rvz-search.open")); };
 window.addEventListener("scroll", onScroll, { passive: true }); onScroll();
 
@@ -201,7 +199,7 @@ paint(); readCart();
 let stopChat = null;
 onAuthStateChanged(getAuth(app), (u) => {
   user = u || null; authReady = true; unread = 0; if (stopChat) { stopChat(); stopChat = null; } if (stopOrd) { stopOrd(); stopOrd = null; } if (stopNote) { stopNote(); stopNote = null; }
-  try { if (u) localStorage.setItem("rvzNavUser", JSON.stringify({ i: String(u.displayName || u.email || "U").trim().slice(0, 1).toUpperCase() })); else localStorage.removeItem("rvzNavUser"); } catch (_) {}
+  try { if (u) localStorage.setItem("rvzNavUser", JSON.stringify({ i: String(u.displayName || u.email || "U").trim().slice(0, 1).toUpperCase(), e: u.email || "" })); else localStorage.removeItem("rvzNavUser"); } catch (_) {}
   paint(); readCart(); if (u) { watchOrders(u); watchNotice(u); }
   if (u) stopChat = onSnapshot(doc(db, "chats", u.uid), (s) => { unread = Number(s.data()?.unreadUser) > 0 ? Number(s.data().unreadUser) : 0; setBadge("[data-unread]", unread); }, () => {});
 });

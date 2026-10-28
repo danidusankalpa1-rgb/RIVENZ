@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Offers — RIVENZ Clothing</title>
+  <title>Last chance — RIVENZ</title>
   <meta name="description" content="RIVENZ special offers — selected clothing at reduced prices.">
   <link rel="preconnect" href="https://graphics-file-api.danidusankalpa56.workers.dev" crossorigin>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="home.css">
   <script src="ui-messages.js?v=26"></script>
   <style>
+.lc-tabs{display:flex;gap:10px;margin:0 0 22px}.lc-tabs button{height:42px;padding:0 24px;border:1px solid #111316;background:#fff;color:#111316;font:800 12px Inter,system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:background .2s,color .2s}.lc-tabs button.on{background:#111316;color:#fff}
     :root{--svc-ink:#15171b;--svc-muted:#747983;--svc-line:#e9eaed;--svc-soft:#f6f7f8}
     body{background:#fbfbfa;color:var(--svc-ink)}
     .services-page{max-width:1240px;margin:0 auto;padding:76px 24px 110px}
@@ -142,7 +143,7 @@
   .offers-only-note{font-size:10px;color:#777c84;margin:0 0 18px}
 </style>
 <link rel="stylesheet" href="shop-v2.css?v=28">
-<link rel="stylesheet" href="user-nav.css?v=32">
+<link rel="stylesheet" href="user-nav.css?v=40">
 </head>
 <body class="page-ready">
 <header class="home-header">
@@ -152,10 +153,10 @@
     <nav class="home-nav nav">
       <a href="index.html">Home</a>
       
-      <a href="collection.html">Collections</a>
+      
       <a class="active" href="weddings.html">Offers</a>
       <a href="contact.html">Contact</a>
-      <a class="cart-nav-link" href="cart.html">Cart <span class="cart-count" id="cartCount">0</span></a>
+      <a class="cart-nav-link" href="index.html?cart=1">Cart <span class="cart-count" id="cartCount">0</span></a>
       <a class="nav-login home-login" href="auth.html">Login</a>
       <a href="dashboard.html">My Dashboard</a>
     </nav>
@@ -164,17 +165,18 @@
 
 <main class="services-page">
   <section class="services-intro sx-intro">
-    <div><div class="services-kicker">RIVENZ</div><h1>Offers</h1></div>
-    <p>Selected pieces at special prices.</p>
+    <div><div class="services-kicker">RIVENZ</div><h1>Last chance</h1></div>
+    <p id="lcSub">Selected pieces at special prices.</p>
   </section>
 
+  <div class="lc-tabs" role="tablist"><button type="button" role="tab" data-t="limited">Limited</button><button type="button" role="tab" data-t="offers">Offers</button></div>
   <section id="serviceGrid" class="service-grid" aria-live="polite">
     <div class="empty-state"><strong>Loading products…</strong><span>Getting the latest RIVENZ products.</span></div>
   </section>
 
   <section class="services-bottom">
-    <div><strong>Want the full collection?</strong><span>Browse every RIVENZ product in Shop.</span></div>
-    <a class="btn btn-primary" href="collection.html">Shop All Products →</a>
+    <div><strong>Looking for something else?</strong><span>Browse Mens, Women, Shoes and Accessories from the menu.</span></div>
+    <a class="btn btn-primary" href="index.html">Back to home →</a>
   </section>
 </main>
 
@@ -218,10 +220,16 @@
     return card;
   }
   function closeModal(){const m=document.getElementById('rivenzProductModal');if(m){m.querySelectorAll('video').forEach(v=>v.pause());m.classList.remove('open');document.body.style.overflow=''}}
+  let tab=(new URLSearchParams(location.search).get('tab')||'limited').toLowerCase()==='offers'?'offers':'limited';
+  const tabs=document.querySelectorAll('.lc-tabs button');
+  tabs.forEach(b=>b.addEventListener('click',()=>{tab=b.dataset.t;history.replaceState(null,'','weddings.html?tab='+tab);render()}));
   function render(){
     grid.innerHTML='';
-    const list=products.filter(x=>x&&x.active!==false&&Number(x.offer||0)>0&&Number(x.offer||0)<Number(x.price||0));
-    if(!list.length){grid.innerHTML='<div class="empty-state"><strong>No offers available right now.</strong><span>Add an offer price to an active RIVENZ product in Admin and it will appear here automatically.</span></div>';return}
+    tabs.forEach(b=>{const on=b.dataset.t===tab;b.classList.toggle('on',on);b.setAttribute('aria-selected',on)});
+    document.getElementById('lcSub').textContent=tab==='limited'?'Limited pieces. When they are gone, they are gone.':'Selected pieces at special prices.';
+    const act=products.filter(x=>x&&x.active!==false);
+    const list=tab==='limited'?act.filter(x=>String(x.tag||'').toLowerCase()==='limited'):act.filter(x=>Number(x.offer||0)>0&&Number(x.offer||0)<Number(x.price||0));
+    if(!list.length){grid.innerHTML='<div class="empty-state"><strong>'+(tab==='limited'?'No limited products right now.':'No offers available right now.')+'</strong><span>'+(tab==='limited'?'Products tagged Limited in Admin will appear here.':'Products with an offer price will appear here.')+'</span></div>';return}
     list.forEach(p=>grid.appendChild(makeCard(p)))
   }
   load();window.addEventListener('focus',load);
@@ -236,6 +244,6 @@ if(homeToggle&&homeNav){homeToggle.addEventListener('click',()=>{const open=home
 </script>
 <script type="module" src="cart-store.js?v=26"></script>
 <script type="module" src="account-guard.js?v=26"></script>
-<script type="module" src="user-nav.js?v=33"></script>
+<script type="module" src="user-nav.js?v=35"></script>
 </body>
 </html>
