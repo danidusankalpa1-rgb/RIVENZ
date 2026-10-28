@@ -84,8 +84,6 @@ const toggle=document.querySelector(".home-menu-toggle");
 toggle?.addEventListener("click",()=>{const open=nav?.classList.toggle("open");toggle.setAttribute("aria-expanded",String(!!open));});
 const esc=value=>String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const money=value=>`Rs. ${Number(value||0).toLocaleString()}`;
-function statusClass(status){const s=String(status||"");if(/cancel/i.test(s))return "cancel";if(/deliver|complete/i.test(s))return "green";if(/await|pending/i.test(s))return "pending";return "";}
-function progressRank(status,paymentStatus){const s=String(status||"").toLowerCase();if(/deliver|complete/.test(s))return 6;if(/ship/.test(s))return 5;if(/pack/.test(s))return 4;if(/process/.test(s))return 3;if(/order confirmed/.test(s))return 2;if(/payment confirmed/.test(s)||paymentStatus==="Paid"||paymentStatus==="Paid on Delivery")return 1;return 0;}
 const hiddenKey=u=>"rvzHiddenOrders:"+u.uid;
 function hiddenSet(u){try{return new Set(JSON.parse(localStorage.getItem(hiddenKey(u))||"[]").map(String))}catch(e){return new Set()}}
 document.addEventListener("click",async e=>{const b=e.target.closest("[data-rm]");if(!b)return;e.preventDefault();e.stopPropagation();const u=dashboardUser;if(!u||!confirm("Remove this order from your list?"))return;const id=b.dataset.rm;const h=hiddenSet(u);h.add(id);try{localStorage.setItem(hiddenKey(u),JSON.stringify([...h]))}catch(_){}try{await updateDoc(doc(db,"orders",id),{customerHidden:true})}catch(_){}render(u)},true);

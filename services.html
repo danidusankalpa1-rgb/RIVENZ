@@ -252,7 +252,6 @@
   /* live stock sync */
   (function(){let busy=false;async function tick(){if(busy||document.hidden)return;busy=true;try{const r=await window.graphicsPublicContent.catalog('products',true);if(Array.isArray(r)){let ch=false;r.forEach(n=>{const o=products.find(x=>x&&String(x.id)===String(n.id));if(!o)return;const sig=JSON.stringify([n.stockByColorSize,n.stock,n.price,n.offer,n.active]);if(o.__sig!==sig){if(o.__sig!==undefined)ch=true;o.__sig=sig;['stockByColorSize','stock','stockTotal','price','offer','active','colors','sizes'].forEach(k=>{if(n[k]!==undefined)o[k]=n[k]})}});if(ch)window.dispatchEvent(new Event('rvz-live'))}}catch(e){}busy=false}setInterval(tick,8000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)tick()});setTimeout(tick,1500)})();
   async function load(force=false){if(catalogLoading)return catalogLoading;if(!force&&catalogLoadedAt&&Date.now()-catalogLoadedAt<30000){render();return products}catalogLoading=(async()=>{try{const remote=await window.graphicsPublicContent.catalog('products');products=(Array.isArray(remote)&&remote.length?remote:local()).filter(x=>!(x&&x.special))}catch(e){products=local()}catalogLoadedAt=Date.now();render();return products})().finally(()=>{catalogLoading=null});return catalogLoading}
-  function rvzVid(url){const v=document.createElement('video');v.src=url;v.muted=true;v.loop=true;v.playsInline=true;v.autoplay=true;v.preload='metadata';v.setAttribute('muted','');v.setAttribute('playsinline','');v.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;opacity:1';v.addEventListener('canplay',()=>{v.play().catch(()=>{})});return v}
   let cardN=0;
   function makeCard(p,noVid){
     const card=document.createElement('article');card.className='service-card sx-card'+(window.rvzCard&&rvzCard.sold&&rvzCard.sold(p)?' rz-sold':'');card.tabIndex=0;
@@ -318,14 +317,6 @@
     if(push)setDetailUrl(activeProductId,false);
     renderProductPage(p);
     requestAnimationFrame(()=>{const page=document.getElementById('rivenzDetailPage');page?.scrollIntoView({block:'start',behavior:'smooth'});});
-  }
-  function closeProduct(useHistory=true){
-    location.href='collection.html';return;
-    activeProductId='';detailOpen=false;
-    if(useHistory)setDetailUrl('',true);
-    document.querySelector('.services-intro')?.removeAttribute('hidden');document.getElementById('shopFilters')?.removeAttribute('hidden');document.getElementById('shopSubFilters')?.removeAttribute('hidden');grid.removeAttribute('hidden');document.querySelector('.services-bottom')?.removeAttribute('hidden');
-    const detail=document.getElementById('rivenzDetailPage');if(detail)detail.remove();const latest=document.getElementById('rivenzDetailLatest');if(latest)latest.remove();
-    render();
   }
 
   async function renderProductPage(p){

@@ -5,7 +5,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Unbounded:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="user-nav.css?v=32">
 <style>
-:root{--bg:#d8d8c8;--bg2:#c9c9b6;--ac:#8cc63f;--tx:#15171b;--bt:#15171b;--bx:#fff;--wide:'Unbounded','Inter',sans-serif;--ease:cubic-bezier(.22,1,.36,1)}
+:root{--bg:#000;--bg2:#000;--ac:#8cc63f;--tx:#15171b;--bt:#15171b;--bx:#fff;--wide:'Unbounded','Inter',sans-serif;--ease:cubic-bezier(.22,1,.36,1)}
 *{box-sizing:border-box}
 body.se{margin:0;color:var(--tx);font-family:Inter,system-ui,sans-serif;background:var(--bg);-webkit-font-smoothing:antialiased;overflow-x:hidden;transition:background .8s var(--ease),color .6s}
 .se-stage{position:relative;min-height:calc(100vh - 64px);overflow:hidden;background:radial-gradient(120% 90% at 65% 40%,var(--bg2),var(--bg));transition:background .8s var(--ease)}
@@ -16,8 +16,8 @@ body.se{margin:0;color:var(--tx);font-family:Inter,system-ui,sans-serif;backgrou
 .se-left p{margin:22px 0 0;max-width:300px;font-size:14px;line-height:1.7;opacity:.75}
 .se-mid{position:relative;display:grid;place-items:center;min-height:420px}
 .se-hero{position:relative;width:min(100%,380px);aspect-ratio:3/4;border-radius:28px;overflow:hidden;background:rgba(255,255,255,.4);box-shadow:0 40px 80px -20px rgba(0,0,0,.35);animation:seFloat 6s ease-in-out infinite;transition:transform .2s ease-out}
-.se-hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.08);transition:opacity .7s var(--ease),transform 1.1s var(--ease)}
-.se-hero img.on{opacity:1;transform:scale(1)}
+.se-hero img,.se-hero video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.08);translate:var(--sd,0px) 0;transition:opacity .6s var(--ease),transform 1.1s var(--ease),translate .6s var(--ease)}
+.se-hero img.on,.se-hero video.on{opacity:1;transform:scale(1);translate:0 0}
 .se-right{text-align:right}
 .se-pn{font-family:var(--wide);font-weight:600;font-size:clamp(16px,1.9vw,24px);letter-spacing:-.01em;text-transform:uppercase;line-height:1.2}
 .se-pp{margin-top:10px;font-family:var(--wide);font-weight:700;font-size:clamp(20px,2.6vw,34px);color:var(--ac);filter:brightness(.8)}
@@ -50,16 +50,18 @@ body.se{margin:0;color:var(--tx);font-family:Inter,system-ui,sans-serif;backgrou
  .se-mid{min-height:0}.se-hero{width:min(78%,320px)}.se-left p{max-width:none}.se-rail{justify-content:flex-start;padding:0 20px;bottom:18px}.se-card{flex-basis:230px}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
-</style><style>.se-hero{touch-action:pan-y;cursor:grab;user-select:none}.se-hero video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .7s}.se-hero video.on{opacity:1}.se-dots{position:absolute;left:0;right:0;bottom:14px;display:flex;justify-content:center;gap:6px;z-index:3}.se-dots i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.55)}.se-dots i.on{background:#fff;width:20px;border-radius:99px}
+</style><style>.se-hero{touch-action:pan-y;cursor:grab;user-select:none}.se-dots{position:absolute;left:0;right:0;bottom:14px;display:flex;justify-content:center;gap:6px;z-index:3}.se-dots i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.55)}.se-dots i.on{background:#fff;width:20px;border-radius:99px}
 .se-ol{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin:16px 0 8px;opacity:.7}.se-ob{display:flex;flex-wrap:wrap;gap:8px}.se-ob button{border:1.5px solid currentColor;background:transparent;color:inherit;border-radius:999px;padding:8px 15px;font:700 12px Inter,sans-serif;cursor:pointer;opacity:.55}.se-ob button.on{opacity:1;background:var(--bt);color:var(--bx);border-color:var(--bt)}.se-ob button:disabled{opacity:.25;text-decoration:line-through;cursor:not-allowed}.se-cta.se-off{opacity:.5;cursor:not-allowed}</style>
 <style>.se-sw{gap:10px}.se-ob button.sw{width:34px;height:34px;padding:0;border-radius:8px;border:2px solid rgba(0,0,0,.18);opacity:1;position:relative;overflow:hidden}.se-ob button.sw.on{border-color:var(--tx);box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--tx);background-clip:padding-box}.se-ob button.sw.gone{filter:grayscale(.7) brightness(.55)}.se-ob button.sw.gone:after{content:"";position:absolute;left:-15%;top:50%;width:130%;height:2px;background:#e11d1d;transform:rotate(-40deg)}
 .se-q{display:inline-flex;align-items:center;gap:14px;border:1.5px solid currentColor;border-radius:999px;padding:4px}.se-q button{width:32px;height:32px;border-radius:50%;border:0;background:var(--bt);color:var(--bx);font-size:18px;cursor:pointer}.se-q b{min-width:22px;text-align:center;font-size:14px}</style>
 <style>@media(max-width:900px){.se-stage{display:flex;flex-direction:column;overflow:clip;min-height:calc(100svh - 64px)}.se-in{min-height:0;padding-bottom:24px;flex:0 0 auto;width:100%;box-sizing:border-box}.se-rail{position:sticky;bottom:10px;left:auto;right:auto;width:100%;box-sizing:border-box;margin-top:auto;padding:0 16px;justify-content:flex-start;scroll-padding:0 16px}}</style>
+<style>.se-fade{position:absolute;left:0;right:0;bottom:0;height:0;z-index:2;pointer-events:none}.se-fade:before{content:"";position:absolute;left:0;right:0;bottom:0;height:170px;background:linear-gradient(to top,var(--bg) 8%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);-webkit-mask-image:linear-gradient(to top,#000 55%,transparent);mask-image:linear-gradient(to top,#000 55%,transparent)}@media(max-width:900px){.se-fade{position:sticky;bottom:0;left:auto;right:auto;margin-top:auto;flex:0 0 0}.se-rail{margin-top:0!important}}</style>
 </head>
 <body class="se page-ready">
 <div class="se-stage" id="seStage">
-  <div class="se-word" id="seWord">EVENT</div>
-  <div class="se-in" id="seIn"><div class="se-empty"><p>Loading…</p></div></div>
+  <div class="se-word" id="seWord"></div>
+  <div class="se-in" id="seIn"></div>
+  <div class="se-fade" id="seFade"></div>
   <div class="se-rail" id="seRail"></div>
 </div>
 <script src="card-extras.js?v=3"></script>
@@ -78,7 +80,7 @@ body.se{margin:0;color:var(--tx);font-family:Inter,system-ui,sans-serif;backgrou
   let ph=0,sel={c:'',z:''};
   const stk=(p,c,z)=>{const m=p.stockByColorSize;if(m&&typeof m==='object'&&Object.keys(m).length){const k=m[c]?c:Object.keys(m).find(x=>x.toLowerCase()===String(c).toLowerCase());return Math.max(0,parseInt((m[k]||{})[z],10)||0)}const s=p.stock||{};return Math.max(0,parseInt(typeof s[z]==='object'?s[z][c]:s[z],10)||0)};
   const medias=p=>{const a=imgs(p).map(u=>({u,v:0}));const v=(Array.isArray(p.videos)?p.videos:[]).filter(x=>x&&x.url).map(x=>({u:x.url,v:1}));return v.concat(a)};
-  function hero(){const p=list[cur],md=medias(p),hh=$('seHero');if(!hh||!md.length)return;ph=(ph+md.length)%md.length;hh.innerHTML='';md.forEach((m,k)=>{let e;if(m.v){e=document.createElement('video');e.src=m.u;e.muted=true;e.loop=true;e.autoplay=true;e.playsInline=true;e.setAttribute('muted','');e.setAttribute('playsinline','');e.play&&e.play().catch(()=>{})}else{e=new Image();e.src=m.u;e.alt=p.name||''}e.dataset.k=k;if(k===ph)e.classList.add('on');hh.appendChild(e)});if(md.length>1){const d=document.createElement('div');d.className='se-dots';d.innerHTML=md.map((_,k)=>'<i'+(k===ph?' class="on"':'')+'></i>').join('');hh.appendChild(d)}}
+  function hero(){const p=list[cur],md=medias(p),hh=$('seHero');if(!hh||!md.length)return;ph=(ph+md.length)%md.length;hh.innerHTML='';md.forEach((m,k)=>{let e;if(m.v){e=document.createElement('video');e.src=m.u;e.muted=true;e.loop=true;e.autoplay=true;e.playsInline=true;e.setAttribute('muted','');e.setAttribute('playsinline','');e.play&&e.play().catch(()=>{})}else{e=new Image();e.src=m.u;e.alt=p.name||''}e.dataset.k=k;hh.appendChild(e);if(k===ph)requestAnimationFrame(()=>requestAnimationFrame(()=>e.classList.add('on')))});if(md.length>1){const d=document.createElement('div');d.className='se-dots';d.innerHTML=md.map((_,k)=>'<i'+(k===ph?' class="on"':'')+'></i>').join('');hh.appendChild(d)}}
   const HEX={black:'#111111',white:'#ffffff',red:'#e53935',blue:'#2563eb',navy:'#172554',green:'#16a34a',yellow:'#facc15',orange:'#f97316',pink:'#ec4899',purple:'#8b5cf6',grey:'#9ca3af',gray:'#9ca3af',brown:'#8b5e3c',beige:'#d8c3a5',cream:'#f5f0df',maroon:'#7f1d1d',olive:'#6b7a3a',khaki:'#bda878'};
   const hexOf=(p,c)=>{const h=String((p.colorMeta||{})[c]||'').trim();return /^#[0-9a-f]{6}$/i.test(h)?h:(HEX[String(c).trim().toLowerCase()]||'#d9d9d4')};
   let qty=1;
@@ -114,7 +116,7 @@ body.se{margin:0;color:var(--tx);font-family:Inter,system-ui,sans-serif;backgrou
     rail.onclick=e=>{const c=e.target.closest('.se-card');if(c)show(+c.dataset.i)};
     $('seOpt').onclick=e=>{const b=e.target.closest('button');if(!b||b.disabled)return;if(b.dataset.c!==undefined){sel.c=b.dataset.c;sel.z='';qty=1}if(b.dataset.z!==undefined){sel.z=b.dataset.z;qty=1}if(b.dataset.q!==undefined){const m=stk(list[cur],sel.c||'',sel.z);qty=Math.max(1,Math.min(m||1,qty+Number(b.dataset.q)))}opts()};
     $('seGo').onclick=addCart;
-    (function(){const hh=$('seHero');let x0=null;const step=d=>{ph+=d;hero()};hh.addEventListener('touchstart',e=>{x0=e.touches[0].clientX},{passive:true});hh.addEventListener('touchend',e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)>35)step(dx<0?1:-1)});let m0=null;hh.addEventListener('mousedown',e=>{m0=e.clientX});window.addEventListener('mouseup',e=>{if(m0==null)return;const dx=e.clientX-m0;m0=null;if(Math.abs(dx)>35)step(dx<0?1:-1)})})();
+    (function(){const hh=$('seHero');let x0=null;const step=d=>{hh.style.setProperty('--sd',d>0?'46px':'-46px');ph+=d;hero()};hh.addEventListener('touchstart',e=>{x0=e.touches[0].clientX},{passive:true});hh.addEventListener('touchend',e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)>35)step(dx<0?1:-1)});let m0=null;hh.addEventListener('mousedown',e=>{m0=e.clientX});window.addEventListener('mouseup',e=>{if(m0==null)return;const dx=e.clientX-m0;m0=null;if(Math.abs(dx)>35)step(dx<0?1:-1)})})();
     show(0);
     const st=$('seStage'),h=()=>$('seHero');
     st.onmousemove=e=>{const r=st.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;if(h())h().style.transform='perspective(900px) rotateY('+x*8+'deg) rotateX('+(-y*6)+'deg)'};
