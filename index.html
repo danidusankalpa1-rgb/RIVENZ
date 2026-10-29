@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Unbounded:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="home-v2.css?v=30">
-  <link rel="stylesheet" href="user-nav.css?v=41">
+  <link rel="stylesheet" href="home-v2.css?v=31">
+  <link rel="stylesheet" href="user-nav.css?v=42">
 </head>
 <body class="hx">
 <main>
@@ -18,7 +18,6 @@
     <div class="hx-hero-bg" id="heroBg"></div>
     <div class="hx-hero-in">
       <div>
-        <span class="hx-pill" id="hxPill">RIVENZ CLOTHING</span>
         <h1 id="hxTitle">Everyday style.<br>Made for you.</h1>
         <p id="hxDesc"></p>
       </div>
@@ -89,7 +88,6 @@
   async function loadProducts(){try{const x=await window.graphicsPublicContent.catalog('products');return Array.isArray(x)?x.filter(p=>p&&p.active!==false&&!p.special):[]}catch(e){return []}}
   const $=id=>document.getElementById(id);
   function applyText(v){
-    $('hxPill').textContent=v.heroPill||DEFAULT.heroPill;
     $('hxTitle').innerHTML=[v.heroLine1,v.heroLine2,v.heroLine3].filter(Boolean).map(esc).join('<br>');
     $('hxDesc').textContent=v.heroDescription||DEFAULT.heroDescription;
     $('hxPT').textContent=v.promoTitle||DEFAULT.promoTitle;$('hxPP').textContent=v.promoText||DEFAULT.promoText;
@@ -148,6 +146,6 @@
 </script>
 <script type="module" src="cart-store.js?v=26"></script>
 <script type="module" src="account-guard.js?v=26"></script>
-<script type="module" src="user-nav.js?v=38"></script>
+<script type="module" src="user-nav.js?v=42"></script>
 </body>
 </html>

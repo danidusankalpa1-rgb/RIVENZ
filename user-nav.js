@@ -3,7 +3,7 @@ import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/fi
 import { doc, onSnapshot, collection, query, where } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
 import { app, db } from "./firebase-config.js";
 import "./cart-store.js";
-import "./cart-drawer.js?v=1";
+import "./cart-drawer.js?v=2";
 
 const P = {
   home: '<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
@@ -105,7 +105,7 @@ h.addEventListener("submit", (e) => { const f = e.target.closest("#rvzSF"); if (
 document.addEventListener("click", (e) => { if (!h.contains(e.target)) closeAll(); });
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeAll(); });
 let lastW = innerWidth; window.addEventListener("resize", () => { if (innerWidth !== lastW) { lastW = innerWidth; closeAll(); } });
-const OVER = false; if (OVER) h.classList.add("rvz-fix");
+const OVER = file === "index.html" || file === ""; if (OVER) h.classList.add("rvz-fix");
 const onScroll = () => { h.classList.toggle("rvz-sm", window.scrollY > 70); h.classList.toggle("rvz-over", OVER && window.scrollY < 24 && !h.querySelector(".rvz-card.open,.rvz-search.open")); };
 window.addEventListener("scroll", onScroll, { passive: true }); onScroll();
 
@@ -208,4 +208,4 @@ import("./login-modal.js?v=29").catch((e) => console.warn("login popup", e));
 
 if (!window.__rvzLd) { const sc = document.createElement("script"); sc.src = "public-content.js?v=27"; document.head.appendChild(sc); }
 
-import("./site-footer.js?v=29").catch(() => {});
+if (!/^(contact|profile)\.html$/.test(file)) import("./site-footer.js?v=31").catch(() => {});

@@ -171,7 +171,8 @@ html body{overflow-x:clip!important;overflow-y:visible!important}
 @media(max-width:900px){.rvz-h .rvz-w{height:60px!important;padding:0 8px!important}.rvz-h .rvz-logo img{width:112px}}
 
 /* v3: solid black bar, dark avatar */
-.rvz-h{background:#000!important}
+.rvz-h:not(.rvz-over){background:#000!important}
+.rvz-h.rvz-over{background:linear-gradient(180deg,rgba(0,0,0,.55),rgba(0,0,0,0))!important}
 .rvz-h .rvz-av,.rvz-av{background:#121c3d!important;color:#fff!important;border:1px solid rgba(255,255,255,.18)}
 .rvz-h .rvz-acc.on .rvz-av{box-shadow:0 0 0 3px rgba(255,255,255,.25)}
 .rvz-h .rvz-b{background:#fff;color:#000}

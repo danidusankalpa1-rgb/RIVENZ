@@ -71,7 +71,7 @@ body.oc{margin:0;background:#f6f6f3;color:var(--ink);font-family:Inter,system-ui
 @media(max-width:860px){.oc-grid{grid-template-columns:1fr}.oc-wrap{padding-top:110px}.oc-card{padding:18px;border-radius:22px}.oc-btn{flex:1 1 100%}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.oc-tick .circ,.oc-tick .chk{stroke-dashoffset:0}}
 </style>
-<link rel="stylesheet" href="user-nav.css?v=41">
+<link rel="stylesheet" href="user-nav.css?v=42">
 <script src="public-content.js?v=27"></script>
 </head>
 <body class="oc page-ready">
@@ -197,6 +197,6 @@ $("copyId").addEventListener("click",()=>{try{navigator.clipboard.writeText(id||
 onAuthStateChanged(auth,async user=>{if(!user){location.href="auth.html?next="+encodeURIComponent("order-confirmation.html?id="+(id||""));return}try{await load()}catch(e){console.error(e);$("hP").textContent="We could not load this order. Please try again."}});
 </script>
 <script type="module" src="account-guard.js?v=26"></script>
-<script type="module" src="user-nav.js?v=38"></script>
+<script type="module" src="user-nav.js?v=42"></script>
 </body>
 </html>

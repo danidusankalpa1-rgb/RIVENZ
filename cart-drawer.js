@@ -21,7 +21,7 @@ function deliveryTotal(items) { const seen = new Set(); return items.reduce((s, 
 function css() {
   if (document.getElementById("rvzCdCss")) return;
   const s = document.createElement("style"); s.id = "rvzCdCss";
-  s.textContent = `#rvzCd{position:fixed;inset:0;z-index:100001;visibility:hidden;font-family:Inter,system-ui,sans-serif;color:#111316}#rvzCd.open{visibility:visible}
+  s.textContent = `#rvzCd{position:fixed;inset:0;z-index:100001;visibility:hidden;transition:visibility 0s linear .35s;font-family:Inter,system-ui,sans-serif;color:#111316}#rvzCd.open{visibility:visible;transition:visibility 0s}
 #rvzCd .bd{position:absolute;inset:0;background:rgba(0,0,0,.5);opacity:0;transition:opacity .3s}#rvzCd.open .bd{opacity:1}
 #rvzCd .pn{position:absolute;top:0;right:0;bottom:0;width:min(440px,100vw);background:#fff;display:flex;flex-direction:column;transform:translateX(102%);transition:transform .32s cubic-bezier(.22,1,.36,1)}#rvzCd.open .pn{transform:none}
 #rvzCd .hd{display:flex;align-items:center;justify-content:space-between;padding:22px 22px 18px;border-bottom:1px solid #e6e6e2}#rvzCd .hd h2{margin:0;font-size:22px;font-weight:800;letter-spacing:.02em;text-transform:uppercase}
