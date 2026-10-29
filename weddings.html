@@ -143,7 +143,7 @@
   .offers-only-note{font-size:10px;color:#777c84;margin:0 0 18px}
 </style>
 <link rel="stylesheet" href="shop-v2.css?v=28">
-<link rel="stylesheet" href="user-nav.css?v=40">
+<link rel="stylesheet" href="user-nav.css?v=41">
 </head>
 <body class="page-ready">
 <header class="home-header">
@@ -183,7 +183,7 @@
 <footer><img src="logo.png" alt="RIVENZ logo"><span>© 2026 RIVENZ. All rights reserved.</span></footer>
 <script src="file-store.js?v=26"></script>
 <script src="public-content.js?v=27"></script>
-<script src="card-extras.js?v=3"></script>
+<script src="card-extras.js?v=4"></script>
 <script>graphicsFileStore.migrateOrders();</script>
 <script>
 (function(){
@@ -212,8 +212,7 @@
     if(off){const t=document.createElement('span');t.className='sx-off';t.textContent='−'+Math.round((1-p.offer/p.price)*100)+'%';media.appendChild(t)}
     if(window.rvzCard)media.insertAdjacentHTML('beforeend',rvzCard.tag(p));
     const body=document.createElement('div');body.className='sx-body';
-    body.innerHTML='<div class="sx-row"><h2 class="sx-name">'+esc(p.name||'RIVENZ Product')+'</h2><span class="sx-price'+(off?' is-offer':'')+'"><b>'+money(off?p.offer:p.price)+'</b>'+(off?'<s>'+money(p.price)+'</s>':'')+'</span></div><p class="sx-desc">'+esc(p.description||'A clean RIVENZ piece made for everyday wear.')+'</p>';
-    if(window.rvzCard)body.insertAdjacentHTML('beforeend',rvzCard.sw(p));
+    body.innerHTML=window.rvzCard?rvzCard.info(p):'';
     card.append(media,body);
     const open=()=>location.href='services.html?product='+encodeURIComponent(p.id);card.onclick=open;card.onkeydown=e=>{if(e.key==='Enter')open()};
     syncWish();
@@ -244,6 +243,6 @@ if(homeToggle&&homeNav){homeToggle.addEventListener('click',()=>{const open=home
 </script>
 <script type="module" src="cart-store.js?v=26"></script>
 <script type="module" src="account-guard.js?v=26"></script>
-<script type="module" src="user-nav.js?v=35"></script>
+<script type="module" src="user-nav.js?v=38"></script>
 </body>
 </html>

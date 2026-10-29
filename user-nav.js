@@ -58,7 +58,7 @@ function paint() {
   </div>
   <div class="rvz-search rvz-blk" id="rvzSearch"><form class="rvz-sw" id="rvzSF" role="search"><input type="search" name="q" placeholder="Search products" autocomplete="off" maxlength="60" aria-label="Search products"></form><div class="rvz-sr" id="rvzSR" hidden></div></div>
   <div class="rvz-w2">
-    <div class="rvz-card rvz-acc-card" id="rvzAccCard"><a class="rvz-row${on("profile")}" href="profile.html">${I("user")}<span>My profile</span></a><a class="rvz-row${on("order")}" href="dashboard.html">${I("order")}<span>My order</span></a><a class="rvz-row${on("refund")}" href="refund.html">${I("refund")}<span>My refund</span></a><a class="rvz-row${on("chat")}" href="chat.html">${I("chat")}<span>Chat</span>${chatB}</a><div class="rvz-sep"></div><button type="button" class="rvz-row" data-out>${I("out")}<span>Log out</span></button></div>
+    <div class="rvz-card rvz-acc-card" id="rvzAccCard"><a class="rvz-row${on("profile")}" href="profile.html">${I("user")}<span>My profile</span></a><a class="rvz-row${on("order")}" href="dashboard.html">${I("order")}<span>My order</span></a><a class="rvz-row${on("refund")}" href="refund.html">${I("refund")}<span>My refund</span></a><div class="rvz-sep"></div><button type="button" class="rvz-row" data-out>${I("out")}<span>Log out</span></button></div>
     <div class="rvz-card rvz-mob" id="rvzMob"><div class="rvz-dh"><img src="logo.png" alt="RIVENZ"><button type="button" class="rvz-dx" data-close aria-label="Close menu">${I("x")}</button></div><nav class="rvz-dn">${full.map((r) => dl(r)).join("")}</nav><div class="rvz-df">${li ? `<span>Signed in as</span><b data-who>${esc3(user?.email || cachedU()?.e || "")}</b>` : `<a href="auth.html?next=${encodeURIComponent(file)}">Login / Sign up</a>`}</div></div>
     <div class="rvz-bd" id="rvzBd"></div>
   </div>`;
@@ -105,7 +105,7 @@ h.addEventListener("submit", (e) => { const f = e.target.closest("#rvzSF"); if (
 document.addEventListener("click", (e) => { if (!h.contains(e.target)) closeAll(); });
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeAll(); });
 let lastW = innerWidth; window.addEventListener("resize", () => { if (innerWidth !== lastW) { lastW = innerWidth; closeAll(); } });
-const OVER = file === "index.html" || file === ""; if (OVER) h.classList.add("rvz-fix");
+const OVER = false; if (OVER) h.classList.add("rvz-fix");
 const onScroll = () => { h.classList.toggle("rvz-sm", window.scrollY > 70); h.classList.toggle("rvz-over", OVER && window.scrollY < 24 && !h.querySelector(".rvz-card.open,.rvz-search.open")); };
 window.addEventListener("scroll", onScroll, { passive: true }); onScroll();
 
@@ -162,7 +162,7 @@ function showPop(n) {
       for (let i = 0; i < 20 && !window.graphicsPublicContent?.api; i++) await new Promise((r) => setTimeout(r, 200));
       const r = await window.graphicsPublicContent.api("/reviews/submit", { method: "POST", body: JSON.stringify({ orderId: n.orderId, productId: row.dataset.pid, rating: Number(row.dataset.r), text: row.querySelector("textarea").value }) });
       if (r && r.ok === false) throw new Error(r.error || "FAILED");
-      row.innerHTML = '<div class="rvz-rn">' + esc2(row.querySelector(".rvz-rn span").textContent) + '</div><div class="rvz-rm ok">Thank you! Your review will appear after approval.</div>';
+      row.innerHTML = '<div class="rvz-rn">' + esc2(row.querySelector(".rvz-rn span").textContent) + '</div><div class="rvz-rm ok">Thank you for your feedback!</div>';
     } catch (er) { msg.className = "rvz-rm err"; msg.textContent = String(er?.message) === "ALREADY_REVIEWED" ? "You have already reviewed this product." : "Could not send your review. Please try again."; go.disabled = false; }
   });
   if (!delivered) { let left = 8000, t0 = Date.now(); const arm = () => { t0 = Date.now(); popTimer = setTimeout(closePop, left); }; arm(); el.addEventListener("mouseenter", () => { clearTimeout(popTimer); left -= Date.now() - t0; }); el.addEventListener("mouseleave", arm); }
@@ -208,4 +208,4 @@ import("./login-modal.js?v=29").catch((e) => console.warn("login popup", e));
 
 if (!window.__rvzLd) { const sc = document.createElement("script"); sc.src = "public-content.js?v=27"; document.head.appendChild(sc); }
 
-import("./site-footer.js?v=28").catch(() => {});
+import("./site-footer.js?v=29").catch(() => {});

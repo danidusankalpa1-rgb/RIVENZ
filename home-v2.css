@@ -148,3 +148,12 @@ a.hx-ad:hover .hx-ad-m{transform:scale(1.04)}
 .hx-card{flex-basis:calc(20% - 11.2px)!important}
 @media(max-width:1199px){.hx-card{flex-basis:calc(25% - 10.5px)!important}}
 @media(max-width:760px){.hx-card{flex-basis:48%!important}.hx-sec{padding:44px 14px 0!important}.hx-hero-in{padding:0 16px 34px!important}.hx-sq{height:48px;padding:0 22px;font-size:11.5px}.hx-ad{min-height:64vh!important}}
+
+/* hero over image: white text, no white fade */
+.hx-hero.has-img:after{background:linear-gradient(to top,rgba(0,0,0,.4),rgba(0,0,0,0) 55%)!important}
+.hx-hero.has-img .hx-pill,.hx-hero.has-img h1,.hx-hero.has-img p{color:#fff!important}
+.hx-hero.has-img h1{text-shadow:0 4px 30px rgba(0,0,0,.35)}
+/* breathing room after New arrivals */
+#shop-preview{margin-bottom:56px}
+.hx-promo{margin-top:72px!important}
+@media(max-width:760px){#shop-preview{margin-bottom:36px}}

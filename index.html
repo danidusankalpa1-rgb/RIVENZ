@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Unbounded:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="home-v2.css?v=29">
-  <link rel="stylesheet" href="user-nav.css?v=40">
+  <link rel="stylesheet" href="home-v2.css?v=30">
+  <link rel="stylesheet" href="user-nav.css?v=41">
 </head>
 <body class="hx">
 <main>
@@ -68,7 +68,7 @@
 
 <script src="file-store.js?v=26"></script>
 <script src="public-content.js?v=27"></script>
-<script src="card-extras.js?v=3"></script>
+<script src="card-extras.js?v=4"></script>
 <script>
 (function(){
   const KEY='rivenzHomeSettingsV1';
@@ -135,7 +135,7 @@
     const list=products.slice().sort((a,b)=>t(b)-t(a)).slice(0,10);
     if(!list.length){box.innerHTML='<div class="hx-empty">New pieces are coming soon.</div>';return}
     box.innerHTML=list.map((p,i)=>{const im=imageOf(p),off=Number(p.offer||0)>0&&Number(p.offer)<Number(p.price||0);
-      return '<a class="hx-card'+(window.rvzCard&&rvzCard.sold(p)?' rz-sold':'')+'" href="services.html?product='+encodeURIComponent(p.id)+'"><div class="hx-img">'+(im?'<img src="'+esc(im)+'" alt="" '+(i<4?'fetchpriority="high"':'loading="lazy"')+' decoding="async">':'')+(window.rvzCard?rvzCard.tag(p):'')+(off?'<i class="hx-off">\u2212'+Math.round((1-p.offer/p.price)*100)+'%</i>':'')+'</div><div class="hx-row"><span>'+esc(p.name||'RIVENZ product')+'</span><span class="'+(off?'hot':'')+'">'+money(off?p.offer:p.price)+(off?'<s>'+money(p.price)+'</s>':'')+'</span></div>'+(window.rvzCard?rvzCard.sw(p):'')+'</a>'}).join('');
+      return '<a class="hx-card'+(window.rvzCard&&rvzCard.sold(p)?' rz-sold':'')+'" href="services.html?product='+encodeURIComponent(p.id)+'"><div class="hx-img">'+(im?'<img src="'+esc(im)+'" alt="" '+(i<4?'fetchpriority="high"':'loading="lazy"')+' decoding="async">':'')+(window.rvzCard?rvzCard.tag(p):'')+(off?'<i class="hx-off">\u2212'+Math.round((1-p.offer/p.price)*100)+'%</i>':'')+'</div>'+(window.rvzCard?rvzCard.info(p):'')+'</a>'}).join('');
   }
   document.querySelectorAll('.hx-lk').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();location.href=el.dataset.h}));
   const rail=()=>$('homeServices'),step=()=>Math.max(200,rail().clientWidth*.8);
@@ -148,6 +148,6 @@
 </script>
 <script type="module" src="cart-store.js?v=26"></script>
 <script type="module" src="account-guard.js?v=26"></script>
-<script type="module" src="user-nav.js?v=35"></script>
+<script type="module" src="user-nav.js?v=38"></script>
 </body>
 </html>

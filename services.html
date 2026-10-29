@@ -11,8 +11,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Unbounded:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="home.css">
-  <style>.rvz-sg-link{margin-left:12px;background:none;border:0;padding:0;color:inherit;opacity:.65;font:600 12px Inter,system-ui,sans-serif;text-decoration:underline;text-underline-offset:3px;cursor:pointer;letter-spacing:0;text-transform:none}.rvz-sg-link:hover{opacity:1}</style>
-<script src="size-guide.js?v=1"></script>
+  <style>.rvz-sg-link{margin-left:12px;background:none;border:0;padding:0;color:inherit;opacity:.65;font:600 12px Inter,system-ui,sans-serif;text-decoration:underline;text-underline-offset:3px;cursor:pointer;letter-spacing:0;text-transform:none}.rvz-sg-link:hover{opacity:1}.rvz-clamp{display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}.rvz-more{margin-top:10px;background:none;border:0;padding:0;color:#111316;font:700 12.5px Inter,system-ui,sans-serif;text-decoration:underline;text-underline-offset:3px;cursor:pointer}</style>
+<script src="size-guide.js?v=2"></script>
 <script src="ui-messages.js?v=26"></script>
   <style>
     :root{--svc-ink:#15171b;--svc-muted:#747983;--svc-line:#e9eaed;--svc-soft:#f6f7f8}
@@ -169,10 +169,11 @@
     }
   </style>
   <link rel="stylesheet" href="shop-v2.css?v=28">
-<link rel="stylesheet" href="user-nav.css?v=40">
+<link rel="stylesheet" href="user-nav.css?v=41">
 <script>if(!new URLSearchParams(location.search).get("product"))location.replace("index.html")</script>
 <style>.services-intro,#shopFilters,#shopSubFilters,.services-bottom,#serviceGrid,#rivenzDetailLatest,.rivenz-detail-latest{display:none!important}</style>
 <style>.rivenz-detail-color.soldout{position:relative;overflow:hidden;opacity:.5;filter:grayscale(.7)}.rivenz-detail-color.soldout:after{content:'';position:absolute;left:-10%;top:50%;width:120%;height:2px;background:#e11d1d;transform:rotate(-22deg)}.rivenz-detail-size:disabled{opacity:.35;background:#ececea;text-decoration:line-through;cursor:not-allowed}</style>
+<style>.rivenz-detail-gallery{padding:0!important;background:transparent!important}.rvz-gal{position:relative}.rvz-track{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;cursor:grab}.rvz-track::-webkit-scrollbar{display:none}.rvz-track.drag{cursor:grabbing;scroll-snap-type:none}.rvz-slide{flex:0 0 86%;aspect-ratio:3/4;scroll-snap-align:start;background:#efefec;overflow:hidden}.rvz-slide:only-child{flex-basis:100%}.rvz-slide img,.rvz-slide video{width:100%;height:100%;object-fit:cover;display:block;user-select:none;-webkit-user-drag:none;pointer-events:none}.rvz-none{display:grid;place-items:center;color:#9a9da4;font-size:13px}.rvz-dots{display:flex;justify-content:center;gap:7px;padding:16px 0 4px}.rvz-dots i{width:8px;height:8px;border-radius:50%;background:#cfd0d3;cursor:pointer;transition:background .2s}.rvz-dots i.on{background:#111316}.rvz-gal .rv2-heart{z-index:3}@media(min-width:901px){.rvz-slide{flex-basis:78%}}</style>
 </head>
 <body class="page-ready">
 <header class="home-header">
@@ -223,7 +224,7 @@
 </main>
 
 <footer><img src="logo.png" alt="Graphics logo"><span>© 2026 RIVENZ. All rights reserved.</span></footer>
-<script src="card-extras.js?v=3"></script>
+<script src="card-extras.js?v=4"></script>
 <script src="file-store.js?v=26"></script>
 <script src="public-content.js?v=27"></script>
 <script>graphicsFileStore.migrateOrders();</script>
@@ -267,7 +268,7 @@
     const off=Number(p.offer||0)>0&&Number(p.price||0)>0&&Number(p.offer)<Number(p.price);
     if(off){const t=document.createElement('span');t.className='sx-off';t.textContent='−'+Math.round((1-p.offer/p.price)*100)+'%';media.appendChild(t)}
     const body=document.createElement('div');body.className='sx-body';
-    body.innerHTML='<div class="sx-row"><h2 class="sx-name">'+esc(p.name||'RIVENZ Product')+'</h2><span class="sx-price'+(off?' is-offer':'')+'"><b>'+money(off?p.offer:p.price)+'</b>'+(off?'<s>'+money(p.price)+'</s>':'')+'</span></div><p class="sx-desc">'+esc(p.description||'A clean RIVENZ piece made for everyday wear.')+'</p>';
+    body.innerHTML=window.rvzCard?rvzCard.info(p):'';
     card.append(media,body);
     const open=()=>openProduct(p,true);card.onclick=open;card.onkeydown=e=>{if(e.key==='Enter')open()};
     syncWish();
@@ -337,14 +338,18 @@
     '<div class="rv2-price"><span class="rivenz-detail-price">'+money(price)+'</span>'+(hasOff?'<span class="rivenz-detail-old">'+money(p.price)+'</span><span class="rv2-off">\u2212'+Math.round((1-p.offer/p.price)*100)+'%</span>':'')+'</div>'+
     '<div class="rivenz-delivery-box"><svg class="rv2-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.6"/><circle cx="17" cy="17.5" r="1.6"/></svg>'+(delivery>0?'<span><strong>Delivery '+money(delivery)+'</strong> Islandwide</span>':'<span><strong class="rivenz-delivery-free">Free delivery</strong> Islandwide</span>')+'</div>'+
     '<div class="rivenz-detail-actions"><button type="button" class="rivenz-detail-add" id="rivenzDetailAdd"><svg class="rv2-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.4 11h10l2-8H6"/><circle cx="9" cy="19" r="1.5"/><circle cx="17" cy="19" r="1.5"/></svg><span>Add to cart</span></button><a class="rivenz-detail-order disabled" id="rivenzDetailOrder" href="#"><svg class="rv2-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3 5 14h6l-1 7 8-11h-6z"/></svg><span>Order now</span></a></div><div class="rivenz-detail-hint">Your selection is checked against the current stock.</div></div>'+
-    '<div class="rivenz-detail-gallery"><div class="rivenz-detail-main"><img id="rivenzDetailMainImage" alt=""><button class="rv2-heart" id="rv2Heart" type="button" aria-label="Add to wishlist"><svg class="rv2-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.7c0 5-8.8 11-8.8 11s-8.8-6-8.8-11a4.8 4.8 0 0 1 8.8-2.6 4.8 4.8 0 0 1 8.8 2.6Z"/></svg></button><button class="rivenz-detail-arrow prev" id="rivenzDetailPrev" type="button" aria-label="Previous image"><svg class="rv2-i" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg></button><button class="rivenz-detail-arrow next" id="rivenzDetailNext" type="button" aria-label="Next image"><svg class="rv2-i" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button></div><div class="rivenz-detail-thumbs" id="rivenzDetailThumbs"></div><div class="rivenz-detail-count" id="rivenzDetailCount"></div></div></div>'+
+    '<div class="rivenz-detail-gallery"><div class="rvz-gal"><div class="rvz-track" id="rvzTrack"></div><button class="rv2-heart" id="rv2Heart" type="button" aria-label="Add to wishlist"><svg class="rv2-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.7c0 5-8.8 11-8.8 11s-8.8-6-8.8-11a4.8 4.8 0 0 1 8.8-2.6 4.8 4.8 0 0 1 8.8 2.6Z"/></svg></button></div><div class="rvz-dots" id="rvzDots"></div></div></div>'+
     '<section class="rv2-about"><h2>About this product</h2><div class="rv2-tabs" id="rv2Tabs"><button type="button" class="on" data-t="d">Description</button><button type="button" data-t="s">Details</button><button type="button" data-t="c">Care</button></div><div class="rv2-pane" id="rv2Pane"></div></section>'+
     '<section class="rv2-rel" id="rv2Rel" hidden><div class="rv2-relhead"><h2>You may also like</h2><div class="rv2-relnav"><button type="button" id="rv2RP" aria-label="Previous"><svg class="rv2-i" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg></button><button type="button" id="rv2RN" aria-label="Next"><svg class="rv2-i" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button></div></div><div class="rv2-rail" id="rv2Rail"></div></section>';
-    const main=page.querySelector('#rivenzDetailMainImage'),thumbs=page.querySelector('#rivenzDetailThumbs'),count=page.querySelector('#rivenzDetailCount');
+    const track=page.querySelector('#rvzTrack'),dots=page.querySelector('#rvzDots');
     const vids=(Array.isArray(p.videos)?p.videos:[]).filter(v=>v&&v.url),media=vids.map(v=>({url:v.url,v:1})).concat(imgs.map(i=>({url:i.url,v:0})));let vEl=null;
-    let firstShow=true;function show(i){const prevI=current,dirN=i>=prevI?1:-1;current=(i+media.length)%Math.max(media.length,1);const m=media[current]||{};if(m.v){if(!vEl){vEl=document.createElement('video');vEl.controls=false;vEl.muted=true;vEl.loop=true;vEl.autoplay=true;vEl.playsInline=true;vEl.preload='auto';vEl.setAttribute('muted','');vEl.setAttribute('playsinline','');vEl.setAttribute('disablepictureinpicture','');vEl.setAttribute('controlslist','nodownload nofullscreen noremoteplayback');vEl.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000;pointer-events:none';main.insertAdjacentElement('afterend',vEl)}vEl.src=m.url;vEl.style.display='block';vEl.play().catch(()=>{});main.style.visibility='hidden'}else{if(vEl){vEl.pause();vEl.style.display='none'}main.style.visibility='';main.src=m.url||'';main.alt=p.name||'RIVENZ product'}thumbs.querySelectorAll('button').forEach((b,j)=>b.classList.toggle('active',j===current));count.textContent=media.length>1?(current+1)+' / '+media.length:'';if(!firstShow&&current!==prevI){const el=m.v?vEl:main;try{el.animate([{transform:'translateX('+(dirN*46)+'px) scale(.98)',opacity:0},{transform:'none',opacity:1}],{duration:420,easing:'cubic-bezier(.22,1,.36,1)'})}catch(e){}}firstShow=false}
-    if(media.length){media.forEach((m,i)=>{const b=document.createElement('button');b.type='button';b.className='rivenz-detail-thumb'+(i===0?' active':'');b.innerHTML=m.v?'<span style="position:relative;display:block;width:100%;height:100%"><video src="'+esc(m.url)+'#t=0.1" muted playsinline preload="metadata" style="width:100%;height:100%;object-fit:cover;display:block;pointer-events:none"></video></span>':'<img src="'+esc(m.url)+'" alt="" loading="lazy">';b.onclick=()=>show(i);thumbs.appendChild(b)});show(0)}else{main.removeAttribute('src');count.textContent='No product image'}
-    page.querySelector('#rivenzDetailPrev').onclick=()=>show(current-1);page.querySelector('#rivenzDetailNext').onclick=()=>show(current+1);page.querySelector('#rivenzDetailPrev').style.display=media.length>1?'block':'none';page.querySelector('#rivenzDetailNext').style.display=media.length>1?'block':'none';
+    track.innerHTML=media.length?media.map((m,i)=>'<div class="rvz-slide">'+(m.v?'<video src="'+esc(m.url)+'" muted loop playsinline preload="metadata"'+(i===0?' autoplay':'')+'></video>':'<img src="'+esc(m.url)+'" alt="'+esc(p.name||'RIVENZ product')+'" '+(i===0?'fetchpriority="high"':'loading="lazy"')+' decoding="async" draggable="false">')+'</div>').join(''):'<div class="rvz-slide rvz-none">No product image</div>';
+    dots.innerHTML=media.length>1?media.map((_,i)=>'<i'+(i===0?' class="on"':'')+'></i>').join(''):'';
+    function playVis(){const sl=[...track.children];sl.forEach((el,i)=>{const v=el.querySelector('video');if(!v)return;if(i===current)v.play().catch(()=>{});else v.pause()})}
+    function setCur(i){if(i===current)return;current=i;dots.querySelectorAll('i').forEach((d,j)=>d.classList.toggle('on',j===current));playVis()}
+    let tk=0;track.addEventListener('scroll',()=>{cancelAnimationFrame(tk);tk=requestAnimationFrame(()=>{const sl=track.children[0];if(!sl)return;const step=sl.offsetWidth+10;setCur(Math.max(0,Math.min(media.length-1,Math.round(track.scrollLeft/step))))})},{passive:true});
+    dots.addEventListener('click',e=>{const d=e.target.closest('i');if(!d)return;const j=[...dots.children].indexOf(d),sl=track.children[0];track.scrollTo({left:j*(sl.offsetWidth+10),behavior:'smooth'})});
+    {let down=false,sx=0,sl0=0,moved=false;track.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse')return;down=true;moved=false;sx=e.clientX;sl0=track.scrollLeft;track.classList.add('drag')});window.addEventListener('pointermove',e=>{if(!down)return;const dx=e.clientX-sx;if(Math.abs(dx)>3)moved=true;track.scrollLeft=sl0-dx});window.addEventListener('pointerup',()=>{if(!down)return;down=false;track.classList.remove('drag');const sl=track.children[0];if(sl){const step=sl.offsetWidth+10;track.scrollTo({left:Math.round(track.scrollLeft/step)*step,behavior:'smooth'})}})}
     const opt=page.querySelector('#rivenzDetailOptions');
     function stockFor(size,color){const matrix=p.stockByColorSize||p.variantStock||{};if(color&&matrix[color]&&typeof matrix[color]==='object'&&Object.prototype.hasOwnProperty.call(matrix[color],size))return Math.max(0,Number(matrix[color][size])||0);const st=p.stock||{};if(color&&st[size]&&typeof st[size]==='object')return Math.max(0,Number(st[size][color])||0);if(color){const keys=[color+'__'+size,size+'__'+color,color+'/'+size,size+'/'+color];for(const k of keys)if(typeof st[k]==='number')return Math.max(0,Number(st[k])||0)}return typeof st[size]==='number'?Math.max(0,Number(st[size])||0):0}
     function sizesFor(color){return sizesAll.filter(sz=>stockFor(sz,color)>0||(p.stock&&Object.prototype.hasOwnProperty.call(p.stock,sz)&&typeof p.stock[sz]==='object'))}
@@ -366,14 +371,16 @@
       const panes={d:'<p>'+esc(p.description||'A clean RIVENZ piece made for everyday wear.')+'</p>',
         s:'<ul><li><span>Category</span><b>'+esc(p.category||'-')+'</b></li>'+(p.sku?'<li><span>Item no.</span><b>'+esc(p.sku)+'</b></li>':'')+(colors.length?'<li><span>Colours</span><b>'+esc(colors.join(', '))+'</b></li>':'')+'<li><span>Sizes</span><b>'+esc(sizesTxt)+'</b></li><li><span>Delivery</span><b>'+(delivery>0?money(delivery):'Free')+'</b></li></ul>',
         c:'<ul class="plain"><li>Machine wash cold with similar colours.</li><li>Do not bleach.</li><li>Iron on low heat, inside out.</li><li>Dry in shade to keep the colour fresh.</li></ul>'};
-      const pane=page.querySelector('#rv2Pane'),tabs=page.querySelector('#rv2Tabs');pane.innerHTML=panes.d;
-      tabs.onclick=e=>{const b=e.target.closest('button');if(!b)return;tabs.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));pane.innerHTML=panes[b.dataset.t]};
+      const pane=page.querySelector('#rv2Pane'),tabs=page.querySelector('#rv2Tabs');
+      const setPane=t=>{pane.innerHTML=panes[t];if(t==='d'&&String(p.description||'').length>260){const d=pane.querySelector('p');d.classList.add('rvz-clamp');const mb=document.createElement('button');mb.type='button';mb.className='rvz-more';mb.textContent='Read more';mb.onclick=()=>{const open=d.classList.toggle('rvz-clamp');mb.textContent=open?'Read more':'Show less'};pane.appendChild(mb)}};
+      setPane('d');
+      tabs.onclick=e=>{const b=e.target.closest('button');if(!b)return;tabs.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));setPane(b.dataset.t)};
       const heart=page.querySelector('#rv2Heart');const sync=()=>heart.classList.toggle('on',readWishlist().some(x=>String(x.id)===String(p.id)));sync();heart.onclick=()=>{toggleWishlist(p);sync()};
       const same=x=>String(x.category||'')===String(p.category||'');
       const rel=products.filter(x=>x&&x.active!==false&&String(x.id)!==String(p.id)).sort((a,b)=>same(b)-same(a)).slice(0,10);
       if(rel.length){const box=page.querySelector('#rv2Rel'),rail=page.querySelector('#rv2Rail');box.hidden=false;rel.forEach(x=>rail.appendChild(makeCard(x,true)));const st=()=>Math.max(220,rail.clientWidth*.8);page.querySelector('#rv2RP').onclick=()=>rail.scrollBy({left:-st(),behavior:'smooth'});page.querySelector('#rv2RN').onclick=()=>rail.scrollBy({left:st(),behavior:'smooth'})}
     })();
-    let sx=0,sy=0;const wrap=page.querySelector('.rivenz-detail-main');const cur=()=>media[current]&&media[current].v&&vEl?vEl:main;let drag=false;wrap.ontouchstart=e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY;drag=false};wrap.ontouchmove=e=>{const dx=e.touches[0].clientX-sx,dy=e.touches[0].clientY-sy;if(media.length>1&&(drag||(Math.abs(dx)>10&&Math.abs(dx)>Math.abs(dy)))){drag=true;const el=cur();el.style.transition='none';el.style.transform='translateX('+(dx*.55)+'px)';el.style.opacity=String(1-Math.min(Math.abs(dx)/420,.4))}};wrap.ontouchend=e=>{const dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;const el=cur();if(drag){el.style.transition='transform .3s cubic-bezier(.22,1,.36,1),opacity .3s';el.style.transform='';el.style.opacity='';setTimeout(()=>{el.style.transition=''},320)}drag=false;if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy))show(current+(dx<0?1:-1))};    renderLatestProduct(p);
+    renderLatestProduct(p);
   }
 
   function matchesCategory(p){
@@ -436,7 +443,6 @@ if(homeToggle&&homeNav){homeToggle.addEventListener('click',()=>{const open=home
 </script>
 <script type="module" src="cart-store.js?v=26"></script>
 <script type="module" src="account-guard.js?v=26"></script>
-<script type="module" src="user-nav.js?v=35"></script>
-<script type="module" src="reviews.js?v=4"></script>
+<script type="module" src="user-nav.js?v=38"></script>
 </body>
 </html>

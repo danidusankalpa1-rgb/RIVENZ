@@ -35,7 +35,7 @@ body.ord-pg{background:#fff;color:#111827;font-family:Inter,system-ui,sans-serif
 .wishlist-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.wishlist-item{border:1px solid #e5e7eb;border-radius:14px;padding:12px;background:#fff;display:flex;gap:12px;align-items:center;min-width:0}.wishlist-item img,.wishlist-placeholder{width:64px;height:76px;border-radius:10px;object-fit:cover;background:#f3f4f6;flex:0 0 64px}.wishlist-placeholder{display:grid;place-items:center;font-size:9px;color:#9aa0aa}.wishlist-info{min-width:0;flex:1}.wishlist-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.wishlist-price{font-size:12.5px;margin-top:5px}.wishlist-actions{display:flex;gap:8px;margin-top:9px}.wishlist-actions a,.wishlist-actions button{border:1px solid #d9dbe1;border-radius:8px;padding:6px 12px;font:500 12px Inter,sans-serif;text-decoration:none;cursor:pointer;background:#fff;color:#111827}.wishlist-actions a{background:#4f46e5;border-color:#4f46e5;color:#fff}
 @media(max-width:760px){.wishlist-grid{grid-template-columns:1fr 1fr}}@media(max-width:520px){.wishlist-grid{grid-template-columns:1fr}}
 #dashboardLogout{color:#ff4d4f!important}</style>
-<link rel="stylesheet" href="user-nav.css?v=40">
+<link rel="stylesheet" href="user-nav.css?v=41">
 <script src="public-content.js?v=27"></script>
 <style>body.ord-pg{font-family:Inter,ui-sans-serif,system-ui,sans-serif}.ord-wrap h1{font-family:Unbounded,Inter,sans-serif!important;text-transform:uppercase;letter-spacing:-.02em;font-weight:600!important;font-size:clamp(22px,3.4vw,32px)!important}.wl2 h2{font-family:Unbounded,Inter,sans-serif!important;text-transform:uppercase;letter-spacing:-.02em;font-weight:600;font-size:16px}.oc2-st{font-family:Inter,sans-serif}</style>
 <style>.ord-bar{flex-direction:column;align-items:stretch;gap:12px}.ord-tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;gap:4px;background:#f3f4f6;border-radius:12px;padding:4px}.ord-tabs::-webkit-scrollbar{display:none}.ord-tabs button{white-space:nowrap;flex:1 0 auto;padding:10px 16px;border-radius:9px;font-size:13px}.ord-tabs button.on{background:#fff;color:#111827;box-shadow:0 1px 4px rgba(0,0,0,.1)}.ord-sel{align-self:flex-end}
@@ -43,6 +43,35 @@ body.ord-pg{background:#fff;color:#111827;font-family:Inter,system-ui,sans-serif
 @media(min-width:760px){.ord-bar{flex-direction:row;align-items:center;justify-content:space-between}.ord-tabs{max-width:100%}}</style>
 <style>.ord-wrap{min-width:0;max-width:100%;overflow-x:clip;box-sizing:border-box}.ord-bar,.ord-bar>*{min-width:0;max-width:100%}.ord-tabs{width:100%;box-sizing:border-box}.oc2,.wl2{max-width:100%;box-sizing:border-box}.oc2-h{grid-template-columns:repeat(2,minmax(0,1fr))}.oc2-h>div{min-width:0}.oc2-h b{overflow-wrap:anywhere}@media(min-width:760px){.oc2-h{grid-template-columns:1fr 1fr 1.3fr auto}}.oc2-nm,.oc2-mt{overflow-wrap:anywhere}</style>
 <style>html,body.ord-pg{overflow-x:hidden;max-width:100%}.ord-wrap{width:100%;box-sizing:border-box;overflow:hidden}.ord-bar>*{min-width:0;max-width:100%}.ord-tabs{width:100%;box-sizing:border-box}.oc2,.wl2,#ordersList,#wishlistBox{max-width:100%;box-sizing:border-box}.oc2-h>*,.oc2-in{min-width:0}.oc2-ln{flex-wrap:wrap}</style>
+<style>
+body.ord-pg{background:#050506!important;color:#fff!important}
+.ord-wrap{max-width:900px!important;overflow:visible!important}
+.ord-wrap h1{color:#fff!important}
+.ord-bar{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:space-between!important;gap:12px;margin-bottom:20px!important;position:relative}
+.ord-sum{margin:0;color:#8d8f96;font-size:13.5px}
+.of{position:relative}
+.of-btn{display:inline-flex;align-items:center;gap:9px;height:42px;padding:0 16px;border-radius:999px;border:1px solid #2a2a2f;background:#111114;color:#fff;font:600 13px Inter,sans-serif;cursor:pointer;transition:border-color .2s}
+.of-btn:hover,.of-btn.open{border-color:#555}.of-btn svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}.of-btn .of-ch{width:15px;height:15px;transition:transform .2s}.of-btn.open .of-ch{transform:rotate(180deg)}
+.of-menu{position:absolute;right:0;top:calc(100% + 8px);z-index:30;width:240px;padding:8px;border-radius:18px;background:#111114;border:1px solid #2a2a2f;box-shadow:0 24px 60px rgba(0,0,0,.6);animation:ofIn .16s ease}
+.of-menu[hidden]{display:none}@keyframes ofIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.of-h{padding:10px 12px 6px;font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#6d7077}
+.of-menu button{display:block;width:100%;text-align:left;padding:10px 12px;border:0;border-radius:11px;background:none;color:#c9cbd1;font:500 14px Inter,sans-serif;cursor:pointer}
+.of-menu button:hover{background:#1c1c20;color:#fff}.of-menu button.on{background:#fff;color:#000;font-weight:700}
+.oc3{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:6px 20px;padding:18px;margin-bottom:14px;background:linear-gradient(180deg,#151518,#0e0e10);border:1px solid #232327;border-radius:24px;box-shadow:0 18px 40px -26px rgba(0,0,0,.9);transition:border-color .2s,transform .2s}
+.oc3:hover{border-color:#3a3a40}
+.oc3-th{display:flex;grid-row:1/3}.oc3-im{width:76px;height:92px;border-radius:16px;background:#1d1d21;overflow:hidden;display:block;border:2px solid #0e0e10;margin-left:-26px}.oc3-th .oc3-im:first-child{margin-left:0}.oc3-im img{width:100%;height:100%;object-fit:cover;display:block}.oc3-more{align-self:center;margin-left:8px;font-size:12px;font-weight:700;color:#8d8f96}
+.oc3-in{min-width:0;display:grid;gap:4px;align-self:end}.oc3-in b{font-size:15px;font-weight:800;color:#fff;letter-spacing:.02em}.oc3-in span{font-size:13.5px;color:#c9cbd1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.oc3-in small{font-size:12px;color:#7d8087}
+.oc3-st{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:700;padding:7px 13px;border-radius:999px;background:#1c1c20;color:#d6d8dd;white-space:nowrap;justify-self:end;align-self:start}
+.oc3-st:before{content:"";width:7px;height:7px;border-radius:50%;background:#8d8f96}.oc3-st.ok:before{background:#30a46c}.oc3-st.bad:before{background:#e5484d}.oc3-st.wait:before{background:#f5a524}.oc3-st:not(.ok):not(.bad):not(.wait):before{background:#4aa3ff}
+.oc3-tt{font-size:17px;font-weight:800;color:#fff;white-space:nowrap;justify-self:end;align-self:end;display:none}
+.oc3-ac{grid-column:2/4;display:flex;align-items:center;justify-content:space-between;gap:14px;align-self:end;margin-top:6px}
+.oc3-ac:before{content:attr(data-t);font-size:17px;font-weight:800}
+.oc3-b{display:inline-flex;align-items:center;justify-content:center;height:40px;padding:0 22px;border-radius:999px;background:#fff;color:#000;border:0;font:700 12.5px Inter,sans-serif;letter-spacing:.04em;text-decoration:none;cursor:pointer;white-space:nowrap}.oc3-b:hover{background:#e6e6e8}.oc3-b.dng{background:transparent;color:#ff6b6b;border:1px solid #4a2a2c}
+.ord-empty{color:#8d8f96!important;border-color:#26262a!important;background:transparent!important}
+.wl2 h2{color:#fff!important}.wl2 .empty{color:#8d8f96!important;border-color:#2a2a2f!important}
+.wishlist-item{background:#111114!important;border-color:#232327!important;border-radius:20px!important;color:#fff!important}.wishlist-item *{color:inherit}
+@media(max-width:620px){.oc3{grid-template-columns:auto minmax(0,1fr);padding:14px;gap:6px 14px}.oc3-im{width:64px;height:80px;margin-left:-22px;border-radius:14px}.oc3-st{grid-column:1/-1;grid-row:3;justify-self:start;align-self:center}.oc3-ac{grid-column:1/-1;grid-row:4}.oc3-th{grid-row:1/3}}
+</style>
 </head>
 <body class="page-ready ord-pg">
 <header class="home-header">
@@ -63,8 +92,14 @@ body.ord-pg{background:#fff;color:#111827;font-family:Inter,system-ui,sans-serif
 <main class="ord-wrap">
   <h1>Your Orders</h1>
   <div class="ord-bar">
-    <div class="ord-tabs" id="ordTabs"><button class="on" data-f="all">Orders</button><button data-f="notshipped">Not Yet Shipped</button><button data-f="delivered">Delivered</button><button data-f="cancelled">Cancelled Orders</button><button data-f="wish">Wishlist</button></div>
-    <select class="ord-sel" id="ordPeriod"><option value="0">All time</option><option value="30">Past 30 days</option><option value="180">Past 6 months</option><option value="365">Past 1 year</option></select>
+    <p class="ord-sum" id="ordSum"></p>
+    <div class="of"><button type="button" class="of-btn" id="ofBtn" aria-expanded="false"><svg viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"/></svg><span id="ofLbl">Filter</span><svg class="of-ch" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
+      <div class="of-menu" id="ofMenu" hidden>
+        <div class="of-h">Show</div>
+        <button type="button" class="on" data-f="all">All orders</button><button type="button" data-f="notshipped">Not yet shipped</button><button type="button" data-f="delivered">Delivered</button><button type="button" data-f="cancelled">Cancelled</button><button type="button" data-f="wish">Wishlist</button>
+        <div class="of-h">Period</div>
+        <button type="button" class="on" data-p="0">All time</button><button type="button" data-p="30">Past 30 days</button><button type="button" data-p="180">Past 6 months</button><button type="button" data-p="365">Past 1 year</button>
+      </div></div>
   </div>
   <div id="ordersList"><div class="ord-empty">Loading your orders...</div></div>
   <section class="wl2"><h2>My Wishlist</h2><div id="wishlistBox"><div class="empty">Loading your wishlist...</div></div></section>
@@ -88,24 +123,27 @@ const hiddenKey=u=>"rvzHiddenOrders:"+u.uid;
 function hiddenSet(u){try{return new Set(JSON.parse(localStorage.getItem(hiddenKey(u))||"[]").map(String))}catch(e){return new Set()}}
 document.addEventListener("click",async e=>{const b=e.target.closest("[data-rm]");if(!b)return;e.preventDefault();e.stopPropagation();const u=dashboardUser;if(!u||!confirm("Remove this order from your list?"))return;const id=b.dataset.rm;const h=hiddenSet(u);h.add(id);try{localStorage.setItem(hiddenKey(u),JSON.stringify([...h]))}catch(_){}try{await updateDoc(doc(db,"orders",id),{customerHidden:true})}catch(_){}render(u)},true);
 async function getOrders(user){try{const all=await graphicsOrderFlow.orders();return all.filter(order=>String(order.uid||"")===String(user.uid)||( !order.uid && String(order.email||"").toLowerCase()===String(user.email||"").toLowerCase()));}catch(error){console.error("Could not load orders:",error);return [];}}
-let dashboardUser=null,stopOrderWatch=null,ALL=[],FILTER="all";
+let dashboardUser=null,stopOrderWatch=null,ALL=[],FILTER="all",PERIOD=0;
 const isDone=s=>/deliver|complete/i.test(String(s||"")),isCan=s=>/cancel|reject/i.test(String(s||""));
 function cls(s){return isCan(s)?"bad":isDone(s)?"ok":/await|pending/i.test(String(s||""))?"wait":""}
 function paint(){
-  const days=Number(document.getElementById("ordPeriod").value)||0,now=Date.now();
+  const days=PERIOD,now=Date.now();
   let list=ALL.filter(o=>!days||now-new Date(o.createdAt||0).getTime()<=days*864e5);
   if(FILTER==="notshipped")list=list.filter(o=>!isDone(o.status)&&!isCan(o.status)&&!/ship/i.test(String(o.status||"")));
   else if(FILTER==="delivered")list=list.filter(o=>isDone(o.status));
   else if(FILTER==="cancelled")list=list.filter(o=>isCan(o.status));
+  document.getElementById("ordSum").textContent=list.length+(list.length===1?" order":" orders");
   const box=document.getElementById("ordersList");
   if(!list.length){box.innerHTML='<div class="ord-empty">'+(ALL.length?"No orders in this view.":"No orders yet. Place your first RIVENZ order to see it here.")+'</div>';return}
   box.innerHTML=list.map(o=>{
     const items=o.items||o.products||[],status=o.status||"Awaiting Payment",locked=isDone(status)&&/complete/i.test(status)||isCan(status);
     const date=o.createdAt?new Date(o.createdAt).toLocaleDateString("en-LK",{day:"2-digit",month:"short",year:"numeric"}):"";
     const prov=String(o.province||"").trim().replace(/\s*province$/i,""),ship=[o.city,prov?prov+" Province":""].filter(Boolean).join(", ")||"—";
-    const btns=locked?`<button type="button" class="b2 dng" data-rm="${esc(o.id||"")}">Remove</button>`:`<a class="b2 pri" href="order-details.html?id=${encodeURIComponent(o.id||"")}">View Order</a>`;
-    const rows=items.length?items.map(it=>{const im=it.image||it.img||(it.images&&it.images[0]&&it.images[0].url)||"",nm=it.productName||it.name||it.title||"RIVENZ Product",pid=it.productId||"";const mt=[it.size?"Size: "+it.size:"",it.color?"Colour: "+it.color:"","Qty: "+Math.max(1,Number(it.quantity)||1)].filter(Boolean).join("  ·  ");const lk=pid?"services.html?product="+encodeURIComponent(pid):"index.html";return `<div class="oc2-it"><div class="oc2-im">${im?`<img src="${esc(im)}" alt="" loading="lazy">`:""}</div><div class="oc2-in"><div class="oc2-nm">${esc(nm)}</div><div class="oc2-mt">${esc(mt)}</div><div class="oc2-ln"><a href="${lk}">Buy it again</a><a href="${lk}">View Product</a></div></div></div>`}).join(""):'<div class="oc2-it"><div class="oc2-in oc2-mt">RIVENZ Order</div></div>';
-    return `<article class="oc2"><div class="oc2-h"><div><small>Order Date :</small><b>${esc(date)}</b></div><div><small>Total Amount :</small><b>${money(o.total)}</b></div><div><small>Ship To :</small><b>${esc(ship)}</b></div><div class="oc2-r"><div class="no">Order : <b>#${esc(o.id||"")}</b></div><div class="oc2-btns">${btns}</div></div></div><div class="oc2-st">${esc(status)}<span class="pill ${cls(status)}">${esc(o.paymentMethod||"Payment pending")}</span></div>${rows}</article>`}).join("");
+    const btns=locked?`<button type="button" class="oc3-b dng" data-rm="${esc(o.id||"")}">Remove</button>`:`<a class="oc3-b" href="order-details.html?id=${encodeURIComponent(o.id||"")}">View order</a>`;
+    const qty=items.reduce((n,it)=>n+Math.max(1,Number(it.quantity)||1),0);
+    const th=items.slice(0,3).map(it=>{const im=it.image||it.img||(it.images&&it.images[0]&&it.images[0].url)||"";return `<span class="oc3-im">${im?`<img src="${esc(im)}" alt="" loading="lazy">`:""}</span>`}).join("")+(items.length>3?`<span class="oc3-more">+${items.length-3}</span>`:"");
+    const names=items.map(it=>it.productName||it.name||it.title||"RIVENZ Product").slice(0,2).join(", ")+(items.length>2?" +"+(items.length-2)+" more":"");
+    return `<article class="oc3"><div class="oc3-th">${th||'<span class="oc3-im"></span>'}</div><div class="oc3-in"><b>#${esc(o.id||"")}</b><span>${esc(names||"RIVENZ Order")}</span><small>${esc(date)} &middot; ${qty||items.length} item${(qty||items.length)===1?"":"s"}</small></div><div class="oc3-st ${cls(status)}">${esc(status)}</div><div class="oc3-ac" data-t="${esc(money(o.total))}">${btns}</div></article>`}).join("");
 }
 async function render(user){
   const hid=hiddenSet(user);
@@ -119,13 +157,21 @@ function renderWishlist(){
   box.querySelectorAll('[data-wish-remove]').forEach(btn=>btn.addEventListener('click',()=>{const id=btn.getAttribute('data-wish-remove');list=list.filter(x=>String(x.id)!==String(id));localStorage.setItem((()=>{try{return 'rivenzWishlistV1:'+(window.rivenzCartStore&&window.rivenzCartStore.uid||'guest')}catch(e){return 'rivenzWishlistV1:guest'}})(),JSON.stringify(list));renderWishlist();}));
 }
 window.addEventListener('rivenz-cart-session-changed',renderWishlist);renderWishlist();window.addEventListener('storage',renderWishlist);window.addEventListener('rivenz:wishlist-change',renderWishlist);
-document.getElementById("ordTabs").addEventListener("click",e=>{const b=e.target.closest("button[data-f]");if(!b)return;if(b.dataset.f==="wish"){document.querySelector(".wl2").scrollIntoView({behavior:"smooth",block:"start"});return}FILTER=b.dataset.f;document.querySelectorAll("#ordTabs button").forEach(x=>x.classList.toggle("on",x===b));paint()});
-document.getElementById("ordPeriod").addEventListener("change",paint);
+{const btn=document.getElementById("ofBtn"),menu=document.getElementById("ofMenu"),lbl=document.getElementById("ofLbl");
+const NAMES={all:"All orders",notshipped:"Not yet shipped",delivered:"Delivered",cancelled:"Cancelled"};
+const shut=()=>{menu.hidden=true;btn.setAttribute("aria-expanded","false");btn.classList.remove("open")};
+btn.addEventListener("click",e=>{e.stopPropagation();const o=menu.hidden;menu.hidden=!o;btn.setAttribute("aria-expanded",String(o));btn.classList.toggle("open",o)});
+document.addEventListener("click",e=>{if(!menu.contains(e.target)&&e.target!==btn)shut()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")shut()});
+menu.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
+ if(b.dataset.f){if(b.dataset.f==="wish"){shut();document.querySelector(".wl2").scrollIntoView({behavior:"smooth",block:"start"});return}FILTER=b.dataset.f;menu.querySelectorAll("[data-f]").forEach(x=>x.classList.toggle("on",x===b));lbl.textContent=FILTER==="all"?"Filter":NAMES[FILTER]}
+ else if(b.dataset.p!=null){PERIOD=Number(b.dataset.p)||0;menu.querySelectorAll("[data-p]").forEach(x=>x.classList.toggle("on",x===b))}
+ paint();shut()})}
 function watchCustomerOrders(user){if(stopOrderWatch)stopOrderWatch();try{stopOrderWatch=onSnapshot(query(collection(db,"orders"),where("uid","==",user.uid)),()=>render(user),err=>console.warn("Order watch unavailable:",err))}catch(e){}}
 document.getElementById("dashboardLogout")?.addEventListener("click",async e=>{e.preventDefault();try{await signOut(auth);}catch(error){console.error("Logout failed:",error);}location.href="index.html";});
 onAuthStateChanged(auth,user=>{if(!user){if(stopOrderWatch)stopOrderWatch();location.replace("auth.html?next=dashboard.html");return;}dashboardUser=user;render(user);watchCustomerOrders(user);});
 </script>
 <script type="module" src="account-guard.js?v=26"></script>
-<script type="module" src="user-nav.js?v=35"></script>
+<script type="module" src="user-nav.js?v=38"></script>
 </body>
 </html>
