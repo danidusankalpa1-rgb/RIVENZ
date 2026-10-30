@@ -30,3 +30,5 @@ body.cp{margin:0;background:#fff;color:#111316;font-family:Inter,system-ui,sans-
 @media(max-width:1000px){.cp-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:680px){.cp-img{aspect-ratio:4/5}.cp-info h2{font-size:12.5px}.cp-hero{min-height:40vh;padding:110px 16px 50px}.cp-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.cp-card{padding:7px}.cp-main{width:calc(100% - 24px);padding-top:24px}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important}}
+.cp-subs{display:flex;gap:8px;overflow-x:auto;margin:0 0 20px;padding:2px 0 6px;-webkit-overflow-scrolling:touch;scrollbar-width:none}.cp-subs::-webkit-scrollbar{display:none}.cp-subs[hidden]{display:none}
+.cp-chip{flex:none;height:38px;padding:0 18px;border-radius:999px;border:1px solid #d9dbe1;background:#fff;color:#111316;font:600 13px Inter,system-ui,sans-serif;cursor:pointer;white-space:nowrap}.cp-chip:hover{border-color:#111316}.cp-chip.on{background:#111316;color:#fff;border-color:#111316}

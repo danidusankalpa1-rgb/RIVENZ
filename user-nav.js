@@ -34,6 +34,8 @@ let user = null, unread = 0, cartN = 0, notifs = [], nUnread = 0;
 
 let authReady = false;
 const cachedU = () => { try { return JSON.parse(localStorage.getItem("rvzNavUser") || "null"); } catch (_) { return null; } };
+const subHtml = (u, list, imgs, key) => `<a href="${u}">Shop all</a>` + (list || []).map((n) => { const im = imgs && imgs[key + "|" + n]; return `<a class="${im ? "has-im" : ""}" href="${u}?sub=${encodeURIComponent(n)}">${im ? `<img src="${esc3(im)}" alt="" loading="lazy">` : ""}<span>${esc3(n)}</span></a>`; }).join("");
+function fillSubs(map) { h.querySelectorAll(".rvz-dg").forEach((g) => { const ds = g.querySelector(".rvz-ds"); if (ds) ds.innerHTML = subHtml(g.dataset.u, map[g.dataset.sk], map.images, g.dataset.sk); }); }
 function paint() {
   const cu = !authReady ? cachedU() : null;
   const li = !!user || !!cu, on = (k) => (ACTIVE === k ? " on" : "");
@@ -43,7 +45,9 @@ function paint() {
   h.dataset.sig = sigNow;
   const cartB = `<em class="rvz-b" data-cart${cartN ? "" : " hidden"}>${cartN}</em>`, chatB = `<em class="rvz-b" data-unread${unread ? "" : " hidden"}>${unread}</em>`;
   const full = MAIN;
-  const dl = ([k, l, u, bd = ""]) => `<a class="rvz-dr${on(k)}" href="${u}"><span>${l}</span>${bd}</a>`;
+  const SUBK = { mens: "mens", women: "women", shoes: "shoes", acc: "accessories" };
+  const subCache = window.rvzSub ? window.rvzSub.cached() : {};
+  const dl = ([k, l, u, bd = ""]) => SUBK[k] ? `<div class="rvz-dg${on(k) ? " open" : ""}" data-sk="${SUBK[k]}" data-u="${u}"><button type="button" class="rvz-dr rvz-dt${on(k)}" data-dt aria-expanded="${on(k) ? "true" : "false"}"><span>${l}</span><svg class="rvz-dc" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="rvz-ds">${subHtml(u, subCache[SUBK[k]], subCache.images, SUBK[k])}</div></div>` : `<a class="rvz-dr${on(k)}" href="${u}"><span>${l}</span>${bd}</a>`;
   const row = ([k, l, u, b = ""]) => `<a class="rvz-row${on(k)}" href="${u}">${I(k === "profile" ? "user" : k)}<span>${l}</span>${b}</a>`;
   const isShop = false, curCat = new URLSearchParams(location.search).get("category")||"all";
   const CATS = [["Men's", "mens"], ["Ladies", "ladies"], ["Unisex", "unisex"], ["Kids", "kids"], ["Accessories", "accessories"]];
@@ -80,6 +84,7 @@ h.addEventListener("click", async (e) => {
   if (sb) { e.stopPropagation(); const f = h.querySelector("#rvzSearch"), op = !f.classList.contains("open"); closeAll(); f.classList.toggle("open", op); sb.setAttribute("aria-expanded", String(op)); if (op) { f.querySelector("input")?.focus(); loadSearchProducts(); } return; }
   if (m) { e.stopPropagation(); return toggle(m, h.querySelector("#rvzMob")); }
   if (a) { e.stopPropagation(); return toggle(a, h.querySelector("#rvzAccCard")); }
+  const dt = e.target.closest("[data-dt]"); if (dt) { e.stopPropagation(); const g = dt.closest(".rvz-dg"), op = !g.classList.contains("open"); g.classList.toggle("open", op); dt.setAttribute("aria-expanded", String(op)); return; }
   if (e.target.closest("[data-close]") || e.target.closest("#rvzBd")) { closeAll(); return; }
   if (e.target.closest("[data-out]")) { try { await signOut(getAuth(app)); } catch (_) {} location.href = "index.html"; }
 });
@@ -138,7 +143,7 @@ function popCss() {
 }
 popCss();
 const STAR = '<svg viewBox="0 0 24 24"><path d="m12 2.5 2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4 6.1 20.5l1.2-6.5L2.5 9.4l6.6-.9z"/></svg>';
-function closePop() { clearTimeout(popTimer); if (!popEl) return; const el = popEl; popEl = null; el.classList.remove("in"); setTimeout(() => { el.remove(); nextPop(); }, 280); }
+function closePop() { clearTimeout(popTimer); if (!popEl) return; const el = popEl; popEl = null; try { el.__mark && el.__mark(); } catch (_) {} el.classList.remove("in"); setTimeout(() => { el.remove(); nextPop(); }, 280); }
 function nextPop() { if (popEl || !popQ.length) return; showPop(popQ.shift()); }
 function showPop(n) {
   popCss();
@@ -149,7 +154,7 @@ function showPop(n) {
   el.innerHTML = `<button type="button" class="rvz-px" aria-label="Close">&times;</button><div class="rvz-pk">${n.custom ? "MESSAGE FROM RIVENZ" : "ORDER UPDATE"}</div><div class="rvz-pm">${delivered ? "Your order " + esc2(n.orderId) + " has been delivered. How was it?" : esc2(n.message)}</div>` +
     (delivered ? items.map((it) => `<div class="rvz-rt" data-pid="${esc2(it.id)}"><div class="rvz-rn">${(it.img && !/^\s*(javascript|vbscript):/i.test(it.img)) ? `<img src="${esc2(it.img)}" alt="">` : ""}<span>${esc2(it.name)}</span></div><div class="rvz-rs">${[1, 2, 3, 4, 5].map((i) => `<button type="button" data-v="${i}" aria-label="${i} star">${STAR}</button>`).join("")}</div><div class="rvz-rf" hidden><textarea maxlength="600" placeholder="Write a few words (optional)"></textarea><button type="button" class="rvz-rg">Submit review</button></div><div class="rvz-rm"></div></div>`).join("") : "") +
     (n.custom ? "" : `<a class="rvz-pl" href="order-details.html?id=${encodeURIComponent(n.orderId)}">View order</a>`);
-  document.body.appendChild(el); popEl = el; requestAnimationFrame(() => el.classList.add("in"));
+  el.__mark = n.mark || null; document.body.appendChild(el); popEl = el; requestAnimationFrame(() => el.classList.add("in"));
   el.addEventListener("click", async (e) => {
     if (e.target.closest(".rvz-px")) return closePop();
     const row = e.target.closest(".rvz-rt"); if (!row) return;
@@ -165,7 +170,7 @@ function showPop(n) {
       row.innerHTML = '<div class="rvz-rn">' + esc2(row.querySelector(".rvz-rn span").textContent) + '</div><div class="rvz-rm ok">Thank you for your feedback!</div>';
     } catch (er) { msg.className = "rvz-rm err"; msg.textContent = String(er?.message) === "ALREADY_REVIEWED" ? "You have already reviewed this product." : "Could not send your review. Please try again."; go.disabled = false; }
   });
-  if (!delivered) { let left = 8000, t0 = Date.now(); const arm = () => { t0 = Date.now(); popTimer = setTimeout(closePop, left); }; arm(); el.addEventListener("mouseenter", () => { clearTimeout(popTimer); left -= Date.now() - t0; }); el.addEventListener("mouseleave", arm); }
+  if (!delivered) { let left = 8000, t0 = Date.now(); const live = () => popEl === el; const arm = () => { clearTimeout(popTimer); if (!live() || document.hidden) return; t0 = Date.now(); popTimer = setTimeout(closePop, left); }; arm(); el.addEventListener("mouseenter", () => { clearTimeout(popTimer); left -= Date.now() - t0; }); el.addEventListener("mouseleave", arm); document.addEventListener("visibilitychange", () => { if (!live()) return; if (document.hidden) { clearTimeout(popTimer); left -= Date.now() - t0; if (left < 4000) left = 4000; } else arm(); }); }
 }
 function queuePop(n) { const k = n.key || n.orderId + "|" + n.message; if (popQ.some((x) => (x.key || x.orderId + "|" + x.message) === k) || (popEl && popEl.dataset.key === k)) return; popQ.push(n); nextPop(); }
 let stopOrd = null, stopNote = null;
@@ -177,9 +182,8 @@ function watchNotice(u) {
       const id = String(n.id || n.time || ""), k = "rvzNoticeSeen_" + u.uid; let seen = null;
       try { seen = localStorage.getItem(k); } catch (_) {}
       if (seen === id) return;
-      try { localStorage.setItem(k, id); } catch (_) {}
-      if (seen === null && ts(n.time) < Date.now() - 3 * 86400000) return;
-      queuePop({ orderId: "msg-" + id, message: String(n.message), custom: true });
+      if (seen === null && ts(n.time) < Date.now() - 3 * 86400000) { try { localStorage.setItem(k, id); } catch (_) {} return; }
+      queuePop({ orderId: "msg-" + id, message: String(n.message), custom: true, mark: () => { try { localStorage.setItem(k, id); } catch (_) {} } });
     }, () => {});
   } catch (_) {}
 }
@@ -189,8 +193,7 @@ function watchOrders(u) {
       const list = snap.docs.map((d) => { if (d.metadata && d.metadata.hasPendingWrites) return null; const o = d.data(), n = o.lastNotification; if (!n || !n.message || o.customerHidden) return null; return { orderId: d.id, message: n.message, key: String(n.time || "") + "|" + String(n.message), ms: ts(n.createdAt) || ts(n.time) || ts(o.updatedAt), delivered: /^deliver/i.test(String(o.status || "")), items: o.items || o.products || [] }; }).filter(Boolean).sort((a, b) => a.ms - b.ms);
       if (readSeen() === null) { const seen = {}; list.forEach((n) => { if (n.ms < Date.now() - 86400000) seen[n.orderId] = n.key; }); try { localStorage.setItem(sKey(), JSON.stringify(seen)); } catch (_) {} }
       const seen = readSeen() || {}; let changed = false;
-      list.forEach((n) => { if (seen[n.orderId] !== n.key) { seen[n.orderId] = n.key; changed = true; queuePop(n); } });
-      if (changed) { try { localStorage.setItem(sKey(), JSON.stringify(seen)); } catch (_) {} }
+      list.forEach((n) => { if (seen[n.orderId] !== n.key) { n.mark = () => { const sn = readSeen() || {}; sn[n.orderId] = n.key; try { localStorage.setItem(sKey(), JSON.stringify(sn)); } catch (_) {} }; queuePop(n); } });
     }, () => {});
   } catch (_) {}
 }
@@ -209,3 +212,4 @@ import("./login-modal.js?v=29").catch((e) => console.warn("login popup", e));
 if (!window.__rvzLd) { const sc = document.createElement("script"); sc.src = "public-content.js?v=27"; document.head.appendChild(sc); }
 
 if (!/^(contact|profile)\.html$/.test(file)) import("./site-footer.js?v=31").catch(() => {});
+(function () { const go = () => { fillSubs(window.rvzSub.cached()); window.rvzSub.get().then(fillSubs); }; if (window.rvzSub) go(); else { const sc = document.createElement("script"); sc.src = "site-subcats.js?v=2"; sc.onload = go; document.head.appendChild(sc); } })();

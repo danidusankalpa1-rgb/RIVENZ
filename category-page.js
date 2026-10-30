@@ -39,12 +39,23 @@
   var gp=window.graphicsPublicContent;
   if(!gp){$("cpGrid").innerHTML='<div class="cp-empty">Could not load products.</div>';return}
   gp.catalog("showcase").then(function(r){hero((Array.isArray(r)?r:[]).find(function(x){return x&&x._key===KEY}))}).catch(function(){});
-  var lastSig="";
+  var lastSig="",lastR=[],sub=(new URLSearchParams(location.search).get("sub")||"").trim(),SK=cat==="accessories"?"accessories":cat;
+  var subsBox=document.createElement("div");subsBox.className="cp-subs";subsBox.id="cpSubs";subsBox.hidden=true;$("cpGrid").parentNode.insertBefore(subsBox,$("cpGrid"));
+  function chips(map){
+    var l=(map&&map[SK])||[];if(!l.length){subsBox.hidden=true;return}
+    if(sub&&!l.some(function(n){return n.toLowerCase()===sub.toLowerCase()}))l=l.concat([sub]);
+    subsBox.hidden=false;
+    subsBox.innerHTML=['All'].concat(l).map(function(n,i){var on=i===0?!sub:n.toLowerCase()===sub.toLowerCase();return '<button type="button" class="cp-chip'+(on?' on':'')+'" data-s="'+(i===0?'':esc(n))+'">'+esc(n)+'</button>'}).join("");
+  }
+  subsBox.addEventListener("click",function(e){var b=e.target.closest(".cp-chip");if(!b)return;sub=b.dataset.s||"";try{var u=new URL(location.href);if(sub)u.searchParams.set("sub",sub);else u.searchParams.delete("sub");history.replaceState(null,"",u)}catch(x){}subsBox.querySelectorAll(".cp-chip").forEach(function(c){c.classList.toggle("on",(c.dataset.s||"")===sub)});lastSig="";paint(lastR)});
+  function loadSubs(){var go=function(){chips(window.rvzSub.cached());window.rvzSub.get().then(chips)};if(window.rvzSub)go();else{var sc=document.createElement("script");sc.src="site-subcats.js?v=2";sc.onload=go;document.head.appendChild(sc)}}
+  loadSubs();
   function paint(r){
-    var list=(Array.isArray(r)?r:[]).filter(function(p){return p&&p.active!==false&&!p.special&&match(p)}).reverse();
+    lastR=r;
+    var list=(Array.isArray(r)?r:[]).filter(function(p){return p&&p.active!==false&&!p.special&&match(p)&&(!sub||String(p.subCategory||"").trim().toLowerCase()===sub.toLowerCase())}).reverse();
     $("cpCount").textContent=list.length+(list.length===1?" product":" products");
     var sig=JSON.stringify(list.map(function(p){return [p.id,p.stockByColorSize,p.stock,p.price,p.offer,p.colors]}));if(sig===lastSig)return;lastSig=sig;
-    $("cpGrid").innerHTML=list.length?list.map(card).join(""):'<div class="cp-empty">No products here yet. Please check back soon.</div>';
+    $("cpGrid").innerHTML=list.length?list.map(card).join(""):'<div class="cp-empty">'+(sub?"No products in this category yet.":"No products here yet. Please check back soon.")+'</div>';
   }
   gp.catalog("products").then(paint).catch(function(){$("cpGrid").innerHTML='<div class="cp-empty">Could not load products. Please refresh.</div>'});
   setInterval(function(){if(document.hidden)return;gp.catalog("products",true).then(paint).catch(function(){})},8000);

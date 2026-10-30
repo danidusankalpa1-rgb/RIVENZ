@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="style.css">
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;700&display=swap" rel="stylesheet">
 <script src="ui-messages.js?v=26"></script>
-<link rel="stylesheet" href="user-nav.css?v=42">
+<link rel="stylesheet" href="user-nav.css?v=44">
 <link rel="stylesheet" href="order-track.css?v=2">
 <script src="public-content.js?v=27"></script>
 <script src="refund-receipt.js?v=1"></script>
@@ -98,9 +98,9 @@ $("trkCopy").addEventListener("click",async()=>{const v=window.__trk||"";try{awa
 function cxDone(paid){const m=document.createElement("div");m.className="cx-bd show";m.id="cxDone";const H=t=>'<b class="cx-hl">'+t+'</b>';m.innerHTML='<div class="cx-box cx-ok"><div class="cx-tick"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></div><h3>Order cancelled</h3>'+(paid?'<p>Your order has been '+H("cancelled successfully")+'.</p><p>Your refund will be credited to your bank account '+H("within 5 days")+'.</p><p>Once the refund is completed, a confirmation and a '+H("receipt")+' for the transaction will be sent to your '+H("registered email address")+'. Please '+H("check your email inbox")+'.</p><p class="cx-th">Thank you for choosing Rivenz!<br><span>Style Without Limits.</span></p>':'<p>Your order has been '+H("cancelled successfully")+'.</p><p class="cx-th">Thank you for choosing Rivenz!<br><span>Style Without Limits.</span></p>')+'<div class="cx-act"><button type="button" class="dng" id="cxDoneOk">Continue</button></div></div>';document.body.appendChild(m);m.querySelector("#cxDoneOk").onclick=()=>m.remove()}
 document.addEventListener("click",e=>{if(e.target.closest("#rfView")&&window.__ord&&window.rvzRefundReceipt)window.rvzRefundReceipt(window.__ord)});
 let cxStep=1,cxBusy=false;
-const cxSet=n=>{cxStep=n;const paid=!!window.__paid;$("cxS1").style.display=n===1?"block":"none";$("cxS2").style.display=n===2?"block":"none";$("cxSteps").hidden=!paid;$("cxSteps").querySelectorAll("span").forEach(x=>x.classList.toggle("on",Number(x.dataset.s)===n));$("cxSkip").hidden=!(paid&&n===2);$("cxClose").textContent=n===2?"Back":"Keep my order";$("cxOk").textContent=n===2?"Confirm refund details":(paid?"Next: refund details":"Cancel order");$("cxErr").textContent="";$("cxModal").querySelector(".cx-box").scrollTop=0};
+const cxFill=()=>{const o=window.__ord||{},p=String(o.phone||o.customerPhone||o.mobile||o.whatsapp||"").trim();if(p){if(!$("cxPhone").value)$("cxPhone").value=p;if(!$("cxWa").value)$("cxWa").value=String(o.whatsapp||p).trim()}};const cxSet=n=>{cxStep=n;if(n===2)cxFill();const paid=!!window.__paid;$("cxS1").style.display=n===1?"block":"none";$("cxS2").style.display=n===2?"block":"none";$("cxSteps").hidden=!paid;$("cxSteps").querySelectorAll("span").forEach(x=>x.classList.toggle("on",Number(x.dataset.s)===n));$("cxSkip").hidden=!(paid&&n===2);$("cxClose").textContent=n===2?"Back":"Keep my order";$("cxOk").textContent=n===2?"Confirm refund details":(paid?"Next: refund details":"Cancel order");$("cxErr").textContent="";$("cxModal").querySelector(".cx-box").scrollTop=0};
 function cxAsk(title,html,yes,no){return new Promise(res=>{const m=document.createElement("div");m.className="cx-bd show";m.id="cxAsk";m.innerHTML='<div class="cx-box cx-q"><h3>'+title+'</h3>'+html+'<div class="cx-act"><button type="button" data-n>'+no+'</button><button type="button" class="dng" data-y>'+yes+'</button></div></div>';document.body.appendChild(m);const done=v=>{m.remove();res(v)};m.querySelector("[data-y]").onclick=()=>done(true);m.querySelector("[data-n]").onclick=()=>done(false)})}
-$("cancelOrder").addEventListener("click",()=>{const o=window.__ord;if(!o)return;if(window.__paid){if(!$("cxPhone").value)$("cxPhone").value=o.phone||"";if(!$("cxWa").value)$("cxWa").value=o.phone||""}cxSet(1);$("cxModal").classList.add("show")});
+$("cancelOrder").addEventListener("click",()=>{const o=window.__ord;if(!o)return;if(window.__paid)cxFill();cxSet(1);$("cxModal").classList.add("show")});
 $("cxClose").addEventListener("click",()=>{if(cxStep===2)cxSet(1);else $("cxModal").classList.remove("show")});
 $("cxModal").addEventListener("click",e=>{if(e.target===$("cxModal"))$("cxModal").classList.remove("show")});
 $("cxSel").addEventListener("change",()=>{$("cxOtherWrap").style.display=$("cxSel").value==="Other"?"block":"none";$("cxErr").textContent=""});
@@ -124,6 +124,6 @@ $("confirmReceived").addEventListener("click",async()=>{const user=auth.currentU
 onAuthStateChanged(auth,async user=>{if(!user){location.href="auth.html?next="+encodeURIComponent("order-details.html?id="+orderId);return}try{await load()}catch(e){console.error(e);$("loading").textContent="We could not load your order. Please refresh and try again."}});
 </script>
 <script type="module" src="account-guard.js?v=26"></script>
-<script type="module" src="user-nav.js?v=42"></script>
+<script type="module" src="user-nav.js?v=45"></script>
 </body>
 </html>

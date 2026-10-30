@@ -176,3 +176,20 @@ html body{overflow-x:clip!important;overflow-y:visible!important}
 .rvz-h .rvz-av,.rvz-av{background:#121c3d!important;color:#fff!important;border:1px solid rgba(255,255,255,.18)}
 .rvz-h .rvz-acc.on .rvz-av{box-shadow:0 0 0 3px rgba(255,255,255,.25)}
 .rvz-h .rvz-b{background:#fff;color:#000}
+
+/* ===== v4: category dropdown inside the left drawer ===== */
+.rvz-h .rvz-dg{display:block}
+.rvz-h .rvz-dg>.rvz-dt{font-family:inherit}
+.rvz-h .rvz-dc{width:16px;height:16px;flex:none;transition:transform .22s ease;color:#8d8f96}
+.rvz-h .rvz-dg.open>.rvz-dt .rvz-dc{transform:rotate(180deg);color:#fff}
+.rvz-h .rvz-ds{display:grid;grid-template-rows:0fr;overflow:hidden;transition:grid-template-rows .26s ease}
+.rvz-h .rvz-dg.open>.rvz-ds{grid-template-rows:1fr}
+.rvz-h .rvz-ds>*{min-height:0}
+.rvz-h .rvz-ds{display:block;max-height:0;transition:max-height .28s ease}
+.rvz-h .rvz-dg.open>.rvz-ds{max-height:640px}
+.rvz-h .rvz-ds a{display:block;padding:11px 0 11px 16px;border-bottom:1px solid #1a1c20;color:#a5a8ae;font-size:13px;font-weight:500;letter-spacing:.02em;text-transform:none;text-decoration:none}
+.rvz-h .rvz-ds a:first-child{color:#fff;font-weight:700}
+.rvz-h .rvz-ds a:hover{color:#fff}
+.rvz-h .rvz-ds a.has-im{display:flex;align-items:center;gap:14px;padding:9px 0 9px 16px}
+.rvz-h .rvz-ds a.has-im img{width:40px;height:48px;object-fit:cover;border-radius:10px;background:#1c1c1f;flex:none}
+.rvz-h .rvz-ds a.has-im span{min-width:0}
