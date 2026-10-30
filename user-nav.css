@@ -193,3 +193,18 @@ html body{overflow-x:clip!important;overflow-y:visible!important}
 .rvz-h .rvz-ds a.has-im{display:flex;align-items:center;gap:14px;padding:9px 0 9px 16px}
 .rvz-h .rvz-ds a.has-im img{width:40px;height:48px;object-fit:cover;border-radius:10px;background:#1c1c1f;flex:none}
 .rvz-h .rvz-ds a.has-im span{min-width:0}
+
+/* ===== v5: white drawer menu; full screen on phones ===== */
+.rvz-h .rvz-card.rvz-mob{background:#fff!important;color:#111316}
+.rvz-h .rvz-dh img{filter:none!important}
+.rvz-h .rvz-dx{background:#f1f1ef!important;color:#111316!important;border-radius:50%!important}
+.rvz-h .rvz-dr{color:#3a3d43!important;border-bottom:1px solid #ececea!important}
+.rvz-h .rvz-dr.on,.rvz-h .rvz-dr:hover{color:#000!important}
+.rvz-h .rvz-dc{color:#8d9097}.rvz-h .rvz-dg.open>.rvz-dt .rvz-dc{color:#000}
+.rvz-h .rvz-ds a{color:#6b6f77!important;border-bottom:1px solid #f1f1ef!important}
+.rvz-h .rvz-ds a:first-child{color:#000!important}
+.rvz-h .rvz-ds a:hover{color:#000!important}
+.rvz-h .rvz-ds a.has-im img{background:#f1f1ef}
+.rvz-h .rvz-df{border-top:1px solid #ececea!important;color:#80848d!important}
+.rvz-h .rvz-df b,.rvz-h .rvz-df a{color:#111316!important}
+@media(max-width:700px){.rvz-h .rvz-card.rvz-mob{width:100vw!important;max-width:100vw!important}.rvz-h .rvz-dn{padding:6px 24px 20px}.rvz-h .rvz-dr{font-size:15px;padding:18px 0}}
