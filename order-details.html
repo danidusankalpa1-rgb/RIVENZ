@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="style.css">
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;700&display=swap" rel="stylesheet">
 <script src="ui-messages.js?v=26"></script>
-<link rel="stylesheet" href="user-nav.css?v=45">
+<link rel="stylesheet" href="user-nav.css?v=46">
 <link rel="stylesheet" href="order-track.css?v=2">
 <script src="public-content.js?v=27"></script>
 <script src="refund-receipt.js?v=1"></script>
@@ -124,6 +124,6 @@ $("confirmReceived").addEventListener("click",async()=>{const user=auth.currentU
 onAuthStateChanged(auth,async user=>{if(!user){location.href="auth.html?next="+encodeURIComponent("order-details.html?id="+orderId);return}try{await load()}catch(e){console.error(e);$("loading").textContent="We could not load your order. Please refresh and try again."}});
 </script>
 <script type="module" src="account-guard.js?v=26"></script>
-<script type="module" src="user-nav.js?v=45"></script>
+<script type="module" src="user-nav.js?v=46"></script>
 </body>
 </html>

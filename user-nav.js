@@ -34,7 +34,7 @@ let user = null, unread = 0, cartN = 0, notifs = [], nUnread = 0;
 
 let authReady = false;
 const cachedU = () => { try { return JSON.parse(localStorage.getItem("rvzNavUser") || "null"); } catch (_) { return null; } };
-const subHtml = (u, list, imgs, key) => `<a href="${u}">Shop all</a>` + (list || []).map((n) => { const im = imgs && imgs[key + "|" + n]; return `<a class="${im ? "has-im" : ""}" href="${u}?sub=${encodeURIComponent(n)}">${im ? `<img src="${esc3(im)}" alt="" loading="lazy">` : ""}<span>${esc3(n)}</span></a>`; }).join("");
+const subHtml = (u, list, imgs, key) => `<div class="rvz-sc"><a class="rvz-sk all" href="${u}"><span>Shop all</span></a>` + (list || []).map((n) => { const im = imgs && imgs[key + "|" + n]; return `<a class="rvz-sk${im ? " has-im" : ""}" href="${u}?sub=${encodeURIComponent(n)}"${im ? ` style="background-image:url('${String(im).replace(/['"()\\\s]/g, encodeURIComponent)}')"` : ""}><span>${esc3(n)}</span></a>`; }).join("") + "</div>";
 function fillSubs(map) { h.querySelectorAll(".rvz-dg").forEach((g) => { const ds = g.querySelector(".rvz-ds"); if (ds) ds.innerHTML = subHtml(g.dataset.u, map[g.dataset.sk], map.images, g.dataset.sk); }); }
 function paint() {
   const cu = !authReady ? cachedU() : null;

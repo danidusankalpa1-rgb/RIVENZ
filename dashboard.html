@@ -35,7 +35,7 @@ body.ord-pg{background:#fff;color:#111827;font-family:Inter,system-ui,sans-serif
 .wishlist-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.wishlist-item{border:1px solid #e5e7eb;border-radius:14px;padding:12px;background:#fff;display:flex;gap:12px;align-items:center;min-width:0}.wishlist-item img,.wishlist-placeholder{width:64px;height:76px;border-radius:10px;object-fit:cover;background:#f3f4f6;flex:0 0 64px}.wishlist-placeholder{display:grid;place-items:center;font-size:9px;color:#9aa0aa}.wishlist-info{min-width:0;flex:1}.wishlist-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.wishlist-price{font-size:12.5px;margin-top:5px}.wishlist-actions{display:flex;gap:8px;margin-top:9px}.wishlist-actions a,.wishlist-actions button{border:1px solid #d9dbe1;border-radius:8px;padding:6px 12px;font:500 12px Inter,sans-serif;text-decoration:none;cursor:pointer;background:#fff;color:#111827}.wishlist-actions a{background:#4f46e5;border-color:#4f46e5;color:#fff}
 @media(max-width:760px){.wishlist-grid{grid-template-columns:1fr 1fr}}@media(max-width:520px){.wishlist-grid{grid-template-columns:1fr}}
 #dashboardLogout{color:#ff4d4f!important}</style>
-<link rel="stylesheet" href="user-nav.css?v=45">
+<link rel="stylesheet" href="user-nav.css?v=46">
 <script src="public-content.js?v=27"></script>
 <style>body.ord-pg{font-family:Inter,ui-sans-serif,system-ui,sans-serif}.ord-wrap h1{font-family:Unbounded,Inter,sans-serif!important;text-transform:uppercase;letter-spacing:-.02em;font-weight:600!important;font-size:clamp(22px,3.4vw,32px)!important}.wl2 h2{font-family:Unbounded,Inter,sans-serif!important;text-transform:uppercase;letter-spacing:-.02em;font-weight:600;font-size:16px}.oc2-st{font-family:Inter,sans-serif}</style>
 <style>.ord-bar{flex-direction:column;align-items:stretch;gap:12px}.ord-tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;gap:4px;background:#f3f4f6;border-radius:12px;padding:4px}.ord-tabs::-webkit-scrollbar{display:none}.ord-tabs button{white-space:nowrap;flex:1 0 auto;padding:10px 16px;border-radius:9px;font-size:13px}.ord-tabs button.on{background:#fff;color:#111827;box-shadow:0 1px 4px rgba(0,0,0,.1)}.ord-sel{align-self:flex-end}
@@ -173,6 +173,6 @@ document.getElementById("dashboardLogout")?.addEventListener("click",async e=>{e
 onAuthStateChanged(auth,user=>{if(!user){if(stopOrderWatch)stopOrderWatch();location.replace("auth.html?next=dashboard.html");return;}dashboardUser=user;render(user);watchCustomerOrders(user);});
 </script>
 <script type="module" src="account-guard.js?v=26"></script>
-<script type="module" src="user-nav.js?v=45"></script>
+<script type="module" src="user-nav.js?v=46"></script>
 </body>
 </html>

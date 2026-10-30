@@ -208,3 +208,12 @@ html body{overflow-x:clip!important;overflow-y:visible!important}
 .rvz-h .rvz-df{border-top:1px solid #ececea!important;color:#80848d!important}
 .rvz-h .rvz-df b,.rvz-h .rvz-df a{color:#111316!important}
 @media(max-width:700px){.rvz-h .rvz-card.rvz-mob{width:100vw!important;max-width:100vw!important}.rvz-h .rvz-dn{padding:6px 24px 20px}.rvz-h .rvz-dr{font-size:15px;padding:18px 0}}
+
+/* ===== v6: sub categories as a sideways-scrolling row of 4:3 image cards ===== */
+.rvz-h .rvz-ds .rvz-sc{display:flex;gap:10px;overflow-x:auto;overflow-y:hidden;padding:12px 2px 16px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.rvz-h .rvz-ds .rvz-sc::-webkit-scrollbar{display:none}
+.rvz-h .rvz-ds .rvz-sc a.rvz-sk{flex:0 0 auto;width:min(46vw,190px);aspect-ratio:4/3;display:flex!important;align-items:center;justify-content:center;padding:10px!important;border:0!important;border-radius:14px;background:#111316 center/cover no-repeat;color:#fff!important;text-align:center;text-decoration:none;position:relative;overflow:hidden;scroll-snap-align:start}
+.rvz-h .rvz-ds .rvz-sc a.rvz-sk:before{content:"";position:absolute;inset:0;background:rgba(0,0,0,.34)}
+.rvz-h .rvz-ds .rvz-sc a.rvz-sk.all{background:#111316}.rvz-h .rvz-ds .rvz-sc a.rvz-sk.all:before{display:none}
+.rvz-h .rvz-ds .rvz-sc a.rvz-sk span{position:relative;font:800 14px/1.25 Inter,system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#fff;text-shadow:0 1px 8px rgba(0,0,0,.45)}
+.rvz-h .rvz-ds .rvz-sc a.rvz-sk:hover{opacity:.92}
