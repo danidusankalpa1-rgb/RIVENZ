@@ -64,7 +64,7 @@ body.se{margin:0;color:var(--tx);font-family:Inter,system-ui,sans-serif;backgrou
   <div class="se-fade" id="seFade"></div>
   <div class="se-rail" id="seRail"></div>
 </div>
-<script src="card-extras.js?v=3"></script>
+<script src="card-extras.js?v=6"></script>
 <script src="file-store.js?v=26"></script>
 <script src="public-content.js?v=27"></script>
 <script>
@@ -112,7 +112,7 @@ body.se{margin:0;color:var(--tx);font-family:Inter,system-ui,sans-serif;backgrou
     IN.innerHTML='<div class="se-left"><span class="se-kick">'+esc(v.tag)+'</span><h1>'+esc(v.title)+'</h1><p>'+esc(v.subtitle)+'</p></div>'+
       '<div class="se-mid"><div class="se-hero" id="seHero"></div></div>'+
       '<div class="se-right"><div id="seInfo"><div class="se-pn" id="sePN"></div><div class="se-pp" id="sePP"></div><p class="se-pd" id="sePD"></p></div><div id="seOpt"></div><button type="button" class="se-cta" id="seGo" style="border:0;cursor:pointer;font-family:inherit">Add to cart</button></div>';
-    rail.innerHTML=list.map((p,i)=>{const u=unit(p);return '<button type="button" class="se-card'+(window.rvzCard&&rvzCard.sold&&rvzCard.sold(p)?' rz-sold':'')+'" data-i="'+i+'" style="animation-delay:'+(.3+i*.07)+'s"><img src="'+esc(imgs(p)[0]||'')+'" alt="" loading="lazy" decoding="async"><span><b>'+esc(p.name||'')+'</b><small>'+money(u.now)+'</small></span><span class="se-plus"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span></button>'}).join('');
+    rail.innerHTML=list.map((p,i)=>{const u=unit(p);return '<button type="button" class="se-card'+(window.rvzCard&&rvzCard.sold&&rvzCard.sold(p)?' rz-sold':'')+'" data-pid="'+esc(p.id)+'" data-i="'+i+'" style="animation-delay:'+(.3+i*.07)+'s"><img src="'+esc(imgs(p)[0]||'')+'" alt="" loading="lazy" decoding="async"><span><b>'+esc(p.name||'')+'</b><small>'+money(u.now)+'</small></span><span class="se-plus"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span></button>'}).join('');
     rail.onclick=e=>{const c=e.target.closest('.se-card');if(c)show(+c.dataset.i)};
     $('seOpt').onclick=e=>{const b=e.target.closest('button');if(!b||b.disabled)return;if(b.dataset.c!==undefined){sel.c=b.dataset.c;sel.z='';qty=1}if(b.dataset.z!==undefined){sel.z=b.dataset.z;qty=1}if(b.dataset.q!==undefined){const m=stk(list[cur],sel.c||'',sel.z);qty=Math.max(1,Math.min(m||1,qty+Number(b.dataset.q)))}opts()};
     $('seGo').onclick=addCart;
