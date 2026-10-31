@@ -42,7 +42,7 @@
   var lastSig="",lastR=[],sub=(new URLSearchParams(location.search).get("sub")||"").trim(),SK=cat==="accessories"?"accessories":cat;
   var CH='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
   var tb=document.createElement("div");tb.className="cp-tb";
-  tb.innerHTML='<div class="cp-dd" id="cpSubWrap" hidden><button type="button" class="cp-tbtn" id="cpSubBtn"><span>All</span>'+CH+'</button><div class="cp-menu" id="cpSubMenu" hidden></div></div><button type="button" class="cp-tbtn" id="cpFBtn"><span>Filter</span>'+CH+'</button>';
+  tb.innerHTML='<div class="cp-dd" id="cpSubWrap" hidden><button type="button" class="cp-tbtn" id="cpSubBtn"><span>All</span>'+CH+'</button><div class="cp-menu" id="cpSubMenu" hidden></div></div><div class="cp-dd" id="cpSortWrap"><button type="button" class="cp-tbtn" id="cpSortBtn"><span>Sort</span>'+CH+'</button><div class="cp-menu" id="cpSortMenu" hidden></div></div><button type="button" class="cp-tbtn" id="cpFBtn"><span>Filter</span>'+CH+'</button>';
   $("cpGrid").parentNode.insertBefore(tb,$("cpGrid"));
   var subList=[];
   function setSub(v){sub=v||"";try{var u=new URL(location.href);if(sub)u.searchParams.set("sub",sub);else u.searchParams.delete("sub");history.replaceState(null,"",u)}catch(x){}lastSig="";drawSubs();resetF();paint(lastR)}
@@ -54,9 +54,15 @@
   }
   $("cpSubBtn").addEventListener("click",function(e){e.stopPropagation();var m=$("cpSubMenu");m.hidden=!m.hidden;$("cpSubBtn").classList.toggle("open",!m.hidden)});
   $("cpSubMenu").addEventListener("click",function(e){var b=e.target.closest(".cp-mi");if(!b)return;$("cpSubMenu").hidden=true;$("cpSubBtn").classList.remove("open");setSub(b.dataset.s||"")});
-  document.addEventListener("click",function(e){if(!e.target.closest(".cp-dd")){$("cpSubMenu").hidden=true;$("cpSubBtn").classList.remove("open")}});
+  document.addEventListener("click",function(e){if(!e.target.closest(".cp-dd")){$("cpSubMenu").hidden=true;$("cpSubBtn").classList.remove("open");$("cpSortMenu").hidden=true;$("cpSortBtn").classList.remove("open")}});
   function loadSubs(){var go=function(m){subList=(m&&m[SK])||[];drawSubs()};var run=function(){go(window.rvzSub.cached());window.rvzSub.get().then(go)};if(window.rvzSub)run();else{var sc=document.createElement("script");sc.src="site-subcats.js?v=2";sc.onload=run;document.head.appendChild(sc)}}
   loadSubs();
+  var SORTS=[["feat","Featured"],["new","Newest first"],["lo","Price: Low to High"],["hi","Price: High to Low"]],sortK="feat";
+  $("cpSortMenu").innerHTML=SORTS.map(function(x){return '<button type="button" class="cp-mi'+(x[0]===sortK?' on':'')+'" data-k="'+x[0]+'">'+x[1]+'</button>'}).join("");
+  $("cpSortBtn").addEventListener("click",function(e){e.stopPropagation();var m=$("cpSortMenu");m.hidden=!m.hidden;$("cpSortBtn").classList.toggle("open",!m.hidden)});
+  $("cpSortMenu").addEventListener("click",function(e){var b=e.target.closest(".cp-mi");if(!b)return;sortK=b.dataset.k;$("cpSortMenu").hidden=true;$("cpSortBtn").classList.remove("open");[].forEach.call($("cpSortMenu").children,function(c){c.classList.toggle("on",c===b)});lastSig="";paint(lastR)});
+  function tm(p){var t=Date.parse(p.createdAt||p.updatedAt||"");return isFinite(t)?t:0}
+  function sorted(l){var a=l.slice();if(sortK==="lo")a.sort(function(x,y){return eff(x)-eff(y)});else if(sortK==="hi")a.sort(function(x,y){return eff(y)-eff(x)});else if(sortK==="new")a.sort(function(x,y){return tm(y)-tm(x)});return a}
   /* ---- filters ---- */
   var F={av:{},min:null,max:null,sz:{},co:{}},D=null,base=[],bounds=[0,0];
   function resetF(){F={av:{},min:null,max:null,sz:{},co:{}};updFBtn()}
@@ -98,7 +104,7 @@
   function paint(r){
     lastR=r;
     base=(Array.isArray(r)?r:[]).filter(function(p){return p&&p.active!==false&&!p.special&&match(p)&&(!sub||String(p.subCategory||"").trim().toLowerCase()===sub.toLowerCase())}).reverse();
-    var list=base.filter(function(p){return pass(p,F)});
+    var list=sorted(base.filter(function(p){return pass(p,F)}));
     $("cpCount").textContent=list.length+(list.length===1?" product":" products");
     var sig=JSON.stringify(list.map(function(p){return [p.id,p.stockByColorSize,p.stock,p.price,p.offer,p.colors]}));if(sig===lastSig)return;lastSig=sig;
     $("cpGrid").innerHTML=list.length?list.map(card).join(""):'<div class="cp-empty">'+(nF()?"No products match your filters.":sub?"No products in this category yet.":"No products here yet. Please check back soon.")+'</div>';

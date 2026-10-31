@@ -72,3 +72,5 @@ body.cp{margin:0;background:#fff;color:#111316;font-family:Inter,system-ui,sans-
 .fd-ft{display:grid;gap:10px;padding:14px 20px 18px;border-top:1px solid #ececea}
 .fd-ft button{height:50px;border-radius:2px;font:800 13px Inter,system-ui,sans-serif;letter-spacing:.06em;cursor:pointer}
 .fd-clr{background:#fff;color:#111316;border:1px solid #111316}.fd-ok{background:#111316;color:#fff;border:1px solid #111316}
+#cpSortMenu{min-width:200px;left:auto;right:0}
+#cpSortMenu .cp-mi{white-space:nowrap}
